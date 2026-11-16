@@ -16,9 +16,9 @@
   cursor: pointer;
   white-space: nowrap;
   transition:
-    background-color var(--dur) var(--ease),
-    border-color var(--dur) var(--ease),
-    color 0s linear var(--color-swap),
+    background-color 0s,
+    border-color 0s,
+    color 0s,
     transform var(--dur-press) var(--ease-out);
 }
 .btn:active {
@@ -41,6 +41,16 @@
 .primary {
   background: var(--butter);
   color: var(--ink);
+}
+/* Buttons whose text colour never changes on hover can fade their fill; the ones that swap fill and text
+   colour together (outline, etc.) do it instantly, since a fade always passes through a mid-tone where the
+   label briefly disappears. */
+.primary,
+.outline-light {
+  transition:
+    background-color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    transform var(--dur-press) var(--ease-out);
 }
 @media (hover: hover) and (pointer: fine) {
   .primary:hover {

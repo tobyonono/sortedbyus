@@ -177,7 +177,7 @@
   background: transparent;
   color: var(--cream);
   cursor: pointer;
-  transition: background-color var(--dur) var(--ease), border-color var(--dur) var(--ease), color 0s linear var(--color-swap), opacity var(--dur) var(--ease), transform var(--dur-press) var(--ease-out);
+  transition: background-color 0s, border-color var(--dur) var(--ease), color 0s, opacity var(--dur) var(--ease), transform var(--dur-press) var(--ease-out);
 }
 .navBtn svg {
   transition: transform var(--dur) var(--ease);

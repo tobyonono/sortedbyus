@@ -48,9 +48,6 @@
   --dur-fast: 150ms;
   --dur-ui: 250ms;
   --dur: 300ms;
-  /* buttons that fill on hover flip their text colour in one step, at about the point the fill is halfway
-     (the ease is front-loaded), so text and fill never fade through the same mid-tone and vanish */
-  --color-swap: 100ms;
   --dur-enter: 900ms;
   /* how far marketing content rises as it enters (hero copy, banner copy, request card) */
   --rise: 16px;

@@ -72,6 +72,8 @@
    filling apricot on hover. */
 .timeline .cta {
   border-color: var(--espresso);
+  /* fill and text colour swap together, instantly (a fade passes through a mid-tone that hides the label) */
+  transition: background-color 0s, border-color 0s, color 0s, transform var(--dur-press) var(--ease-out);
 }
 .dark .cta {
   border-color: var(--apricot);

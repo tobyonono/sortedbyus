@@ -271,12 +271,12 @@
   align-items: center;
   gap: 10px;
   padding: 13px 20px;
-  border: 1.5px solid var(--tan);
+  border: 1.5px solid var(--espresso);
   border-radius: 2px;
   font-size: 16px;
   font-weight: 500;
   line-height: 1.2;
-  transition: background-color var(--dur) var(--ease), border-color var(--dur) var(--ease), color 0s linear var(--color-swap), transform var(--dur-press) var(--ease-out);
+  transition: background-color 0s, border-color var(--dur) var(--ease), color 0s, transform var(--dur-press) var(--ease-out);
 }
 .tileBtn svg {
   transition: transform var(--dur) var(--ease);
@@ -340,10 +340,10 @@
   letter-spacing: -0.015em;
 }
 /* Hero CTA: apricot outline, fills solid apricot on hover */
-.heroBtn {
+.heroBtn.heroBtn {
   border-color: var(--apricot) !important;
   color: var(--apricot) !important;
-  transition: background-color var(--dur) var(--ease), color 0s linear var(--color-swap);
+  transition: background-color 0s, color 0s;
 }
 @media (hover: hover) and (pointer: fine) {
   .heroBtn:hover {
@@ -351,8 +351,8 @@
     color: var(--ink) !important;
   }
 }
-.corpBtn {
-  transition: background-color var(--dur) var(--ease), border-color var(--dur) var(--ease), color 0s linear var(--color-swap);
+.corpBtn.corpBtn {
+  transition: background-color 0s, border-color var(--dur) var(--ease), color 0s;
 }
 @media (hover: hover) and (pointer: fine) {
   .corpBtn:hover {

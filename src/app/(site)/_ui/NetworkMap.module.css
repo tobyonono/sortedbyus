@@ -59,7 +59,7 @@
 .ends circle,
 .group,
 .person {
-  transition: fill var(--dur) var(--ease), color 0s linear var(--color-swap), r var(--dur) var(--ease);
+  transition: fill 0s, color 0s, r var(--dur) var(--ease);
 }
 
 /* caption under the map: what this route was for */
@@ -194,7 +194,7 @@
   background: var(--espresso);
 }
 .tag {
-  transition: background-color var(--dur) var(--ease), color 0s linear var(--color-swap), border-color var(--dur) var(--ease);
+  transition: background-color 0s, color 0s, border-color var(--dur) var(--ease);
 }
 .tagDone {
   background: var(--butter);

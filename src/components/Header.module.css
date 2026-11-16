@@ -1,0 +1,293 @@
+.header {
+  position: relative;
+  z-index: 50;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 28px var(--gutter) 0;
+  color: var(--apricot);
+}
+
+/* Scrolled past: fixed to the top, on its own espresso bar (extends a little below the logo).
+   Slides up out of view while scrolling down and back in after scrolling up a bit (Header.tsx). */
+.header[data-mode="hidden"],
+.header[data-mode="shown"] {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  /* slimmer than the top-of-page header: 16 + 64 logo + 16 = 96px bar */
+  padding-top: 16px;
+}
+.header[data-mode="hidden"]::before,
+.header[data-mode="shown"]::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 -16px;
+  background: var(--espresso);
+}
+.header[data-mode="hidden"] {
+  transform: translateY(calc(-100% - 17px));
+}
+/* transform: none (not translate 0) when shown, so the fixed menu panel inside still covers the viewport */
+.header[data-animate] {
+  transition: transform var(--dur-ui) var(--ease-out);
+}
+
+.mark {
+  color: var(--apricot);
+  justify-self: start;
+  display: inline-flex;
+  position: relative;
+  z-index: 2;
+}
+.mark svg {
+  width: 64px;
+  height: 64px;
+}
+
+.wordmark {
+  font-family: var(--display);
+  font-size: 34px;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  position: relative;
+  z-index: 2;
+}
+
+.right {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  position: relative;
+  z-index: 2;
+}
+
+.wa {
+  font-size: 18px;
+  font-weight: 500;
+  text-decoration-color: transparent;
+}
+
+.menuBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 18px 12px 20px;
+  border: 1.5px solid var(--apricot);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--apricot);
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--dur) var(--ease), color 0s linear var(--color-swap), transform var(--dur-press) var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .menuBtn:hover {
+    background: var(--apricot);
+    color: var(--espresso);
+  }
+}
+.menuBtn:active {
+  transform: scale(0.97);
+}
+
+.burger {
+  position: relative;
+  width: 22px;
+  height: 14px;
+}
+.burger i {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 1.8px;
+  border-radius: 2px;
+  background: currentColor;
+  transition: transform var(--dur) var(--ease), opacity var(--dur-fast) var(--ease), top var(--dur) var(--ease);
+}
+.burger i:nth-child(1) { top: 0; }
+.burger i:nth-child(2) { top: 6px; }
+.burger i:nth-child(3) { top: 12px; }
+.burger[data-open="true"] i:nth-child(1) { top: 6px; transform: rotate(45deg); }
+.burger[data-open="true"] i:nth-child(2) { opacity: 0; }
+.burger[data-open="true"] i:nth-child(3) { top: 6px; transform: rotate(-45deg); }
+
+/* Menu panel — Røros timing: the panel fades in over 300ms while each link slides 20px in from the
+   left over 1.5s on a long ease-out, 30ms apart (stagger set inline in Header.tsx). Closing only fades
+   the panel; the links reset once it has gone. */
+.panel {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 160px var(--gutter) 48px;
+  background: var(--espresso);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--dur) var(--ease-out), visibility 0s linear var(--dur);
+}
+.panel[data-open="true"] {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity var(--dur) var(--ease-out), visibility 0s;
+}
+.panel ul {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  max-width: var(--content);
+  width: 100%;
+}
+.panel li {
+  opacity: 0;
+  transform: translateX(-20px);
+  /* reset after the panel's 300ms fade-out, so closing doesn't animate the links */
+  transition:
+    opacity 0s linear var(--dur),
+    transform 0s linear var(--dur);
+}
+.panel[data-open="true"] li {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--dur) var(--ease-out),
+    transform 1.5s var(--ease-out);
+}
+/* Two columns: the main pages large on the left, "What we do" with the six services on the right */
+.panelNav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px 64px;
+  align-items: start;
+  max-width: var(--content);
+  width: 100%;
+  margin: 0 auto;
+}
+.panelNav ul {
+  margin: 0;
+}
+.mainList {
+  order: -1;
+}
+.mainList li a {
+  display: inline-block;
+  font-family: var(--display);
+  font-size: clamp(40px, 6vw, 72px);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--apricot);
+  text-decoration-thickness: 3px;
+}
+.groupHead {
+  margin: 0 0 16px;
+  font-size: 16px;
+  color: rgb(255 235 208 / 0.65);
+}
+.subList li a {
+  display: inline-block;
+  padding: 6px 0;
+  font-family: var(--display);
+  font-size: clamp(22px, 2.2vw, 30px);
+  line-height: 1.2;
+  color: var(--apricot);
+  text-decoration-thickness: 2px;
+}
+/* Menu underlines: thicker and set further below the text than the site default; on hover the line
+   eases up a little (not tight to the text). The current page's link keeps its underline. */
+.mainList li a,
+.subList li a {
+  text-underline-offset: 0.26em;
+}
+.mainList li a[aria-current="page"],
+.subList li a[aria-current="page"] {
+  text-decoration-color: currentColor;
+}
+@media (hover: hover) and (pointer: fine) {
+  .mainList li a:hover,
+  .subList li a:hover {
+    text-underline-offset: 0.18em;
+  }
+}
+.panelFoot {
+  max-width: var(--content);
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  color: var(--apricot);
+}
+.panelCta {
+  padding: 14px 22px;
+  background: var(--butter);
+  color: var(--espresso);
+  border-radius: 2px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color var(--dur) var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .panelCta:hover {
+    background: var(--butter-hover);
+  }
+}
+.panelContact {
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 900px) {
+  .header {
+    grid-template-columns: auto 1fr auto;
+    gap: 12px;
+    padding-top: 18px;
+  }
+  /* 12 + 44 logo + 12 = 68px bar */
+  .header[data-mode="hidden"],
+  .header[data-mode="shown"] {
+    padding-top: 12px;
+  }
+  .header[data-mode="hidden"]::before,
+  .header[data-mode="shown"]::before {
+    inset: 0 0 -12px;
+  }
+  .header[data-mode="hidden"] {
+    transform: translateY(calc(-100% - 13px));
+  }
+  .mark svg {
+    width: 44px;
+    height: 44px;
+  }
+  .wordmark {
+    font-size: 24px;
+    justify-self: center;
+  }
+  .wa {
+    display: none;
+  }
+  .menuBtn {
+    padding: 9px 12px 9px 14px;
+    font-size: 16px;
+    gap: 10px;
+  }
+  .panel {
+    padding-top: 120px;
+    overflow-y: auto;
+  }
+  .panelNav {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .subList li a {
+    padding: 4px 0;
+  }
+}
+

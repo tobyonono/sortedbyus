@@ -1,0 +1,250 @@
+/* Espresso panel, apricot linework drawn like the logo (round caps, rounded turns), one butter route at a
+   time drawing in, dots flickering. */
+.wrap {
+  margin: 0;
+}
+.map {
+  position: relative;
+  margin: 0;
+  aspect-ratio: 1000 / 1100;
+  background: var(--espresso);
+  border-radius: 4px 0 4px 4px;
+  overflow: hidden;
+}
+.svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.svg path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.links path {
+  stroke: var(--apricot);
+  stroke-opacity: 0.22;
+  stroke-width: 1.5;
+}
+.trunks path {
+  stroke: var(--apricot);
+  stroke-opacity: 0.5;
+  stroke-width: 2;
+}
+.highlight path {
+  stroke: var(--butter);
+  stroke-width: 3;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 0.9s var(--ease-out) forwards;
+}
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.nodes circle {
+  animation: twinkle 4s ease-in-out infinite alternate;
+}
+@keyframes twinkle {
+  from {
+    fill-opacity: 0.2;
+  }
+  to {
+    fill-opacity: 0.75;
+  }
+}
+.people circle,
+.ends circle,
+.group,
+.person {
+  transition: fill var(--dur) var(--ease), color 0s linear var(--color-swap), r var(--dur) var(--ease);
+}
+
+/* caption under the map: what this route was for */
+.caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px 20px;
+  margin-top: 20px;
+  min-height: 1.5em;
+  font-size: 15px;
+  color: var(--apricot);
+  animation: captionIn 0.6s var(--ease-out);
+}
+.ask {
+  font-family: var(--display);
+  font-size: 19px;
+  color: var(--butter);
+}
+.route {
+  color: rgb(255 235 208 / 0.7);
+}
+.sorted {
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--espresso);
+  background: var(--butter);
+  animation: captionIn 0.4s var(--ease-out);
+}
+@keyframes captionIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .highlight path {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  .nodes circle,
+  .caption,
+  .svg .intake {
+    animation: none;
+  }
+  .packet {
+    display: none;
+  }
+}
+.nodes circle {
+  fill: var(--apricot);
+  fill-opacity: 0.55;
+}
+.people circle {
+  fill: var(--apricot);
+}
+.ends circle {
+  fill: var(--apricot);
+}
+.svg .endOn {
+  fill: var(--butter);
+}
+/* the line from your request in to us: dotted, the dots flowing towards us */
+.svg .intake {
+  stroke: var(--butter);
+  stroke-width: 3.5;
+  stroke-dasharray: 0.1 11;
+  stroke-linecap: round;
+  animation: flow 0.7s linear infinite;
+}
+@keyframes flow {
+  to {
+    stroke-dashoffset: -11.1;
+  }
+}
+/* the tall map is drawn much smaller, so its dots are bigger */
+.tall .svg .intake {
+  stroke-width: 9;
+  stroke-dasharray: 0.1 22;
+  animation-name: flowTall;
+}
+@keyframes flowTall {
+  to {
+    stroke-dashoffset: -22.1;
+  }
+}
+/* the request itself, travelling in */
+.packet {
+  fill: var(--butter);
+}
+
+/* labels: sentence case like the site's other small labels; group names in Herbik */
+.group,
+.person,
+.tag,
+.request {
+  position: absolute;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+/* group names: no dot, nothing ends here; the people around them are the destinations */
+.group {
+  transform: translate(-50%, -50%);
+  font-family: var(--display);
+  font-size: clamp(13px, 1.25vw, 17px);
+  color: rgb(255 235 208 / 0.85);
+}
+.groupOn {
+  color: var(--butter);
+}
+.person {
+  transform: translate(12px, -50%);
+  font-size: clamp(10px, 0.95vw, 13px);
+  color: rgb(255 235 208 / 0.7);
+}
+.personOn {
+  color: var(--butter);
+  font-weight: 500;
+}
+/* "Your request": its own outlined tag at the start of the line */
+.tag {
+  padding: 7px 14px;
+  border: 1px solid rgb(255 235 208 / 0.6);
+  border-radius: 999px;
+  font-size: clamp(12px, 1vw, 14px);
+  font-weight: 500;
+  color: var(--apricot);
+  background: var(--espresso);
+}
+.tag {
+  transition: background-color var(--dur) var(--ease), color 0s linear var(--color-swap), border-color var(--dur) var(--ease);
+}
+.tagDone {
+  background: var(--butter);
+  border-color: var(--butter);
+  color: var(--espresso);
+}
+.tagLeft {
+  transform: translate(-100%, -50%);
+}
+.tagTop {
+  transform: translate(-50%, -100%);
+}
+/* Sorted by Us: the hub */
+.request {
+  transform: translate(-50%, -50%);
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: clamp(12px, 1vw, 14px);
+  font-weight: 500;
+  color: var(--espresso);
+  background: var(--butter);
+}
+/* the brand cut: a cream wedge off the top-right corner */
+.cut {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  width: 13%;
+  aspect-ratio: 1;
+  background: var(--cream);
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+}
+
+/* bare: just the drawing, for placing on a band that already has the colour (MapBanner) */
+.bare {
+  background: none;
+  border-radius: 0;
+  overflow: visible;
+}
+
+@media (max-width: 900px) {
+  .group {
+    font-size: 11px;
+  }
+  /* too tight on a phone: keep only the highlighted person */
+  .person:not(.personOn) {
+    display: none;
+  }
+  .person,
+  .request {
+    font-size: 10px;
+  }
+}

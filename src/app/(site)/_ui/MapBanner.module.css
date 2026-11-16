@@ -1,0 +1,74 @@
+/* Full-bleed espresso band, edge to edge; the content keeps the page gutters. Apricot type. */
+.band {
+  padding: 120px var(--gutter);
+  background: var(--espresso);
+  color: var(--apricot);
+}
+.head {
+  display: block;
+}
+.label {
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+.heading {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(32px, 2.92vw, 42px);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  max-width: 560px;
+}
+.mapWide {
+  width: 100%;
+  margin: 56px 0 48px;
+}
+.mapTall {
+  display: none;
+}
+.points {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+}
+.points li {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 20px;
+  border-top: 1px solid rgb(255 235 208 / 0.3);
+  font-size: 16px;
+  line-height: 1.5;
+  color: rgb(255 235 208 / 0.8);
+}
+.points strong {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 24px;
+  color: var(--apricot);
+}
+
+@media (max-width: 900px) {
+  .band {
+    padding: 80px var(--gutter);
+  }
+  .mapWide {
+    display: none;
+  }
+  .mapTall {
+    display: block;
+    width: 86%;
+    margin: 40px auto;
+  }
+  .points {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .points li {
+    padding: 16px 0;
+  }
+}

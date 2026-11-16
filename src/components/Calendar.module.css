@@ -1,0 +1,97 @@
+/* Popover — same open animation as Røros' date picker (fpFadeInDown, 300ms) */
+.cal {
+  position: absolute;
+  z-index: 30;
+  left: 0;
+  right: 0;
+  top: calc(100% + 8px);
+  padding: 16px 14px 14px;
+  background: var(--white);
+  box-shadow: 0 16px 40px rgb(var(--espresso-rgb) / 0.16);
+  /* space left below it when it's scrolled into view on open */
+  scroll-margin-bottom: 24px;
+  /* grows out of the field above it, like the select */
+  transform-origin: top center;
+  animation: calIn 180ms var(--ease-out);
+}
+@keyframes calIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.month {
+  font-family: var(--display);
+  font-size: 20px;
+  line-height: 1;
+}
+.nav {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transition: color 0.2s ease-out, background-color var(--dur-fast) var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .nav:hover:not(:disabled) {
+    background: var(--apricot);
+  }
+}
+.nav:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+.wd {
+  padding: 4px 0 6px;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  color: var(--tan);
+}
+.day {
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid transparent;
+  background: none;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .day:hover:not(:disabled) {
+    background: var(--apricot);
+  }
+}
+.day[data-today="true"] {
+  text-decoration: underline 1px;
+  text-underline-offset: 3px;
+}
+.day[aria-selected="true"] {
+  background: var(--butter);
+  font-weight: 500;
+}
+.day:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.day:focus-visible {
+  outline: none;
+  border-color: var(--tan);
+}

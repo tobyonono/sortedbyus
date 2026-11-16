@@ -1,0 +1,32 @@
+"use client";
+
+import { defineConfig } from "sanity";
+import { structureTool } from "sanity/structure";
+import { projectId, dataset, apiVersion } from "./src/sanity/env";
+import { schemaTypes, singletons } from "./src/sanity/schemaTypes";
+import { structure } from "./src/sanity/structure";
+
+/** Studio at /studio (src/app/studio). */
+export default defineConfig({
+  name: "sorted-by-us",
+  title: "Sorted by Us",
+  basePath: "/studio",
+  projectId,
+  dataset,
+  schema: {
+    types: schemaTypes,
+    // singletons can't be created from the "+" menu
+    templates: (templates) => templates.filter(({ schemaType }) => !singletons.includes(schemaType) && schemaType !== "request"),
+  },
+  document: {
+    // singletons: no duplicate/delete; requests: no duplicate
+    actions: (input, { schemaType }) =>
+      singletons.includes(schemaType)
+        ? input.filter(({ action }) => action && ["publish", "discardChanges", "restore"].includes(action))
+        : schemaType === "request"
+          ? input.filter(({ action }) => action !== "duplicate")
+          : input,
+  },
+  plugins: [structureTool({ structure, title: "Content" })],
+  apiVersion,
+});

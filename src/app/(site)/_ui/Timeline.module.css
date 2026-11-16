@@ -1,0 +1,135 @@
+/* Bristol Dockyards-style pillar timeline: a hairline down the centre, copy and photo alternating
+   either side of it, a dot on the line level with each row. One column with the line on the left on phones. */
+.timeline {
+  --gap: clamp(56px, 7.2vw, 104px); /* each side of the line */
+  position: relative;
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  max-width: var(--content);
+  display: flex;
+  flex-direction: column;
+  gap: 96px;
+}
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: var(--espresso);
+}
+.item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: calc(var(--gap) * 2);
+  align-items: center;
+}
+/* the single dot: rides the centre line; Timeline.tsx moves it with a transform as the page scrolls */
+.dot {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--espresso);
+  box-shadow: 0 0 0 5px var(--cream);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+  will-change: transform;
+}
+/* even rows: photo left, copy right */
+.item:nth-child(odd) .copy {
+  order: 2;
+}  /* first child is the dot, so odd children are the even rows */
+.copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+}
+.title {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(30px, 2.5vw, 36px);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+.body {
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.cta {
+  margin-top: 8px;
+}
+/* Light timeline: espresso outline (not the default tan). Dark band: apricot outline and type,
+   filling apricot on hover. */
+.timeline .cta {
+  border-color: var(--espresso);
+}
+.dark .cta {
+  border-color: var(--apricot);
+  color: var(--apricot);
+}
+@media (hover: hover) and (pointer: fine) {
+  .timeline .cta:hover {
+    background: var(--espresso);
+    color: var(--cream);
+  }
+  .dark .cta:hover {
+    background: var(--apricot);
+    border-color: var(--apricot);
+    color: var(--espresso);
+  }
+}
+.media {
+  position: relative;
+  aspect-ratio: 457 / 270;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.media img {
+  object-fit: cover;
+}
+
+/* on an espresso band */
+.dark::before,
+.dark .dot {
+  background: var(--apricot);
+}
+.dark .dot {
+  box-shadow: 0 0 0 5px var(--espresso);
+}
+.dark .title {
+  color: var(--apricot);
+}
+.dark .body {
+  color: rgb(255 235 208 / 0.78);
+}
+
+@media (max-width: 900px) {
+  .timeline {
+    gap: 64px;
+    padding-left: 32px;
+  }
+  .timeline::before {
+    left: 4px;
+  }
+  .item {
+    grid-template-columns: 1fr;
+    row-gap: 24px;
+  }
+  .dot {
+    left: 4.5px;
+  }
+  .item .copy,
+  .item:nth-child(odd) .copy {
+    order: 2;
+  }
+}

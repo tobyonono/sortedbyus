@@ -1,0 +1,75 @@
+/* Square buttons. Hover: background/border tint (300ms, Røros default ease), arrow nudges 3px.
+   Press: Røros "squish" — scale(0.97), 100ms linear. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 13px 20px;
+  border-radius: 2px;
+  border: 1.5px solid transparent;
+  font-family: var(--body);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    color 0s linear var(--color-swap),
+    transform var(--dur-press) var(--ease-out);
+}
+.btn:active {
+  transform: scale(0.97);
+}
+.full {
+  width: 100%;
+}
+
+.arrow {
+  flex: none;
+  transition: transform var(--dur) var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover .arrow {
+    transform: translateX(3px);
+  }
+}
+
+.primary {
+  background: var(--butter);
+  color: var(--ink);
+}
+@media (hover: hover) and (pointer: fine) {
+  .primary:hover {
+    background: var(--butter-hover);
+  }
+}
+
+.outline {
+  background: transparent;
+  /* a section can set --outline-border where tan wouldn't show (e.g. on the caramel block) */
+  border-color: var(--outline-border, var(--tan));
+  color: var(--ink);
+}
+@media (hover: hover) and (pointer: fine) {
+  .outline:hover {
+    background: var(--espresso);
+    border-color: var(--espresso);
+    color: var(--cream);
+  }
+}
+
+.outline-light {
+  background: transparent;
+  border-color: rgb(var(--white-rgb) / 0.9);
+  color: var(--white);
+}
+@media (hover: hover) and (pointer: fine) {
+  .outline-light:hover {
+    background: rgb(var(--white-rgb) / 0.12);
+    border-color: var(--white);
+  }
+}

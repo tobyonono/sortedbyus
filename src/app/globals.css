@@ -1,0 +1,238 @@
+/* Scroll progress for the hero grow (ScrollGrow sets it every scroll frame). Registered as
+   non-inheriting so updating it restyles only .heroGrow itself, not every element inside it. */
+@property --p {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+
+:root {
+  /* Colour — palette from aspelinreitan.no, page cream lightened */
+  --espresso: #2f2116;
+  --espresso-rgb: 47 33 22; /* same colour, for rgb(var(--espresso-rgb) / alpha) tints and shadows */
+  --ink: #2f2116;
+  --cream: #fcfaf6;
+  --cream-rgb: 252 250 246;
+  --butter: #fee197;
+  --butter-hover: #fdd773;
+  --apricot: #ffebd0;
+  --olive: #a3a46e;
+  --tan: #987f61;
+  --line: #e8d1ad;
+  --muted: #4f3622;
+  --white: #ffffff;
+  --white-rgb: 255 255 255;
+  --error: #9a3b2a; /* form validation text */
+
+  /* Type */
+  --display: var(--font-display), Georgia, serif;
+  --body: var(--font-body), "Helvetica Neue", Arial, sans-serif;
+
+  /* Layout. Content that isn't full-bleed sits in a centred column at most --max wide (side padding
+     included, like bristoldockyards.org): past 1600px the gutter grows to keep it centred. */
+  --max: 1600px;
+  --gutter: max(40px, calc((100vw - var(--max)) / 2 + 40px));
+  --content: 1128px;
+
+  /* Motion — three curves, one job each:
+       --ease-out     anything entering, leaving or being pressed (strong ease-out)
+       --ease-reveal  big on-screen movement: process carousel, hero block (Thirdway in-out)
+       --ease         hover and colour changes
+     plus --ease-drawer for the slide-over panel and linear for the ticker. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-reveal: cubic-bezier(0.66, 0.01, 0.12, 0.98);
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  /* Durations: press feedback, UI (dropdowns, accordion, form steps, header), hover, marketing entrances */
+  --dur-press: 160ms;
+  --dur-fast: 150ms;
+  --dur-ui: 250ms;
+  --dur: 300ms;
+  /* buttons that fill on hover flip their text colour in one step, at about the point the fill is halfway
+     (the ease is front-loaded), so text and fill never fade through the same mid-tone and vanish */
+  --color-swap: 100ms;
+  --dur-enter: 900ms;
+  /* how far marketing content rises as it enters (hero copy, banner copy, request card) */
+  --rise: 16px;
+}
+
+/* v2 palette (/v2): navy in place of the browns. Cream, butter and olive stay; the warm neutrals
+   (apricot, tan, line, muted) move to cool equivalents so nothing brown is left. */
+[data-palette="v2"] {
+  --espresso: #0e1527;
+  --espresso-rgb: 14 21 39;
+  --ink: #0e1527;
+  --muted: #2b3856;
+  --tan: #6b7895;
+  --line: #d8dce5;
+  --apricot: #e3e9f2;
+  /* body sets the text colour outside this wrapper, so re-apply it here with the v2 ink */
+  color: var(--ink);
+}
+
+@media (max-width: 900px) {
+  :root {
+    --gutter: 20px;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  /* keep the scrollbar's space when the menu locks scrolling, so the page doesn't shift sideways */
+  scrollbar-gutter: stable;
+  /* no grey flash on tap: every control has its own :active feedback */
+  -webkit-tap-highlight-color: transparent;
+}
+/* taps fire immediately (no double-tap-zoom wait) */
+a,
+button,
+[role="button"],
+label,
+summary {
+  touch-action: manipulation;
+}
+/* Smooth in-page anchor jumps (nav, "See what we sort", FAQ links…). The data-scroll-behavior attribute
+   on <html> (layout.tsx) makes Next keep route changes instant. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 17px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--tan);
+  outline-offset: 3px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Underlined link — Røros "hover-link": underline fades in and lifts on hover */
+.link {
+  text-decoration: underline 1px;
+  text-decoration-color: currentColor;
+  text-underline-offset: 0.1428em;
+  transition: text-underline-offset var(--dur) var(--ease), text-decoration-color var(--dur) var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .link:hover {
+    text-underline-offset: 0.0714em;
+  }
+}
+.hover-link {
+  text-decoration: underline 1px;
+  text-decoration-color: transparent;
+  text-underline-offset: 0.1428em;
+  transition: text-underline-offset var(--dur) var(--ease), text-decoration-color var(--dur) var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .hover-link:hover {
+    text-decoration-color: currentColor;
+    text-underline-offset: 0.0714em;
+  }
+}
+
+/* Image reveal — Røros "lazyzoom": fade + settle from scale(1.05) translateY(2vh), anchored bottom */
+.js [data-reveal="zoom"] img {
+  opacity: 0;
+  transform: scale(1.05) translateY(2vh);
+  transform-origin: center bottom;
+}
+.js [data-reveal="zoom"][data-in][data-loaded] img {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.6s var(--ease-out), transform 1s var(--ease-out), scale 500ms var(--ease);
+}
+
+/* Hero photo: the same fade + settle as lazyzoom, as CSS animations that start with the first paint (it's the
+   LCP image; waiting for JavaScript held it back ~3s on phones). The block and copy follow on the same
+   clock (home.module.css, "Hero entrance"). [data-pending] = a client-side navigation landed before the
+   file arrived: the photo stays hidden over the dark band, and its animation restarts when it loads. */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal="hero"] img {
+    transform-origin: center bottom;
+    animation:
+      hero-photo-fade 0.6s var(--ease-out) both,
+      hero-photo-settle 1s var(--ease-out) both;
+  }
+}
+@keyframes hero-photo-fade {
+  from { opacity: 0; }
+}
+@keyframes hero-photo-settle {
+  from { transform: scale(1.05) translateY(2vh); }
+}
+.js [data-reveal="hero"][data-pending] img {
+  animation: none;
+  opacity: 0;
+}
+
+/* Content fade — Røros "lazyloaded" */
+.js [data-reveal="fade"] {
+  opacity: 0;
+}
+.js [data-reveal="fade"][data-in] {
+  opacity: 1;
+  transition: opacity 0.6s var(--ease-out);
+}
+
+/* Reduced motion: gentler, not zero. Fades and colour changes still transition; anything that moves
+   (transform, translate, scale, height, position) changes instantly; keyframe entrances are skipped.
+   Components that run motion from JS (carousel, ticker, scroll-grow) check the query themselves. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-property: opacity, color, background-color, border-color, text-decoration-color, visibility !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+  .js [data-reveal] img {
+    transform: none !important;
+  }
+}

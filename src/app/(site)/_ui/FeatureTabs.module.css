@@ -1,0 +1,170 @@
+/* Feature list + photo (Harvey "Product innovation" pattern), in the site's system: Herbik 28 titles
+   (card-title tier), Turnery 18 body, espresso hairlines with an olive progress line, 4px photo radius. */
+.wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 42fr) minmax(0, 50fr);
+  column-gap: clamp(48px, 7vw, 120px);
+  align-items: start;
+}
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-bottom: 1px solid rgb(var(--espresso-rgb) / 0.2);
+}
+.item {
+  position: relative;
+}
+/* top hairline; the open item's fills with olive over the cycle */
+.rule {
+  display: block;
+  height: 2px;
+  background: rgb(var(--espresso-rgb) / 0.2);
+  overflow: hidden;
+}
+.item:not([data-open]) .rule {
+  height: 1px;
+}
+.fill {
+  display: block;
+  height: 100%;
+  background: var(--espresso);
+  transform-origin: left;
+  transform: scaleX(0);
+}
+.item[data-open] .fill {
+  transform: none;
+}
+.wrap[data-auto] .item[data-open] .fill {
+  animation: fill var(--cycle) linear both;
+}
+@keyframes fill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+.item h3 {
+  margin: 0;
+  font-weight: 400;
+}
+.title {
+  display: block;
+  width: 100%;
+  padding: 28px 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  font-family: var(--display);
+  font-size: 28px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: rgb(var(--espresso-rgb) / 0.5);
+  cursor: pointer;
+  transition: color var(--dur) var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .title:hover {
+    color: var(--ink);
+  }
+}
+.item[data-open] .title {
+  padding-bottom: 16px;
+  color: var(--ink);
+  cursor: default;
+}
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+  max-width: 480px;
+  padding-bottom: 36px;
+}
+.panel[hidden] {
+  display: none;
+}
+.item[data-open] .panel {
+  animation: panelIn var(--dur-enter) var(--ease-out) both;
+}
+@keyframes panelIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+.body {
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.link {
+  margin-top: 4px;
+}
+/* who does what, and how long: short rows between hairlines */
+.facts {
+  margin: 4px 0 0;
+  width: 100%;
+}
+.facts > div {
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  gap: 16px;
+  padding: 12px 0;
+  border-top: 1px solid rgb(var(--espresso-rgb) / 0.15);
+  font-size: 16px;
+  line-height: 1.5;
+}
+.facts dt {
+  font-weight: 500;
+}
+.facts dd {
+  margin: 0;
+  color: var(--muted);
+}
+
+/* Photo: stays in view beside the list; slides crossfade */
+.media {
+  position: sticky;
+  top: 120px;
+  aspect-ratio: 5 / 4;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--espresso);
+}
+.slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 600ms var(--ease);
+}
+.slide[data-open] {
+  opacity: 1;
+}
+.slide img {
+  object-fit: cover;
+}
+.mobileImg {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .wrap {
+    grid-template-columns: 1fr;
+  }
+  .media {
+    display: none;
+  }
+  /* mobile: the open item carries its own photo */
+  .mobileImg {
+    display: block;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: 4px;
+  }
+  .mobileImg img {
+    object-fit: cover;
+  }
+  .title {
+    font-size: 24px;
+    padding: 22px 0;
+  }
+}

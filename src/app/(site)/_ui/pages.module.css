@@ -1,0 +1,684 @@
+/* Inner-page patterns, built from the homepage's tokens and type scale (72/56/42/28, 18px body,
+   120px section rhythm, 16px eyebrow gap, 1rem grid gap). */
+
+/* ---------- Hero ---------- */
+.hero {
+  --hero-h: clamp(420px, 36vw, 540px);
+  padding-bottom: 64px;
+}
+.heroCopy {
+  gap: 0 !important;
+  max-width: 520px;
+}
+.heroLabel {
+  margin-bottom: 16px;
+  font-size: 16px;
+  color: var(--butter);
+}
+.heroIntro {
+  margin-top: 24px;
+  max-width: 420px;
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--apricot);
+}
+.heroCopy > a {
+  margin-top: 36px;
+}
+.heroBtns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 36px;
+}
+
+/* ---------- Contact details: a plain list beside the form ---------- */
+.contactList {
+  margin: 40px 0 0;
+}
+.contactList > div {
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  gap: 16px;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+  font-size: 17px;
+  line-height: 1.45;
+}
+.contactList > div:last-child {
+  border-bottom: 1px solid var(--line);
+}
+.contactList dt {
+  font-weight: 500;
+}
+.contactList dd {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.contactList a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+.contactList small {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* ---------- Network map row: copy left, map right ---------- */
+.mapRow {
+  display: grid;
+  grid-template-columns: 5fr 6fr;
+  gap: clamp(48px, 7vw, 120px);
+  align-items: center;
+}
+.mapCopy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+  max-width: 480px;
+}
+.mapCopy > .rowBody + .rowBody {
+  margin-top: -8px;
+}
+@media (max-width: 900px) {
+  .mapRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Sections ---------- */
+.section {
+  padding: 120px var(--gutter);
+}
+.section + .section {
+  padding-top: 0;
+}
+/* Tinted bands: caramel (#B89562) for text-led sections, taupe (#9E8F7F, lightened from #92816F so espresso
+   text reaches 5:1) for picture-led ones. Muted text and hairlines go to espresso on both so they stay readable. */
+.tinted {
+  --muted: var(--espresso);
+  /* outline buttons: espresso border (the colour they fill with on hover), since tan vanishes on caramel */
+  --outline-border: var(--espresso);
+  --line: rgb(var(--espresso-rgb) / 0.25);
+  background: #b89562;
+}
+.taupe {
+  background: #9e8f7f;
+}
+.tinted + .section,
+.section + .tinted {
+  padding-top: 120px;
+}
+.sectionIntro {
+  margin-bottom: 72px;
+}
+/* Espresso band: apricot type, cards outlined in apricot like the footer */
+.dark {
+  background: var(--espresso);
+  color: var(--apricot);
+}
+.section + .dark,
+.dark + .section {
+  padding-top: 120px;
+}
+.dark h2,
+.dark p {
+  color: var(--apricot);
+}
+.dark .card {
+  border-color: rgb(255 235 208 / 0.4);
+}
+.dark .cardBody {
+  color: rgb(255 235 208 / 0.78);
+}
+.wrap {
+  max-width: var(--content);
+  margin: 0 auto;
+}
+
+/* ---------- Alternating image / copy rows (service categories, steps, story) ---------- */
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 120px;
+}
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 42fr) minmax(0, 50fr);
+  column-gap: 48px;
+  align-items: center;
+}
+.row:nth-child(even) {
+  grid-template-columns: minmax(0, 50fr) minmax(0, 42fr);
+}
+.row:nth-child(even) .rowImg {
+  order: 2;
+}
+.rowImg {
+  position: relative;
+  aspect-ratio: 5 / 4;
+  overflow: hidden;
+  border-radius: 4px;
+}
+.rowImg img {
+  object-fit: cover;
+}
+.rowCopy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 28px;
+  max-width: 520px;
+  padding-left: clamp(24px, 5vw, 96px);
+}
+.row:nth-child(even) .rowCopy {
+  padding-left: 0;
+  justify-self: end;
+  width: 100%;
+}
+.rowCopy > .eyebrow {
+  margin-bottom: -12px;
+}
+.eyebrow {
+  font-size: 16px;
+}
+.num {
+  font-family: var(--display);
+  font-size: 72px;
+  line-height: 1;
+  color: var(--olive);
+}
+.rowHeading {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(32px, 2.92vw, 42px);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.rowBody {
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.ticks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  font-size: 16px;
+  line-height: 1.45;
+}
+.ticks li {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+.ticks li:last-child {
+  border-bottom: 1px solid var(--line);
+}
+.ticks li svg {
+  flex: none;
+  margin-top: 4px;
+}
+
+/* ---------- Cards (engagement models, contact methods, values) ---------- */
+.cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+.cards4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.cards2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: var(--content);
+  margin: 0 auto;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 32px;
+  border: 1px solid var(--espresso);
+  border-radius: 6px;
+  text-decoration: none;
+}
+/* Taller card with a colour block cut on a diagonal across its foot, the same angled cut as the banners.
+   The block is an empty layer so the Figma capture can turn its clip-path into a shape. */
+.cutCard {
+  position: relative;
+  overflow: hidden;
+  min-height: 480px;
+}
+.cutCard > :not(.cut) {
+  position: relative;
+}
+/* the meta line sits on the colour block */
+.cutCard .cardMeta {
+  color: var(--espresso);
+}
+/* meta line on the darkest block reads in apricot */
+.cutDark .cardMeta {
+  color: var(--apricot);
+}
+.cut {
+  position: absolute;
+  inset: auto -1px -1px;
+  height: 42%;
+  background: var(--cut, var(--butter));
+  clip-path: polygon(0 32%, 100% 0, 100% 100%, 0 100%);
+}
+/* Sawtooth: the same cut repeated twice along the foot */
+.saw {
+  clip-path: polygon(0 32%, 50% 0, 50% 32%, 100% 0, 100% 100%, 0 100%);
+}
+/* Service offer cards are links: on hover the open space takes a light tint of its own cut colour and "Make a request"
+   rises in at the foot, on the colour block (--cta: espresso on the light browns, apricot on espresso). */
+.offerCard {
+  /* hover: a light tint of the card's own cut colour */
+  --hover-tint: color-mix(in srgb, var(--cut) 35%, var(--white));
+  color: inherit;
+  transition: background-color var(--dur) var(--ease);
+}
+.cutCard > .offerCta {
+  position: absolute;
+  left: 32px;
+  bottom: 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--cta, var(--espresso));
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.offerCard:focus-visible {
+  background: var(--hover-tint);
+}
+.offerCard:focus-visible > .offerCta {
+  opacity: 1;
+  transform: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .offerCard:hover {
+    background: var(--hover-tint);
+  }
+  .offerCard:hover > .offerCta {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* touch: no hover, so the prompt is always shown */
+@media (hover: none) {
+  .cutCard > .offerCta {
+    opacity: 1;
+    transform: none;
+  }
+}
+.tinted .card {
+  border-color: rgb(var(--espresso-rgb) / 0.4);
+}
+.cardHeading {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 1.15;
+}
+.cardBody {
+  font-size: 18px;
+  line-height: 1.5;
+  color: rgb(var(--espresso-rgb) / 0.68);
+}
+.cardMeta {
+  margin-top: auto;
+  padding-top: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ---------- Two columns of text (story, where we work) ---------- */
+.twoCol {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 64px;
+  max-width: var(--content);
+  margin: 0 auto;
+}
+.twoCol h2 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(32px, 2.92vw, 42px);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+}
+.prose {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.prose strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+/* ---------- Forms ---------- */
+.formWrap {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 64px;
+  max-width: var(--content);
+  margin: 0 auto;
+  align-items: start;
+}
+.form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 16px;
+  padding: 40px;
+  background: var(--white);
+  border-radius: 6px;
+  box-shadow: 0 24px 60px rgb(var(--espresso-rgb) / 0.12);
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.fieldFull {
+  grid-column: 1 / -1;
+}
+.field input,
+.field select,
+.field textarea {
+  font: inherit;
+  font-size: 16px;
+  font-weight: 400;
+  padding: 14px 16px;
+  border: 1px solid rgb(var(--espresso-rgb) / 0.35);
+  border-radius: 2px;
+  background: var(--cream);
+  color: var(--ink);
+}
+.field textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+.formFoot {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 8px;
+  font-size: 14px;
+  color: rgb(var(--espresso-rgb) / 0.68);
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.chip {
+  padding: 8px 14px;
+  border: 1px solid rgb(var(--espresso-rgb) / 0.35);
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 400;
+}
+.chip[data-on] {
+  background: var(--espresso);
+  border-color: var(--espresso);
+  color: var(--cream);
+}
+.upload {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 24px;
+  border: 1px dashed rgb(var(--espresso-rgb) / 0.4);
+  border-radius: 2px;
+  font-weight: 400;
+  font-size: 16px;
+  color: rgb(var(--espresso-rgb) / 0.68);
+}
+
+/* Side steps next to the request form */
+.next {
+  list-style: none;
+  margin: 32px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  counter-reset: n;
+}
+.next li {
+  counter-increment: n;
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 4px 12px;
+  padding: 20px 0;
+  border-top: 1px solid var(--line);
+}
+.next li::before {
+  content: "0" counter(n);
+  grid-row: span 2;
+  font-family: var(--display);
+  font-size: 24px;
+  line-height: 1.1;
+  color: var(--olive);
+}
+.next strong {
+  font-weight: 500;
+  font-size: 18px;
+}
+.next span {
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* ---------- Legal ---------- */
+.legal {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--muted);
+}
+.legal h2 {
+  margin-top: 32px;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 28px;
+  line-height: 1.15;
+  color: var(--ink);
+}
+.legal ul {
+  margin: 0;
+  padding-left: 20px;
+}
+.updated {
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+}
+.draftNote {
+  padding: 16px 20px;
+  background: var(--butter);
+  border-radius: 2px;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .hero {
+    --hero-h: auto;
+    padding-bottom: 40px;
+  }
+  .heroIntro {
+    margin-top: 16px;
+    font-size: 16px;
+  }
+  .section {
+    padding: 80px var(--gutter);
+  }
+  .tinted + .section,
+  .section + .tinted,
+  .section + .dark,
+  .dark + .section {
+    padding-top: 80px;
+  }
+  .sectionIntro {
+    margin-bottom: 48px;
+  }
+  .rows {
+    gap: 80px;
+  }
+  .row,
+  .row:nth-child(even) {
+    grid-template-columns: 1fr;
+    row-gap: 32px;
+  }
+  .row:nth-child(even) .rowImg {
+    order: 0;
+  }
+  .rowImg {
+    aspect-ratio: 4 / 3;
+  }
+  .rowCopy {
+    padding-left: 0;
+  }
+  .num {
+    font-size: 56px;
+  }
+  .cards,
+  .cards4 {
+    grid-template-columns: 1fr;
+  }
+  .card {
+    padding: 24px;
+  }
+  .cutCard {
+    min-height: 400px;
+  }
+  .twoCol,
+  .formWrap {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .form {
+    grid-template-columns: 1fr;
+    padding: 24px 20px;
+  }
+}
+
+.plain li {
+  grid-template-columns: 1fr;
+}
+.plain li::before {
+  content: none;
+}
+
+/* ---------- Service pages ---------- */
+.quote {
+  background: var(--white);
+  border-color: transparent;
+  justify-content: space-between;
+  min-height: 220px;
+}
+.quoteText {
+  font-family: var(--display);
+  font-size: 24px;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+.others {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1rem;
+}
+.other {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-decoration: none;
+}
+.otherImg {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 4px;
+}
+.otherImg img {
+  object-fit: cover;
+  scale: 1.01;
+  transition: scale 500ms var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .other:hover .otherImg img {
+    scale: 1.04;
+  }
+}
+.otherTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 500;
+}
+@media (max-width: 900px) {
+  .others {
+    grid-template-columns: 1fr 1fr;
+  }
+  .quote {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .cutCard > .offerCta {
+    left: 24px;
+    bottom: 22px;
+  }
+}
+
+/* 404: all six services in one row on desktop, two columns on phones */
+.others6 {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+@media (max-width: 900px) {
+  .others6 {
+    grid-template-columns: 1fr 1fr;
+  }
+}

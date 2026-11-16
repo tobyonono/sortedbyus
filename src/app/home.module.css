@@ -1,0 +1,838 @@
+/* ---------- Shared ---------- */
+.h2 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(36px, 3.9vw, 56px);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  text-align: center;
+}
+/* Heading scale (display face): 72 step titles / 56 section headings / 42 secondary headings / 28 card titles.
+   .subHeading is the 42 tier, for sections that support a main one (Something else, Big or small, FAQ). */
+.subHeading {
+  font-size: clamp(32px, 2.92vw, 42px) !important;
+}
+.label {
+  font-size: 16px;
+}
+.intro {
+  max-width: 600px;
+  margin: 20px auto 0;
+  text-wrap: balance;
+  font-size: 18px;
+  line-height: 1.45;
+  text-align: center;
+}
+/* Centred eyebrow above a centred .h2 (16px gap, like every other section label) */
+.labelCenter {
+  margin-bottom: 16px;
+  font-size: 16px;
+  text-align: center;
+}
+/* Section intro entrance (label → heading → intro), same rise + fade as CutBanner content,
+   staggered 80ms. Reveal variant="cut" sets [data-in]; hidden state only applies with JS. */
+.introGroup > * {
+  transition:
+    opacity var(--dur-enter) var(--ease-out),
+    transform var(--dur-enter) var(--ease-out);
+}
+.introGroup > :nth-child(2) {
+  transition-delay: 80ms;
+}
+.introGroup > :nth-child(3) {
+  transition-delay: 160ms;
+}
+:global(.js) .introGroup:not([data-in]) > * {
+  opacity: 0;
+  transform: translateY(var(--rise));
+}
+.wrap {
+  max-width: var(--content);
+  margin: 0 auto;
+}
+
+/* ---------- Top band + hero ---------- */
+.top {
+  background: var(--espresso);
+}
+.hero {
+  /* photo height, shared by the photo and the request card (centred on the photo) */
+  --hero-pt: 64px; /* gap between header and photo */
+  /* ~47.5% of the viewport width (8% taller than the original 1128:633 photo), capped so header (92)
+     + gap + photo + bottom padding (56) still fits above the fold; floor of 440px */
+  --hero-h: max(440px, min(calc(100vw * 0.475), calc(100svh - 92px - var(--hero-pt) - 56px)));
+  /* photo's starting inset each side: 5%, or the 1600px content column's edge on wider screens, so
+     the hero lines up with the logo and the sections below before it grows to full width.
+     (Defined here so the request card can follow the photo's right edge too.) */
+  --inset-l: max(5%, var(--gutter));
+  --inset-r: max(5%, var(--gutter));
+  position: relative;
+  padding: var(--hero-pt) 0 56px;
+}
+/* Full-width box at the original photo height (78.33% wide at 1128:633), masked in to the original
+   inset; --p (0 → 1, scroll) peels the mask back so the photo grows to the screen edges without
+   changing its height or shifting the page. */
+.heroGrow {
+  --p: 0;
+  position: relative;
+  /* height from --hero-h on .hero (width-led, capped to fit above the fold) */
+  height: var(--hero-h);
+  clip-path: inset(0 calc((1 - var(--p)) * var(--inset-r)) 0 calc((1 - var(--p)) * var(--inset-l)));
+  will-change: clip-path;
+}
+.heroPhoto {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.heroPhoto img {
+  object-fit: cover;
+}
+/* Desktop: the photo runs 22% past the right edge, so the woman (centre of the shot) sits right of
+   centre, clear of the colour block's point. Overrides next/image's inline fill width. */
+@media (min-width: 901px) {
+  .heroPhoto img {
+    width: 122% !important;
+    max-width: none;
+    object-position: center 35%;
+  }
+}
+.heroShade {
+  position: absolute;
+  inset: 0;
+  /* the copy sits on the solid block now, so the photo only needs a light, even tint */
+  background: rgb(var(--espresso-rgb) / 0.15);
+}
+/* Colour block = two of the banner cuts mirrored: its right edge slants out to a sharp point at
+   mid-height and back at the same angle (the CutBanner slope, ~0.24 across per 1 down). It starts at
+   the box's left edge, under the scroll-grow mask, so its visible left side is always the photo's edge
+   without reading --p (no layout work while scrolling); the point stays fixed just past the copy.
+   Slides in from the left. */
+.heroBlock {
+  /* how far the point sits right of the original photo edge: copy inset + widest heading line + room */
+  --tri-w: max(calc(72px + 9.45 * clamp(40px, 3.9vw, 56px) + 44px), 524px);
+  /* depth of the point: banner slope over half the photo height */
+  --tri-d: calc(var(--hero-h) * 0.12);
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  left: -1px;
+  right: calc(100% - var(--inset-l) - var(--tri-w));
+  background: var(--muted);
+  clip-path: polygon(0 0, calc(100% - var(--tri-d)) 0, 100% 50%, calc(100% - var(--tri-d)) 100%, 0 100%);
+  /* entrance: see "Hero entrance" below */
+  --block-from: translateX(-100%);
+}
+.heroCopy {
+  position: absolute;
+  /* fixed at the original inset; only the photo grows */
+  left: calc(var(--inset-l) + 72px);
+  top: 50%;
+  translate: 0 -50%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 36px;
+}
+.heroCopy h1 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(40px, 3.9vw, 56px);
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  color: var(--apricot);
+}
+.heroCard {
+  position: absolute;
+  /* vertically centred on the photo (translate, so the entrance transition's transform is untouched) */
+  top: calc(var(--hero-pt) + var(--hero-h) / 2);
+  translate: 0 -50%;
+  /* overhangs the photo's starting right edge by 16px */
+  right: calc(var(--inset-r) - 16px);
+  box-shadow: 0 24px 60px rgb(var(--espresso-rgb) / 0.22);
+  /* enters with the photo: see "Hero entrance" below */
+}
+
+/* Hero entrance — one sequence on one clock: CSS animations that all start with the first paint, so the
+   photo (the LCP image) never waits for JavaScript and hydration timing can't pull the parts apart:
+     0ms     photo fades (0.6s) + settles (1s) (globals.css, Reveal "hero"); request card rises in with it
+     100ms   block slides in over 1.4s, in-out ease (accelerates, then glides to a stop)
+     850ms   copy rises in as the block is ~3/4 across (Røros reveal: 1.5s rise, 0.5s fade)
+   Only with JS (.js on <html>) and when motion is allowed. */
+@media (prefers-reduced-motion: no-preference) {
+  :global(.js) .heroBlock {
+    animation: hero-block-in 1.4s var(--ease-reveal) 0.1s both;
+  }
+  :global(.js) .heroCopy {
+    animation:
+      hero-fade-in 0.5s var(--ease-out) 0.85s both,
+      hero-rise-in 1.5s var(--ease-out) 0.85s both;
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (min-width: 901px) {
+  :global(.js) .heroCard {
+    animation:
+      hero-fade-in 0.6s var(--ease-out) both,
+      hero-rise-in 1s var(--ease-out) both;
+  }
+}
+@keyframes hero-block-in {
+  from { transform: var(--block-from); }
+}
+@keyframes hero-fade-in {
+  from { opacity: 0; }
+}
+@keyframes hero-rise-in {
+  from { transform: translateY(var(--rise)); }
+}
+
+/* ---------- What we offer ---------- */
+.offer {
+  /* bottom = the grid's row gap, so the Something else band reads as the grid's last row */
+  padding: 120px var(--gutter) 1rem;
+}
+/* Asymmetric grid: two rows of three on an 8-column track. Row 1 is wide/wide/narrow (3/3/2), row 2 is
+   flipped (2/3/3), so the narrow card is about two-thirds the width of the other two.
+   Images in a row share one height so each row reads as a band. */
+.grid {
+  --tile-h: clamp(300px, 30vw, 440px);
+  list-style: none;
+  margin: 72px auto 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 1rem;
+  /* rows stretch so every card in a row is the same height; Explore buttons pin to the bottom */
+  align-items: stretch;
+}
+.grid > li:nth-child(6n + 1),
+.grid > li:nth-child(6n + 2),
+.grid > li:nth-child(6n + 5),
+.grid > li:nth-child(6n + 6) { grid-column: span 3; }
+.grid > li:nth-child(6n + 3),
+.grid > li:nth-child(6n + 4) { grid-column: span 2; }
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+  text-decoration: none;
+}
+.tileImg {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: var(--tile-h);
+  overflow: hidden;
+}
+/* Text panel: its own bordered, rounded box, separated from the image above */
+.tileBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 24px 24px 24px;
+  border: 1px solid var(--espresso);
+  border-radius: 6px;
+}
+/* Røros group hover: image eases from 1.01 → 1.04 over 500ms, origin centre 75% */
+.tileImg img {
+  object-fit: cover;
+}
+.tileImg :global(img) {
+  scale: 1.01;
+  transform-origin: center 75%;
+  transition: scale 500ms var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .tile:hover .tileImg :global(img) {
+    scale: 1.04;
+  }
+}
+.tileTitle {
+  /* same face and size as the description; hierarchy comes from colour (full ink vs 68%) */
+  font-size: 18px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+.tileEg {
+  margin-top: -16px; /* 20px stack gap → 4px, so title and description read as one block */
+  max-width: 34ch;
+  min-height: 2.9em; /* reserve two lines so Explore buttons align across a row */
+  font-size: 18px;
+  line-height: 1.45;
+  color: rgb(var(--espresso-rgb) / 0.68); /* ≈4.9:1 on cream, passes AA */
+}
+.tileBtn {
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 20px;
+  border: 1.5px solid var(--tan);
+  border-radius: 2px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.2;
+  transition: background-color var(--dur) var(--ease), border-color var(--dur) var(--ease), color 0s linear var(--color-swap), transform var(--dur-press) var(--ease-out);
+}
+.tileBtn svg {
+  transition: transform var(--dur) var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .tile:hover .tileBtn {
+    background: var(--espresso);
+    border-color: var(--espresso);
+    color: var(--cream);
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .tile:hover .tileBtn svg {
+    transform: translateX(3px);
+  }
+}
+.tile:active .tileBtn {
+  transform: scale(0.97);
+}
+
+/* ---------- Corporate feature ---------- */
+.corporate {
+  padding: 0 var(--gutter);
+}
+.corpInner.corpInner {
+  /* CutBanner: brown block on the right, wide enough to hold the copy (56% at the top, 46% at the
+     bottom); the photo shows on the left, so only a light shade is needed */
+  --shade: 0.2;
+  --edge-top: 44%;
+  --edge-bottom: 54%;
+  /* copy box = the block's narrowest width, so the text never crosses the diagonal at any size */
+  --content-w: calc(100% - max(var(--edge-top), var(--edge-bottom)));
+  /* photo fills only the visible left part (to the block's furthest edge), framed on the group */
+  --base-inset-r: calc(100% - max(var(--edge-top), var(--edge-bottom)));
+  --base-pos: 56% 62%;
+  min-height: clamp(480px, 40vw, 580px);
+}
+.corpCopy {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 40px;
+  max-width: 600px;
+  margin-left: auto;
+  padding: 72px 72px 72px 40px;
+  color: var(--white);
+  text-align: left;
+}
+.corpLabel {
+  /* matches the shared .label eyebrow; sits 16px above the heading like every other section
+     (the copy stack's 40px gap still separates heading, body and button) */
+  font-size: 16px;
+  margin-bottom: -24px;
+}
+.corpHeading {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(36px, 3.9vw, 56px);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+}
+/* Hero CTA: apricot outline, fills solid apricot on hover */
+.heroBtn {
+  border-color: var(--apricot) !important;
+  color: var(--apricot) !important;
+  transition: background-color var(--dur) var(--ease), color 0s linear var(--color-swap);
+}
+@media (hover: hover) and (pointer: fine) {
+  .heroBtn:hover {
+    background: var(--apricot) !important;
+    color: var(--ink) !important;
+  }
+}
+.corpBtn {
+  transition: background-color var(--dur) var(--ease), border-color var(--dur) var(--ease), color 0s linear var(--color-swap);
+}
+@media (hover: hover) and (pointer: fine) {
+  .corpBtn:hover {
+    background: var(--white) !important;
+    border-color: var(--white) !important;
+    color: var(--ink) !important;
+  }
+}
+.corpBody {
+  max-width: 600px;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+/* ---------- Audience splits (IIT ID-style stacking) ----------
+   One shared two-column grid: image, copy, image, copy. The <section>s use display: contents so their
+   children join that grid. Each image is sticky at the top and exactly one screen tall, and each row
+   is only that tall, so as soon as an image pins, the next row arrives and its image slides up over
+   the pinned one. Copy scrolls normally, centred beside its image. */
+/* Section intro, spaced like What we offer: 120 above, 72 down to the first item */
+.whoHead {
+  padding: 120px var(--gutter) 72px;
+}
+.audiences {
+  /* image = the process carousel's large slot: 42 of its 92 columns, same height clamp */
+  --aud-h: clamp(420px, calc(100vh - 260px), 640px);
+  display: grid;
+  grid-template-columns: minmax(0, 42fr) minmax(0, 50fr);
+  /* 48 = the carousel's two 24px gaps, so the image comes out the same width as its large slot */
+  column-gap: 48px;
+  align-items: center;
+  /* 80 to the corporate banner: tighter than a section break, since it's the group's third item */
+  padding: 0 var(--gutter) 80px; /* same side gutters as the carousel */
+}
+.split {
+  display: contents;
+}
+.splitImg {
+  position: sticky;
+  /* pins centred on screen; the next image slides up over it */
+  top: calc((100vh - var(--aud-h)) / 2);
+  height: var(--aud-h);
+  overflow: hidden;
+  border-radius: 4px;
+}
+.splitImg img {
+  object-fit: cover;
+}
+.splitSide {
+  padding: 0 0 0 clamp(24px, 5vw, 96px);
+}
+.splitCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  max-width: 520px;
+}
+.splitCopy > .label {
+  margin-bottom: -12px; /* 28px stack gap → 16px, so the eyebrow sits with its heading */
+}
+.splitHeading {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(36px, 3.9vw, 56px);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.splitBody {
+  max-width: 460px;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+/* ---------- Example requests: full-bleed ticker, heading aligned to the offer grid ---------- */
+.examples {
+  padding: 120px 0;
+}
+.examplesHead {
+  margin: 0 auto 48px;
+  padding: 0 var(--gutter);
+  box-sizing: content-box;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ---------- Something else (catch-all band, directly under the categories) ---------- */
+.catchall {
+  padding: 0 var(--gutter);
+}
+/* Full width between the gutters, like the corporate banner. CutBanner, mirrored: an olive block cut on a diagonal over the
+   left of the photo (lobby cropped so the seating sits in the visible right half), copy on the block. */
+.catchallInner.catchallInner {
+  --shade: 0.1;
+  /* mirrored block runs from the left edge to 58% (top) / 46% (bottom) */
+  --edge-top: 42%;
+  --edge-bottom: 54%;
+  min-height: 440px;
+}
+.catchallCopy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+  max-width: 520px;
+  padding: 64px 0 64px 72px;
+  color: var(--ink);
+}
+.catchallCopy .label {
+  margin-bottom: 16px;
+}
+.catchallSide {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 28px;
+}
+.catchallBody {
+  max-width: 400px;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+/* ---------- About + why trust us ---------- */
+.trust {
+  display: grid;
+  grid-template-columns: 5fr 7fr;
+  gap: 64px;
+  align-items: center;
+  max-width: var(--content);
+  margin: 0 auto;
+  padding: 120px 0;
+}
+.trust .panel {
+  padding: 72px 40px;
+}
+.trust .panelBody {
+  margin-bottom: 0;
+}
+.trustCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.trustList {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px 40px;
+}
+.trustList li {
+  padding-top: 20px;
+  border-top: 1.5px solid var(--line);
+}
+.trustList h3 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 1.15;
+}
+.trustList p {
+  margin-top: 10px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 72px 80px;
+  text-align: center;
+}
+.panelApricot {
+  background: var(--apricot);
+}
+.panelOlive {
+  background: var(--olive);
+}
+.panelHeading {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(36px, 3.9vw, 56px);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+}
+.panelBody {
+  max-width: 340px;
+  font-size: 17px;
+  line-height: 1.5;
+  margin-bottom: 40px;
+}
+.oliveBtn {
+  border-color: var(--ink) !important;
+}
+@media (hover: hover) and (pointer: fine) {
+  .oliveBtn:hover {
+    background: var(--ink) !important;
+    color: var(--cream) !important;
+  }
+}
+
+/* ---------- FAQ / Where we work ---------- */
+.faq {
+  max-width: var(--content);
+  margin: 0 auto;
+  padding: 0 0 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+/* While the About section is hidden, the FAQ follows the Who we help group directly */
+.who + .faq {
+  padding-top: 120px;
+}
+
+/* ---------- Closing banner (CutBanner: photo + angled photo cut + colour block) ---------- */
+.banner {
+  /* bright beach photo: darker tint keeps the white headline ≥3:1 over sky/sea (WCAG AA large) */
+  --shade: 0.52;
+  min-height: clamp(420px, 39vw, 600px);
+}
+.bannerCopy {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  padding: 0 var(--gutter);
+  text-align: center;
+}
+.bannerCopy h2 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(36px, 3.9vw, 56px);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  color: var(--white);
+  text-shadow: 0 1px 24px rgb(var(--espresso-rgb) / 0.25);
+}
+
+/* ---------- Footer ---------- */
+.footer {
+  background: var(--espresso);
+  color: var(--apricot);
+}
+.footTop {
+  display: grid;
+  grid-template-columns: 348px repeat(3, 1fr);
+  gap: 64px;
+  padding: 100px var(--gutter);
+}
+.footTop ul,
+.footBottom ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.footHead {
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--butter);
+}
+.footTop ul {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 14px;
+}
+.footTop a {
+  text-decoration-color: transparent;
+}
+.footBrand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  align-self: start;
+  color: var(--butter);
+  text-decoration: none;
+  font-family: var(--display);
+  font-size: 28px;
+  line-height: 1;
+}
+.footBottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding: 20px var(--gutter);
+  border-top: 1px solid var(--muted);
+  font-size: 14px;
+}
+.footBottom ul {
+  display: flex;
+  gap: 24px;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1180px) {
+  /* narrower screens: widen the corporate block so the copy keeps a comfortable measure */
+  .corpInner.corpInner {
+    --edge-top: 30%;
+    --edge-bottom: 40%;
+  }
+  .corpCopy {
+    padding: 64px 48px 64px 32px;
+  }
+  .trust,
+  .faq {
+    margin-left: var(--gutter);
+    margin-right: var(--gutter);
+  }
+}
+
+@media (max-width: 900px) {
+  .hero {
+    padding: 40px var(--gutter) 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  /* Mobile: full-bleed box masked in to the page gutter */
+  .heroGrow {
+    --inset-l: var(--gutter);
+    --inset-r: var(--gutter);
+    margin: 0 calc(-1 * var(--gutter));
+    height: auto;
+    aspect-ratio: 4 / 5;
+  }
+  /* Mobile: the copy spans the width at the bottom, so the block becomes a band across the bottom with
+     a slanted top edge (same as the stacked banners), rising in from below */
+  .heroBlock {
+    right: -1px;
+    clip-path: polygon(0 34%, 100% 52%, 100% 100%, 0 100%);
+  }
+  .heroBlock {
+    --block-from: translateY(66%);
+  }
+  .heroCopy {
+    left: calc(var(--inset-l) + 24px);
+    right: calc(var(--inset-r) + 24px);
+    top: auto;
+    bottom: 32px;
+    translate: none;
+  }
+  .heroCard {
+    position: static;
+    translate: none;
+    margin-top: 0;
+    box-shadow: none;
+    transition: none;
+  }
+  .offer {
+    padding: 80px var(--gutter) 1rem;
+  }
+  /* Tablet: two per row, alternating wide/narrow */
+  .grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    --tile-h: clamp(240px, 42vw, 360px);
+  }
+  .grid > li:nth-child(4n + 1),
+  .grid > li:nth-child(4n + 4) { grid-column: span 7; }
+  .grid > li:nth-child(4n + 2),
+  .grid > li:nth-child(4n + 3) { grid-column: span 5; }
+  .tileBtn {
+    padding: 10px 14px;
+  }
+  .tileBody {
+    gap: 16px;
+    padding: 18px 16px 16px;
+  }
+  .tileEg {
+    margin-top: -12px;
+  }
+  .corporate {
+    padding-top: 80px;
+  }
+  /* Mobile: CutBanner stacks (photo on top, block below with a slanted top edge) */
+  .corpInner.corpInner {
+    min-height: 0;
+  }
+  .corpCopy {
+    max-width: none;
+    gap: 32px;
+  }
+  .corpLabel {
+    margin-bottom: -16px; /* 32px stack gap → 16px */
+  }
+  .corpCopy {
+    padding: 8px 24px 56px;
+  }
+  .whoHead {
+    padding: 80px var(--gutter) 48px;
+  }
+  .audiences {
+    grid-template-columns: 1fr;
+    padding: 0 var(--gutter);
+  }
+  .split + .split .splitImg {
+    margin-top: 80px;
+  }
+  /* same as the carousel's stacked images: inside the gutters, 4:3 */
+  .splitImg {
+    position: relative;
+    top: auto;
+    height: auto;
+    aspect-ratio: 4 / 3;
+  }
+  .splitSide {
+    padding: 0;
+  }
+  .splitCopy {
+    padding: 32px 0 0;
+  }
+  .examples {
+    padding: 80px 0;
+  }
+  .examplesHead {
+    margin-bottom: 32px;
+  }
+  .trust .panel {
+    padding: 56px 28px;
+  }
+  /* Mobile: CutBanner stacks (photo on top, block below with a slanted top edge) */
+  .catchallInner.catchallInner {
+    min-height: 0;
+  }
+  .catchallCopy {
+    max-width: none;
+    padding: 8px 24px 48px;
+  }
+  .trust {
+    grid-template-columns: 1fr;
+    gap: 56px;
+    padding: 80px 0;
+  }
+  .panel {
+    padding: 56px 28px;
+  }
+  .faq {
+    padding-bottom: 80px;
+  }
+  .who + .faq {
+    padding-top: 80px;
+  }
+  .footTop {
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    padding: 64px var(--gutter);
+  }
+  .footBrand {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 560px) {
+  .trustList {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  /* Single column, full-width tiles */
+  .grid {
+    --tile-h: auto;
+    grid-template-columns: 1fr;
+  }
+  .grid > li:nth-child(n) {
+    grid-column: auto;
+  }
+  .tileImg {
+    aspect-ratio: 4 / 3;
+  }
+  .tileEg {
+    min-height: 0;
+  }
+}
+

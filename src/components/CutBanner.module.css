@@ -1,0 +1,99 @@
+/* A photo with a colour block clipped to a fixed polygon whose inner edge is a diagonal. The block is
+   static; on reveal (JS only) the content rises and fades in. */
+.cut {
+  --shade: 0.36;
+  /* the block's diagonal edge, measured from the left */
+  --edge-top: 62%;
+  --edge-bottom: 74%;
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--cut-bg, var(--espresso));
+}
+
+.base,
+.block {
+  position: absolute;
+  inset: 0;
+}
+/* A banner can frame its photo: --base-inset-l/-r confine it to the side the block leaves visible
+   (so its subject isn't hidden behind the block), --base-pos sets its object-position. */
+.base {
+  left: var(--base-inset-l, 0);
+  right: var(--base-inset-r, 0);
+}
+.base img {
+  object-fit: cover;
+  object-position: var(--base-pos, center 40%);
+}
+.base::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgb(var(--espresso-rgb) / var(--shade));
+}
+
+.block {
+  /* overlap the banner edges by 1px so fractional heights never leave a hairline of photo showing */
+  inset: -1px;
+  background: var(--tone);
+  clip-path: polygon(var(--edge-top) 0, 100% 0, 100% 100%, var(--edge-bottom) 100%);
+}
+
+/* Mirrored: block on the left */
+.cut[data-mirror] .block {
+  clip-path: polygon(0 0, calc(100% - var(--edge-top)) 0, calc(100% - var(--edge-bottom)) 100%, 0 100%);
+}
+
+.cut[data-align="start"] {
+  place-items: center start;
+}
+.cut[data-align="end"] {
+  place-items: center end;
+}
+.content {
+  position: relative;
+  z-index: 1;
+  /* set --content-w to keep the content inside the block (e.g. 100% minus the widest edge) */
+  width: var(--content-w, auto);
+  transition:
+    opacity var(--dur-enter) var(--ease-out) 0.1s,
+    transform var(--dur-enter) var(--ease-out) 0.1s;
+}
+:global(.js) .cut:not([data-in]) .content {
+  opacity: 0;
+  transform: translateY(var(--rise));
+}
+
+@media (max-width: 900px) {
+  .cut {
+    --edge-top: 70%;
+    --edge-bottom: 86%;
+  }
+
+  /* Mobile, with a block: stack instead of side by side. The photo is a band across the top and the
+     block fills everything below it, its top edge cut on a diagonal (same slope either way; mirror only applies on desktop). The copy
+     sits on the block under the photo. */
+  .cut[data-block] {
+    --photo-h: clamp(220px, 58vw, 380px);
+    --slant: clamp(40px, 11vw, 80px);
+    place-items: start stretch;
+    padding-top: var(--photo-h);
+    background: var(--tone);
+  }
+  .cut[data-block] .base {
+    left: 0;
+    right: 0;
+    bottom: auto;
+    height: var(--photo-h);
+  }
+  .cut[data-block] .block,
+  .cut[data-block][data-mirror] .block {
+    clip-path: polygon(0 calc(var(--photo-h) - var(--slant)), 100% var(--photo-h), 100% 100%, 0 100%);
+  }
+  .cut[data-block] .content {
+    width: auto;
+  }
+}
+

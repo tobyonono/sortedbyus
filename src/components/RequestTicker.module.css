@@ -1,0 +1,102 @@
+.ticker {
+  /* Base card width: max ~5 cards across the screen on desktop, ~2 on a phone */
+  --base: clamp(160px, 19vw, 270px);
+  --gap: 16px;
+  --scale: 1;
+  width: 100%;
+  overflow: hidden;
+}
+
+.track {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap);
+  width: max-content;
+  /* ~7s per card keeps it calm; one full copy slides past per loop */
+  animation: tick calc(var(--n) * 7s) linear infinite;
+}
+/* Hover slows the track (playbackRate eased in RequestTicker.tsx) rather than stopping it */
+@keyframes tick {
+  to {
+    /* one copy = half the track, plus half a gap so the seam stays even */
+    transform: translateX(calc(-50% - var(--gap) / 2));
+  }
+}
+
+.item {
+  flex: none;
+  width: calc(var(--base) * var(--w));
+  margin-top: calc(var(--y) * 1px * var(--scale));
+}
+
+.label {
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.card {
+  position: relative;
+  height: calc(var(--h) * 1px * var(--scale));
+  overflow: hidden;
+  border-radius: 4px;
+  display: flex;
+  align-items: flex-end;
+  padding: 18px;
+}
+.card[data-tone="apricot"] { background: var(--apricot); color: var(--ink); }
+.card[data-tone="butter"] { background: var(--butter); color: var(--ink); }
+.card[data-tone="olive"] { background: var(--olive); color: var(--ink); }
+.card[data-tone="espresso"] { background: var(--espresso); color: var(--cream); }
+.card[data-tone="muted"] { background: var(--muted); color: var(--cream); }
+
+.quote {
+  font-family: var(--display);
+  font-size: clamp(19px, 1.6vw, 24px);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.photo img {
+  object-fit: cover;
+}
+/* Bottom scrim behind the caption (Trippin's card gradient, in espresso): starts ~27% down, runs a
+   little past the bottom edge, 80% at the base fading out by ~82% of its height */
+.photo::after {
+  content: "";
+  position: absolute;
+  inset: 27.5% 0 -5%;
+  background: linear-gradient(0deg, rgb(var(--espresso-rgb) / 0.8) 1.95%, rgb(var(--espresso-rgb) / 0) 82.5%);
+  pointer-events: none;
+}
+.caption {
+  position: relative;
+  z-index: 1;
+  color: var(--white);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+@media (max-width: 900px) {
+  .ticker {
+    --scale: 0.72;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .track {
+    animation: none;
+  }
+  .item[aria-hidden="true"] {
+    display: none;
+  }
+}

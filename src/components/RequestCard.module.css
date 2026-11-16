@@ -1,0 +1,217 @@
+.card {
+  /* rhythm: 12px label → field, 24px between groups */
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 360px;
+  padding: 28px;
+  background: var(--cream);
+  color: var(--ink);
+}
+
+/* Progress */
+.progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted); /* tan failed contrast at 13px; muted ≈ 9:1 on cream */
+}
+.title {
+  margin-bottom: -4px;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 28px;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+.progress > span:first-child {
+  white-space: nowrap;
+}
+.bar {
+  flex: 1;
+  height: 2px;
+  background: var(--line);
+  overflow: hidden;
+}
+.bar i {
+  display: block;
+  height: 100%;
+  background: var(--ink);
+  transform-origin: left;
+  transition: transform var(--dur) var(--ease-out);
+}
+
+/* Each step enters with a short rise + fade (UI timing: 250ms ease-out) */
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  animation: stepIn var(--dur-ui) var(--ease-out);
+}
+@keyframes stepIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* Step 1 */
+.when,
+.group {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.groupLabel {
+  font-size: 16px;
+}
+.tiles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 20px 8px;
+  border: 1.5px solid transparent;
+  background: var(--white);
+  cursor: pointer;
+  transition: border-color var(--dur) var(--ease), background-color var(--dur) var(--ease), transform var(--dur-press) var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .tile:hover {
+    border-color: var(--line);
+  }
+}
+.tile:active {
+  transform: scale(0.97);
+}
+.tile[aria-pressed="true"] {
+  border-color: var(--espresso);
+  background: var(--espresso);
+  color: var(--cream);
+}
+.tile[aria-pressed="true"] .tileSmall {
+  color: var(--apricot);
+}
+.tileBig {
+  font-family: var(--display);
+  font-size: 22px;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.tileSmall {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* Step 2 */
+.summary {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 0;
+  background: var(--apricot);
+  font-size: 14px;
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+}
+.summary .link {
+  flex: none;
+  font-weight: 500;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 15px;
+}
+.field em {
+  font-style: normal;
+  color: var(--tan);
+  margin-left: 4px;
+}
+.field input,
+.field textarea {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1.5px solid transparent;
+  border-radius: 0;
+  background: var(--white);
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px;
+  resize: vertical;
+  transition: border-color var(--dur) var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .field input:hover,
+  .field textarea:hover {
+    border-color: var(--line);
+  }
+}
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--tan);
+}
+.field textarea {
+  /* can be resized taller, but never beyond ~8 lines; scrolls after that */
+  min-height: 96px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.field ::placeholder {
+  color: var(--tan);
+  opacity: 0.8;
+}
+.note {
+  margin-top: -8px;
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.error {
+  font-size: 14px;
+  color: var(--error);
+}
+
+/* Sent */
+.sentHeading {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 32px;
+  line-height: 1.1;
+  outline: none;
+}
+.sentBody {
+  font-size: 16px;
+  line-height: 1.5;
+}
+.restart {
+  align-self: flex-start;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .card {
+    width: 100%;
+  }
+}

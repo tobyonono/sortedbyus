@@ -1,0 +1,77 @@
+.root {
+  position: relative;
+}
+
+.button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1.5px solid transparent;
+  background: var(--white);
+  font-size: 16px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--dur) var(--ease);
+}
+.root[data-open="true"] .button {
+  border-color: var(--line);
+}
+@media (hover: hover) and (pointer: fine) {
+  .button:hover {
+    border-color: var(--line);
+  }
+}
+.placeholder {
+  color: var(--ink);
+}
+.caret {
+  flex: none;
+  transition: transform var(--dur) var(--ease);
+}
+.root[data-open="true"] .caret {
+  transform: rotate(180deg);
+}
+
+/* Popover: grows out of the field above it (fade + 6px drop + 0.98 scale from the top), 180ms */
+.list {
+  position: absolute;
+  z-index: 20;
+  left: 0;
+  right: 0;
+  top: calc(100% + 6px);
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  max-height: 300px;
+  overflow-y: auto;
+  background: var(--white);
+  box-shadow: 0 16px 40px rgb(var(--espresso-rgb) / 0.16);
+  outline: none;
+  transform-origin: top center;
+  animation: dropIn 180ms var(--ease-out);
+}
+@keyframes dropIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+}
+.list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 12px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease);
+}
+.list li[data-active="true"] {
+  background: var(--apricot);
+}
+.list li[aria-selected="true"] {
+  font-weight: 500;
+}

@@ -1,0 +1,132 @@
+/* Desktop: slides in from the right. Mobile: bottom sheet. Same curve as the rest of the site. */
+.panel {
+  --panel-dur: 450ms; /* drawer: 450ms on the iOS-style drawer curve */
+  position: fixed;
+  inset: 0 0 0 auto;
+  width: min(460px, 100vw);
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--cream);
+  color: var(--ink);
+  box-shadow: -24px 0 60px rgb(var(--espresso-rgb) / 0.18);
+  transform: translateX(100%);
+  transition:
+    transform var(--panel-dur) var(--ease-drawer),
+    overlay var(--panel-dur) allow-discrete,
+    display var(--panel-dur) allow-discrete;
+}
+.panel[open] {
+  transform: none;
+}
+@starting-style {
+  .panel[open] {
+    transform: translateX(100%);
+  }
+}
+
+.panel::backdrop {
+  background: rgb(var(--espresso-rgb) / 0);
+  transition:
+    background-color var(--panel-dur) var(--ease),
+    overlay var(--panel-dur) allow-discrete,
+    display var(--panel-dur) allow-discrete;
+}
+.panel[open]::backdrop {
+  background: rgb(var(--espresso-rgb) / 0.55);
+}
+@starting-style {
+  .panel[open]::backdrop {
+    background: rgb(var(--espresso-rgb) / 0);
+  }
+}
+
+/* Lock page scroll while the panel is open */
+:global(html:has(dialog[open])) {
+  overflow: hidden;
+}
+
+.inner {
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 28px 32px 40px;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.title {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+.close {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border: 1.5px solid var(--line);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background-color var(--dur) var(--ease), border-color var(--dur) var(--ease), transform var(--dur-press) var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .close:hover {
+    background: var(--apricot);
+    border-color: var(--tan);
+  }
+}
+.close:active {
+  transform: scale(0.97);
+}
+
+.intro {
+  margin: 12px 0 24px;
+  max-width: 34ch;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* The card fills the panel instead of its fixed hero width */
+.form {
+  width: 100%;
+  padding: 0;
+}
+
+@media (max-width: 600px) {
+  .panel {
+    inset: auto 0 0 0;
+    width: 100%;
+    height: auto;
+    max-height: 92dvh;
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -16px 48px rgb(var(--espresso-rgb) / 0.18);
+    transform: translateY(100%);
+  }
+  @starting-style {
+    .panel[open] {
+      transform: translateY(100%);
+    }
+  }
+  .inner {
+    max-height: 92dvh;
+    padding: 22px 20px calc(28px + env(safe-area-inset-bottom));
+  }
+  .title {
+    font-size: 30px;
+  }
+}
+

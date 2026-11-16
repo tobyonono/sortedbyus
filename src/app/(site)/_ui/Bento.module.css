@@ -1,0 +1,133 @@
+/* Bento grid (after harvey.ai): a tall card left with two small cards and a wide card beside it, then a
+   second row of one regular and one wide card. Apricot cards on the cream page, photo at the foot (or the
+   right, on wide cards) cut on a diagonal by an apricot wedge. */
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 16px;
+}
+.card {
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--apricot);
+}
+.tall {
+  grid-row: span 2;
+}
+.wide {
+  grid-column: span 2;
+}
+.link {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+.copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 40px 40px 32px;
+  max-width: 480px;
+}
+.title {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 28px;
+  line-height: 1.15;
+  color: var(--ink);
+}
+.body {
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.more {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.photo {
+  position: relative;
+  flex: 1 0 220px;
+  min-height: 220px;
+}
+.photo img {
+  object-fit: cover;
+  transition: transform var(--dur) var(--ease);
+}
+/* apricot wedge over the photo's top edge: the edge rises left to right */
+.cut {
+  position: absolute;
+  inset: -1px -1px auto;
+  height: 24%;
+  background: var(--apricot);
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+.tall .photo {
+  flex-basis: 360px;
+}
+/* wide cards: copy left, photo right, cut down its left edge */
+.wide .link {
+  flex-direction: row;
+}
+.wide .copy {
+  flex: 1 1 0;
+  justify-content: center;
+}
+.wide .photo {
+  flex: 1.15 1 0;
+  min-height: 320px;
+}
+.wide .cut {
+  inset: -1px auto -1px -1px;
+  width: 22%;
+  height: auto;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .link:hover .photo img {
+    transform: scale(1.03);
+  }
+}
+@media (max-width: 1100px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .tall {
+    grid-row: auto;
+  }
+}
+@media (max-width: 700px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .wide {
+    grid-column: auto;
+  }
+  .wide .link {
+    flex-direction: column;
+  }
+  .wide .photo {
+    flex: 1 0 220px;
+    min-height: 220px;
+  }
+  .wide .cut {
+    inset: -1px -1px auto;
+    width: auto;
+    height: 24%;
+  }
+  .copy {
+    padding: 28px 24px 24px;
+  }
+}

@@ -1,0 +1,252 @@
+.section {
+  /* Shared slide clock — keep in sync with DURATION / EASE in ProcessCarousel.tsx */
+  --slide-dur: 0.9s;
+  background: var(--espresso);
+  color: var(--cream);
+}
+
+.heading {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(36px, 3.9vw, 56px);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+}
+
+/* ---------- Desktop ---------- */
+.desktop {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  padding: 120px var(--gutter);
+}
+
+/* Stage: large slot | small slot | divider + copy. Frames are positioned over it from measured slot rects. */
+.slide {
+  position: relative;
+  height: clamp(420px, calc(100vh - 260px), 640px);
+  display: grid;
+  grid-template-columns: minmax(0, 42fr) minmax(0, 17fr) minmax(0, 33fr);
+  column-gap: 24px;
+}
+
+.largeSlot {
+  grid-column: 1;
+  height: 100%;
+}
+.smallSlot {
+  grid-column: 2;
+  align-self: end;
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+.frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  border-radius: 4px;
+  visibility: hidden;
+  will-change: transform, width, height;
+}
+.frame img {
+  object-fit: cover;
+}
+
+.copy {
+  grid-column: 3;
+  position: relative;
+  margin-left: 16px;
+  padding-left: 40px;
+  min-width: 0;
+}
+
+/* Divider fills top-down, tracking progress (driven from JS) */
+.divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 1.5px;
+  background: rgb(var(--cream-rgb) / 0.2);
+}
+.divider span {
+  position: absolute;
+  inset: 0;
+  background: var(--cream);
+  transform-origin: top;
+  transform: scaleY(0);
+}
+
+.counter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
+  font-weight: 500;
+}
+.copy .counter {
+  position: absolute;
+  top: 0;
+  right: calc(100% + 16px);
+}
+.pill {
+  display: inline-block;
+  height: 1.6em;
+  padding: 0 10px;
+  border: 1.5px solid currentColor;
+  border-radius: 2px; /* same as buttons and arrows */
+  line-height: 1.5em;
+  overflow: hidden;
+}
+.roll {
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--slide-dur) var(--ease-reveal);
+}
+.roll span {
+  height: 1.5em;
+}
+
+/* Step text: stacked. Titles slide up through a mask; body fades + rises after. */
+.text {
+  position: absolute;
+  top: 0;
+  left: 40px;
+  right: 0;
+  bottom: 92px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none;
+}
+.text[data-state="current"] {
+  pointer-events: auto;
+}
+.title {
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(48px, 5vw, 72px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+.title span {
+  display: block;
+  transform: translateY(110%);
+  transition: transform var(--slide-dur) var(--ease-reveal);
+}
+.text[data-state="past"] .title span {
+  transform: translateY(-110%);
+}
+.text[data-state="current"] .title span {
+  transform: none;
+}
+.body {
+  max-width: 460px;
+  font-size: 18px;
+  line-height: 1.55;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity var(--slide-dur) var(--ease-reveal), transform var(--slide-dur) var(--ease-reveal);
+}
+.text[data-state="past"] .body {
+  transform: translateY(-16px);
+}
+.text[data-state="current"] .body {
+  opacity: 1;
+  transform: none;
+}
+
+.nav {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  gap: 10px;
+}
+.navBtn {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 1.5px solid rgb(var(--cream-rgb) / 0.4);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--cream);
+  cursor: pointer;
+  transition: background-color var(--dur) var(--ease), border-color var(--dur) var(--ease), color 0s linear var(--color-swap), opacity var(--dur) var(--ease), transform var(--dur-press) var(--ease-out);
+}
+.navBtn svg {
+  transition: transform var(--dur) var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .navBtn:hover:not(:disabled) {
+    background: var(--apricot);
+    border-color: var(--apricot);
+    color: var(--ink);
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .navBtn:hover:not(:disabled):first-child svg {
+    transform: translateX(-3px);
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .navBtn:hover:not(:disabled):last-child svg {
+    transform: translateX(3px);
+  }
+}
+.navBtn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+.navBtn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* ---------- Mobile: stacked ---------- */
+.stack {
+  display: none;
+  padding: 80px var(--gutter);
+}
+.stack ol {
+  list-style: none;
+  margin: 40px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+}
+.stackImg {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.stackImg img {
+  object-fit: cover;
+}
+.stackTitle {
+  margin-top: 14px;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 1.05;
+}
+.stackBody {
+  margin-top: 12px;
+  font-size: 18px;
+  line-height: 1.55;
+}
+
+@media (max-width: 1023px) {
+  .desktop {
+    display: none;
+  }
+  .stack {
+    display: block;
+  }
+}

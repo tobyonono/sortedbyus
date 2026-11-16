@@ -123,7 +123,7 @@ export default async function Home() {
               </div>
               <div className={s.catchallSide}>
                 <p className={s.catchallBody}>{c.catchallBody}</p>
-                <ButtonLink href="#request" data-service="Something else" className={s.oliveBtn}>
+                <ButtonLink href="#request" data-service="Something else" className={s.oliveBtn} arrow>
                   {c.catchallButton}
                 </ButtonLink>
               </div>

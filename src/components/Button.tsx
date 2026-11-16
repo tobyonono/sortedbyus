@@ -8,9 +8,9 @@ type Common = { variant?: Variant; arrow?: boolean; children: ReactNode; classNa
 
 export function Arrow() {
   return (
-    // Solid arrow: short shaft, angular head (Bakken & Bæck journal style)
-    <svg className={styles.arrow} width="16" height="12" viewBox="0 0 16 12" aria-hidden="true">
-      <path d="M0 5.25h12.2L8.5 1.55 9.55.5 15.05 6l-5.5 5.5-1.05-1.05 3.7-3.7H0z" fill="currentColor" />
+    // Thin shaft, open angled head (Bakken & Bæck journal card arrow), drawn 14×12 to match the old arrow's size
+    <svg className={styles.arrow} width="14" height="12" viewBox="0 0 8.67 7.35" aria-hidden="true">
+      <path d="M4.51 6.47L7.06 4.1L0 4.33V3.02L7.05 3.27L4.51 0.87L5.38 0L8.67 3.69L5.38 7.35L4.51 6.48V6.47Z" fill="currentColor" />
     </svg>
   );
 }

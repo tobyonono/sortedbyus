@@ -242,13 +242,13 @@ export default function ProcessCarousel({ heading, steps }: { heading: string; s
 
             <div className={styles.nav}>
               <button className={styles.navBtn} onClick={() => goTo(active - 1)} disabled={active === 0} aria-label="Previous step">
-                <svg width="16" height="12" viewBox="0 0 16 12" aria-hidden="true">
-                  <path d="M16 5.25H3.8l3.7-3.7L6.45.5.95 6l5.5 5.5 1.05-1.05-3.7-3.7H16z" fill="currentColor" />
+                <svg width="14" height="12" viewBox="0 0 8.67 7.35" aria-hidden="true">
+                  <path d="M4.51 6.47L7.06 4.1L0 4.33V3.02L7.05 3.27L4.51 0.87L5.38 0L8.67 3.69L5.38 7.35L4.51 6.48V6.47Z" fill="currentColor" transform="translate(8.67 0) scale(-1 1)" />
                 </svg>
               </button>
               <button className={styles.navBtn} onClick={() => goTo(active + 1)} disabled={active === n - 1} aria-label="Next step">
-                <svg width="16" height="12" viewBox="0 0 16 12" aria-hidden="true">
-                  <path d="M0 5.25h12.2L8.5 1.55 9.55.5 15.05 6l-5.5 5.5-1.05-1.05 3.7-3.7H0z" fill="currentColor" />
+                <svg width="14" height="12" viewBox="0 0 8.67 7.35" aria-hidden="true">
+                  <path d="M4.51 6.47L7.06 4.1L0 4.33V3.02L7.05 3.27L4.51 0.87L5.38 0L8.67 3.69L5.38 7.35L4.51 6.48V6.47Z" fill="currentColor" />
                 </svg>
               </button>
             </div>

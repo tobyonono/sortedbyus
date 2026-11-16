@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import LogoMark from "./LogoMark";
+import { Arrow } from "./Button";
 import { nav, serviceNav, site, whatsappHref } from "@/lib/site";
 import styles from "./Header.module.css";
 
@@ -176,7 +177,7 @@ export default function Header({
               onClick={() => setOpen(false)}
               className={styles.panelCta}
             >
-              Make a request
+              Make a request <Arrow />
             </Link>
             <div className={styles.panelContact}>
               <a

@@ -193,6 +193,7 @@ export default async function Home() {
                   href={wa("Hi, I’d like to discuss a corporate solution.")}
                   variant="outline-light"
                   className={s.corpBtn}
+                  arrow
                 >
                   {c.corpButton}
                 </ButtonLink>
@@ -245,7 +246,7 @@ export default async function Home() {
         <CutBanner base={must(c.closingImage)} block={false} className={s.banner} aria-labelledby="banner-heading">
           <div className={s.bannerCopy}>
             <h2 id="banner-heading">{c.closingHeading}</h2>
-            <ButtonLink href="#request" variant="primary">
+            <ButtonLink href="#request" variant="primary" arrow>
               {c.closingButton}
             </ButtonLink>
           </div>

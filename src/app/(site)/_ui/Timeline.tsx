@@ -51,7 +51,7 @@ export default function Timeline({ items, dark }: { items: TimelineItem[]; dark?
           <div className={t.copy}>
             <h3 className={t.title}>{it.title}</h3>
             <p className={t.body}>{it.body}</p>
-            {it.cta && <ButtonLink href={it.cta.href} variant={dark ? "outline-light" : "outline"} className={t.cta}>{it.cta.label}</ButtonLink>}
+            {it.cta && <ButtonLink href={it.cta.href} variant={dark ? "outline-light" : "outline"} className={t.cta} arrow>{it.cta.label}</ButtonLink>}
           </div>
           <div className={t.media}>
             <Image {...picProps(it.img)} alt={it.img.alt} fill sizes="(min-width: 900px) 40vw, 100vw" style={{ objectPosition: it.img.focus }} />

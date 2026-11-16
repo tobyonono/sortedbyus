@@ -35,7 +35,7 @@ export default async function CorporatePage() {
         intro={c.heroIntro}
         image={must(c.heroImage)}
       >
-        <ButtonLink href={corpCta} variant="outline-light" className={h.heroBtn}>{c.ctaLabel}</ButtonLink>
+        <ButtonLink href={corpCta} variant="outline-light" className={h.heroBtn} arrow>{c.ctaLabel}</ButtonLink>
       </PageHero>
       <main>
         <section className={d.section} aria-labelledby="corp-offer">

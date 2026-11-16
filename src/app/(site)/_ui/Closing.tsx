@@ -13,7 +13,7 @@ export default function Closing({ image, title = "Consider it sorted.", cta = "M
     <CutBanner base={image} block={false} className={h.banner} aria-labelledby="closing-heading" style={focus ? { ["--base-pos" as string]: focus } : undefined}>
       <div className={h.bannerCopy}>
         <h2 id="closing-heading">{title}</h2>
-        <ButtonLink href={href} variant="primary">{cta}</ButtonLink>
+        <ButtonLink href={href} variant="primary" arrow>{cta}</ButtonLink>
       </div>
     </CutBanner>
   );

@@ -46,8 +46,8 @@ export default async function HowItWorksPage() {
         image={must(c.heroImage)}
       >
         <div className={d.heroBtns}>
-          <ButtonLink href="/contact" variant="primary">Make a request</ButtonLink>
-          <ButtonLink href={waHref} variant="outline-light" className={h.heroBtn}>WhatsApp us</ButtonLink>
+          <ButtonLink href="/contact" variant="primary" arrow>Make a request</ButtonLink>
+          <ButtonLink href={waHref} variant="outline-light" className={h.heroBtn} arrow>WhatsApp us</ButtonLink>
         </div>
       </PageHero>
       <main>

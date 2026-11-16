@@ -1,16 +1,13 @@
-"use client";
-
 import { defineConfig } from "sanity";
 import { structureTool } from "sanity/structure";
 import { projectId, dataset, apiVersion } from "./src/sanity/env";
 import { schemaTypes, singletons } from "./src/sanity/schemaTypes";
 import { structure } from "./src/sanity/structure";
 
-/** Studio at /studio (src/app/studio). */
+/** Studio at /studio: built to static files in public/studio by `npm run build:studio`; the /studio base path is set in sanity.cli.ts. */
 export default defineConfig({
   name: "sorted-by-us",
   title: "Sorted by Us",
-  basePath: "/studio",
   projectId,
   dataset,
   schema: {

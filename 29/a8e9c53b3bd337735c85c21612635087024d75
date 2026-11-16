@@ -1,0 +1,22 @@
+package.json
+  s_4961e1430d7cba::t_312418214c5201 23-24
+  s_4961e1430d7cba::t_7d977be495e47e 29-30
+package-lock.json
+  s_4961e1430d7cba::t_5972a0cddb18ce 15-16,21-22,3441-3463,3468,19509-19511,19539-19541,19547
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "29a8e9c53b3bd337735c85c21612635087024d75",
+  "prompts": {},
+  "sessions": {
+    "s_4961e1430d7cba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e12df23b-4e6e-4727-8b0d-c94b2851c69f",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Toby Onono <ononop@tcd.ie>"
+    }
+  }
+}

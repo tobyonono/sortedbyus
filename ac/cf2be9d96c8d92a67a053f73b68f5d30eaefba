@@ -1,0 +1,32 @@
+src/components/Header.module.css
+  s_4961e1430d7cba::t_6d2107be87b4e7 228-230,243-244
+  s_4961e1430d7cba::t_48c5b854bbc83b 245
+src/app/page.tsx
+  s_4961e1430d7cba::t_28a2b39844b01e 196,249
+src/app/(site)/how-it-works/page.tsx
+  s_4961e1430d7cba::t_28a2b39844b01e 49-50
+src/app/(site)/corporate/page.tsx
+  s_4961e1430d7cba::t_28a2b39844b01e 38
+src/app/(site)/_ui/Timeline.tsx
+  s_4961e1430d7cba::t_28a2b39844b01e 54
+src/app/(site)/_ui/Closing.tsx
+  s_4961e1430d7cba::t_28a2b39844b01e 16
+src/components/Header.tsx
+  s_4961e1430d7cba::t_6d2107be87b4e7 7,180
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "accf2be9d96c8d92a67a053f73b68f5d30eaefba",
+  "prompts": {},
+  "sessions": {
+    "s_4961e1430d7cba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e12df23b-4e6e-4727-8b0d-c94b2851c69f",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Toby Onono <ononop@tcd.ie>"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+src/app/(site)/about/page.tsx
+  s_4961e1430d7cba::t_8083bbca2810dc 35,37-40,49-52
+src/sanity/schemaTypes/aboutPage.ts
+  s_4961e1430d7cba::t_8083bbca2810dc 41-43
+src/sanity/queries.ts
+  s_4961e1430d7cba::t_8083bbca2810dc 60
+src/app/(site)/_ui/pages.module.css
+  s_4961e1430d7cba::t_8083bbca2810dc 362-410,412-413,416-418
+  s_4961e1430d7cba::t_56d7623261b475 411,414-415,419
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f466086f685925658d31ffd0b17c8c7b3379aefb",
+  "prompts": {},
+  "sessions": {
+    "s_4961e1430d7cba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e12df23b-4e6e-4727-8b0d-c94b2851c69f",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Toby Onono <ononop@tcd.ie>"
+    }
+  }
+}

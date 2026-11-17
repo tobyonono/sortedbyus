@@ -1,0 +1,93 @@
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+.tile {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 32px;
+  border-radius: 4px;
+  background: var(--tone);
+  color: var(--espresso);
+  text-align: center;
+  outline: none;
+}
+.tile[data-dark] {
+  color: var(--apricot);
+}
+.tile:focus-visible {
+  box-shadow: 0 0 0 3px var(--cream), 0 0 0 5px var(--espresso);
+}
+.title {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 32px;
+  line-height: 1.1;
+  transition: transform 600ms var(--ease-out);
+}
+/* the description sits just under the centred title, so the title can rise into the space above */
+.body {
+  position: absolute;
+  left: 32px;
+  right: 32px;
+  top: 50%;
+  margin: 0;
+  max-width: 30ch;
+  margin-inline: auto;
+  font-size: 18px;
+  line-height: 1.5;
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 400ms var(--ease-out), transform 600ms var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .tile:hover .title,
+  .tile:focus-visible .title {
+    transform: translateY(-64px);
+  }
+  .tile:hover .body,
+  .tile:focus-visible .body {
+    opacity: 1;
+    transform: translateY(8px);
+    transition-delay: 80ms;
+  }
+}
+/* touch: no hover, so show the description, title above it */
+@media (hover: none) {
+  .title {
+    transform: translateY(-48px);
+  }
+  .body {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .tile {
+    aspect-ratio: auto;
+    min-height: 300px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .title,
+  .body {
+    transition: none;
+  }
+}

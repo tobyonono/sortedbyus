@@ -284,13 +284,10 @@
 .saw {
   clip-path: polygon(0 32%, 50% 0, 50% 32%, 100% 0, 100% 100%, 0 100%);
 }
-/* Service offer cards are links: on hover the open space takes a light tint of its own cut colour and "Make a request"
-   rises in at the foot, on the colour block (--cta: espresso on the light browns, apricot on espresso). */
+/* Service offer cards reveal "Make a request" at the foot on hover, on the colour block
+   (--cta: espresso on the light browns, apricot on espresso). */
 .offerCard {
-  /* hover: a light tint of the card's own cut colour */
-  --hover-tint: color-mix(in srgb, var(--cut) 35%, var(--white));
   color: inherit;
-  transition: background-color var(--dur) var(--ease);
 }
 .cutCard > .offerCta {
   position: absolute;
@@ -306,17 +303,11 @@
   transform: translateY(8px);
   transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
 }
-.offerCard:focus-visible {
-  background: var(--hover-tint);
-}
 .offerCard:focus-visible > .offerCta {
   opacity: 1;
   transform: none;
 }
 @media (hover: hover) and (pointer: fine) {
-  .offerCard:hover {
-    background: var(--hover-tint);
-  }
   .offerCard:hover > .offerCta {
     opacity: 1;
     transform: none;

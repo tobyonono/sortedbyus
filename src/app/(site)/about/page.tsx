@@ -5,7 +5,7 @@ import SectionIntro from "../_ui/SectionIntro";
 import Closing from "../_ui/Closing";
 import Footer from "../_ui/Footer";
 import Ticks from "../_ui/Ticks";
-import Timeline from "../_ui/Timeline";
+import Principles from "../_ui/Principles";
 import h from "../../home.module.css";
 import d from "../_ui/pages.module.css";
 
@@ -52,7 +52,7 @@ export default async function AboutPage() {
 
         <section className={d.section} aria-labelledby="values-heading">
           <SectionIntro id="values-heading" label={c.valuesLabel} title={c.valuesHeading} sub />
-          <Timeline items={c.values.map((v) => ({ title: v.title, body: v.body, img: must(v.image, v.title), ...(v.buttonLabel && v.buttonLink ? { cta: { label: v.buttonLabel, href: v.buttonLink } } : {}) }))} />
+          <Principles items={c.values.map((v) => ({ title: v.title, body: v.body }))} />
         </section>
 
         <section className={`${d.section} ${d.tinted}`} aria-labelledby="where-heading">

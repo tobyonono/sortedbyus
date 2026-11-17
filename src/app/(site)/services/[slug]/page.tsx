@@ -127,7 +127,7 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
             {others.map((o) => (
               <li key={o.slug}>
                 <a className={d.other} href={`/services/${o.slug}`}>
-                  <span className={d.otherImg}><Image {...picProps(must(o.heroImage))} alt="" fill sizes="20vw" style={{ objectPosition: must(o.heroImage).focus }} /></span>
+                  <span className={d.otherImg}><Image {...picProps(must(o.tileImage))} alt="" fill sizes="20vw" style={{ objectPosition: must(o.tileImage).focus }} /></span>
                   <span className={d.otherTitle}>{o.title} <Arrow /></span>
                 </a>
               </li>

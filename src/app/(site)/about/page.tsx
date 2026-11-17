@@ -32,13 +32,12 @@ export default async function AboutPage() {
         image={must(c.heroImage)}
       />
       <main>
+        {/* Founder note: one narrow column, read like a letter, signed off at the foot */}
         <section className={d.section} aria-labelledby="story-heading">
-          <div className={d.twoCol}>
-            <div>
-              <p className={h.label} style={{ marginBottom: 16 }}>{c.storyLabel}</p>
-              <h2 id="story-heading">{c.storyHeading}</h2>
-            </div>
-            <div className={d.prose}>
+          <div className={d.note}>
+            <p className={h.label}>{c.storyLabel}</p>
+            <h2 id="story-heading">{c.storyHeading}</h2>
+            <div className={d.noteBody}>
               {c.story.map((para) => (
                 <p key={para._key}>
                   {para.children.map((sp) =>
@@ -47,6 +46,10 @@ export default async function AboutPage() {
                 </p>
               ))}
             </div>
+            <p className={d.noteSign}>
+              <span>{c.storySignName || "[Founder’s name]"}</span>
+              {c.storySignRole || "Founder"}, Sorted by Us
+            </p>
           </div>
         </section>
 

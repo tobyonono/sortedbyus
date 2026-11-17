@@ -38,6 +38,9 @@ export const aboutPage = defineType({
       validation: (r) => r.required(),
     }),
 
+    defineField({ name: "storySignName", title: "Signed by", type: "string", group: "story", description: "The founder’s name, shown under the story like a signature." }),
+    defineField({ name: "storySignRole", title: "Their role", type: "string", group: "story", initialValue: "Founder" }),
+
     line("valuesLabel", "Small label", undefined, "values"),
     line("valuesHeading", "Heading", undefined, "values"),
     defineField({

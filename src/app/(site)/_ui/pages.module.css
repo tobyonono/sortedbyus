@@ -359,6 +359,64 @@
   line-height: 1.08;
   letter-spacing: -0.015em;
 }
+/* About "Our story" as a founder's note: a narrow letter-like column, left-aligned, signed at the foot */
+.note {
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.note h2 {
+  margin: 16px 0 40px;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(32px, 3.3vw, 48px);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.noteBody {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  font-size: 20px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.noteBody strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+.noteSign {
+  margin-top: 48px;
+  padding-top: 24px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 16px;
+  color: var(--muted);
+}
+.noteSign::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 64px;
+  height: 1px;
+  background: rgb(var(--espresso-rgb) / 0.35);
+}
+.noteSign span {
+  font-family: var(--display);
+  font-size: 28px;
+  color: var(--ink);
+}
+@media (max-width: 900px) {
+  .noteBody {
+    font-size: 18px;
+  }
+}
 .prose {
   display: flex;
   flex-direction: column;

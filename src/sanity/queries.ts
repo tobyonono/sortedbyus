@@ -57,7 +57,7 @@ export const getCorporate = () =>
 
 export type About = {
   heroHeading: string; heroIntro: string; heroImage: SanityImg;
-  storyLabel: string; storyHeading: string; story: { _key: string; children: { _key: string; text: string; marks?: string[] }[] }[];
+  storyLabel: string; storyHeading: string; storySignName?: string; storySignRole?: string; story: { _key: string; children: { _key: string; text: string; marks?: string[] }[] }[];
   valuesLabel: string; valuesHeading: string; values: { title: string; body: string; buttonLabel?: string; buttonLink?: string; image: SanityImg }[];
   whereLabel: string; whereHeading: string; whereList: string[]; whereImage: SanityImg; closingImage: SanityImg; seoDescription?: string;
 };

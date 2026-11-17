@@ -33,7 +33,7 @@ export default async function AboutPage() {
       />
       <main>
         <section className={d.section} aria-labelledby="story-heading">
-          <div className={d.story}>
+          <div className={d.twoCol}>
             <div>
               <p className={h.label} style={{ marginBottom: 16 }}>{c.storyLabel}</p>
               <h2 id="story-heading">{c.storyHeading}</h2>

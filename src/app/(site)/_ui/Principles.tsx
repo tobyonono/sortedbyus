@@ -1,7 +1,9 @@
 import s from "./Principles.module.css";
 
-/* Brand colours, light to dark; the last tile takes apricot type. */
+/* Brand colours, light to dark; the last tile takes apricot type. CUTS: the hover cut on each tile
+   (espresso where it contrasts well, butter on the red-brown, caramel on espresso). */
 const TONES = ["#b89562", "var(--olive)", "#a5745b", "var(--espresso)"];
+const CUTS = ["var(--espresso)", "var(--espresso)", "var(--butter)", "#b89562"];
 
 /**
  * Values as tall colour tiles (Human After All "creative principles" pattern): each shows its name;
@@ -12,7 +14,7 @@ export default function Principles({ items }: { items: { title: string; body: st
   return (
     <ul className={s.grid}>
       {items.map((it, i) => (
-        <li key={it.title} className={s.tile} tabIndex={0} style={{ "--tone": TONES[i % TONES.length] } as React.CSSProperties} data-dark={i % TONES.length === TONES.length - 1 || undefined}>
+        <li key={it.title} className={s.tile} tabIndex={0} style={{ "--tone": TONES[i % TONES.length], "--cut": CUTS[i % CUTS.length] } as React.CSSProperties} data-dark={i % TONES.length === TONES.length - 1 || undefined}>
           <span className={s.cut} aria-hidden="true" />
           <h3 className={s.title}>{it.title}</h3>
           <p className={s.body}>{it.body}</p>

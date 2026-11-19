@@ -51,16 +51,18 @@ export default async function Home() {
           {/* Photo grows from inset to full width as the page scrolls (--p from ScrollGrow) */}
           <ScrollGrow className={s.heroGrow}>
             <Reveal className={s.heroPhoto} variant="hero">
-              <Image
-                {...picProps(must(c.heroImage))}
-                alt={must(c.heroImage).alt}
-                style={{ objectPosition: must(c.heroImage).focus }}
-                fill
-                loading="eager"
-                fetchPriority="high"
-                // drawn 122% wide on desktop (see .heroPhoto img), so request a file that wide
-                sizes="(min-width: 901px) 122vw, 100vw"
-              />
+              <span className={s.heroImg}>
+                <Image
+                  {...picProps(must(c.heroImage))}
+                  alt={must(c.heroImage).alt}
+                  style={{ objectPosition: must(c.heroImage).focus }}
+                  fill
+                  loading="eager"
+                  fetchPriority="high"
+                  // drawn 122% wide on desktop (see .heroImg), so request a file that wide
+                  sizes="(min-width: 901px) 122vw, 100vw"
+                />
+              </span>
               <div className={s.heroShade} />
               {/* Colour block: two mirrored cuts meeting in a point on the right, holding the copy */}
               <div className={s.heroBlock} aria-hidden="true" />

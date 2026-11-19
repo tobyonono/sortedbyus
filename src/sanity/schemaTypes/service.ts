@@ -1,6 +1,6 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
 import { TagIcon } from "@sanity/icons/Tag";
-import { faqs, line, para, photo, seoDescription, titledItems } from "./fields";
+import { faqs, line, para, photo, photoBreak, seoDescription, titledItems } from "./fields";
 
 export const service = defineType({
   name: "service",
@@ -65,6 +65,7 @@ export const service = defineType({
     }),
 
     photo("sideImage", "“One request, one clear quote” photo", "Shown beside the short how-it-works text.", "more"),
+    ...photoBreak("more"),
     faqs("faqs", "Questions and answers", "more"),
     {
       ...photo("closingImage", "Bottom banner photo (optional)", "Leave empty to use the default banner photo. Set one if the default would repeat a photo already on this page.", "more"),

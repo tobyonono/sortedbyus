@@ -22,14 +22,10 @@
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.links path {
-  stroke: var(--apricot);
-  stroke-opacity: 0.22;
-  stroke-width: 1.5;
-}
+/* everything not in the current story is dimmed, so the lit route stands out */
 .trunks path {
   stroke: var(--apricot);
-  stroke-opacity: 0.5;
+  stroke-opacity: 0.22;
   stroke-width: 2;
 }
 .highlight path {
@@ -37,39 +33,35 @@
   stroke-width: 3;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: draw 0.9s var(--ease-out) forwards;
+  /* draw out in butter, then turn olive when the answers start back (delays set per path) */
+  animation:
+    draw 0.9s var(--ease-out) forwards,
+    answer var(--dur) var(--ease) forwards;
+}
+@keyframes answer {
+  to {
+    stroke: var(--olive);
+  }
 }
 @keyframes draw {
   to {
     stroke-dashoffset: 0;
   }
 }
-.nodes circle {
-  animation: twinkle 4s ease-in-out infinite alternate;
-}
-@keyframes twinkle {
-  from {
-    fill-opacity: 0.2;
-  }
-  to {
-    fill-opacity: 0.75;
-  }
-}
 .people circle,
 .ends circle,
-.group,
 .person {
   transition: fill 0s, color 0s, r var(--dur) var(--ease);
 }
 
-/* caption under the map: what this route was for */
+/* caption above the map: what this request is */
 .caption {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   justify-content: center;
   gap: 8px 20px;
-  margin-top: 20px;
+  margin-bottom: 20px;
   min-height: 1.5em;
   font-size: 15px;
   color: var(--apricot);
@@ -104,7 +96,6 @@
     animation: none;
     stroke-dashoffset: 0;
   }
-  .nodes circle,
   .caption,
   .svg .intake {
     animation: none;
@@ -113,18 +104,20 @@
     display: none;
   }
 }
-.nodes circle {
-  fill: var(--apricot);
-  fill-opacity: 0.55;
-}
 .people circle {
   fill: var(--apricot);
+  fill-opacity: 0.4;
 }
 .ends circle {
   fill: var(--apricot);
 }
 .svg .endOn {
   fill: var(--butter);
+  fill-opacity: 1;
+}
+/* the person who's answering turns olive with the route */
+.svg .endOn.answered {
+  fill: var(--olive);
 }
 /* the line from your request in to us: dotted, the dots flowing towards us */
 .svg .intake {
@@ -139,7 +132,30 @@
     stroke-dashoffset: -11.1;
   }
 }
-/* the tall map is drawn much smaller, so its dots are bigger */
+/* the answer on its way back to you: the dotted line turns olive and its dots flow back towards you */
+.svg .intakeHome {
+  stroke: var(--olive);
+  animation-name: flowHome;
+}
+@keyframes flowHome {
+  from {
+    stroke-dashoffset: -11.1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.tall .svg .intakeHome {
+  animation-name: flowTallHome;
+}
+@keyframes flowTallHome {
+  from {
+    stroke-dashoffset: -22.1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}/* the tall map is drawn much smaller, so its dots are bigger */
 .tall .svg .intake {
   stroke-width: 9;
   stroke-dasharray: 0.1 22;
@@ -150,13 +166,15 @@
     stroke-dashoffset: -22.1;
   }
 }
-/* the request itself, travelling in */
+/* the request itself, travelling in; the answers travel back in olive */
 .packet {
   fill: var(--butter);
 }
+.svg .answer {
+  fill: var(--olive);
+}
 
-/* labels: sentence case like the site's other small labels; group names in Herbik */
-.group,
+/* labels: sentence case like the site's other small labels */
 .person,
 .tag,
 .request {
@@ -164,24 +182,17 @@
   white-space: nowrap;
   line-height: 1.2;
 }
-/* group names: no dot, nothing ends here; the people around them are the destinations */
-.group {
-  transform: translate(-50%, -50%);
-  font-family: var(--display);
-  font-size: clamp(13px, 1.25vw, 17px);
-  color: rgb(255 235 208 / 0.85);
-}
-.groupOn {
-  color: var(--butter);
-}
 .person {
   transform: translate(12px, -50%);
   font-size: clamp(10px, 0.95vw, 13px);
-  color: rgb(255 235 208 / 0.7);
+  color: rgb(255 235 208 / 0.45);
 }
 .personOn {
   color: var(--butter);
   font-weight: 500;
+}
+.personOn.answered {
+  color: var(--olive);
 }
 /* "Your request": its own outlined tag at the start of the line */
 .tag {
@@ -236,9 +247,6 @@
 }
 
 @media (max-width: 900px) {
-  .group {
-    font-size: 11px;
-  }
   /* too tight on a phone: keep only the highlighted person */
   .person:not(.personOn) {
     display: none;

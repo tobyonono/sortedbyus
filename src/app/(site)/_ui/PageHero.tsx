@@ -19,7 +19,7 @@ export default function PageHero({ label, title, intro, image, focus, flip, chil
       <section className={`${h.hero} ${d.hero}`} aria-labelledby="page-heading">
         <div className={h.heroGrow}>
           <Reveal className={h.heroPhoto} variant="hero">
-            <Image {...picProps(image)} alt={image.alt} fill loading="eager" fetchPriority="high" sizes="(min-width: 901px) 122vw, 100vw" style={{ objectPosition: focus ?? image.focus, scale: flip ? "-1 1" : undefined }} />
+            <span className={h.heroImg}><Image {...picProps(image)} alt={image.alt} fill loading="eager" fetchPriority="high" sizes="(min-width: 901px) 122vw, 100vw" style={{ objectPosition: focus ?? image.focus, scale: flip ? "-1 1" : undefined }} /></span>
             <div className={h.heroShade} />
             <div className={h.heroBlock} aria-hidden="true" />
             <div className={`${h.heroCopy} ${d.heroCopy}`}>

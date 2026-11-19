@@ -2,7 +2,7 @@
 .h2 {
   font-family: var(--display);
   font-weight: 400;
-  font-size: clamp(36px, 3.9vw, 56px);
+  font-size: var(--heading-size, clamp(36px, 3.9vw, 56px));
   line-height: 1.08;
   letter-spacing: -0.015em;
   text-align: center;
@@ -10,7 +10,7 @@
 /* Heading scale (display face): 72 step titles / 56 section headings / 42 secondary headings / 28 card titles.
    .subHeading is the 42 tier, for sections that support a main one (Something else, Big or small, FAQ). */
 .subHeading {
-  font-size: clamp(32px, 2.92vw, 42px) !important;
+  --heading-size: clamp(32px, 2.92vw, 42px);
 }
 .label {
   font-size: 16px;
@@ -88,12 +88,18 @@
 .heroPhoto img {
   object-fit: cover;
 }
-/* Desktop: the photo runs 22% past the right edge, so the woman (centre of the shot) sits right of
-   centre, clear of the colour block's point. Overrides next/image's inline fill width. */
+/* The photo's frame. Desktop: it runs 22% past the right edge, so the subject (centre of the shot)
+   sits right of centre, clear of the colour block's point. */
+.heroImg {
+  position: absolute;
+  inset: 0;
+}
 @media (min-width: 901px) {
+  .heroImg {
+    right: auto;
+    width: 122%;
+  }
   .heroPhoto img {
-    width: 122% !important;
-    max-width: none;
     object-position: center 35%;
   }
 }
@@ -132,7 +138,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 36px;
+  gap: var(--copy-gap, 36px);
 }
 .heroCopy h1 {
   font-family: var(--display);
@@ -335,31 +341,23 @@
 .corpHeading {
   font-family: var(--display);
   font-weight: 400;
-  font-size: clamp(36px, 3.9vw, 56px);
+  font-size: var(--heading-size, clamp(36px, 3.9vw, 56px));
   line-height: 1.08;
   letter-spacing: -0.015em;
 }
 /* Hero CTA: apricot outline, fills solid apricot on hover */
-.heroBtn.heroBtn {
-  border-color: var(--apricot) !important;
-  color: var(--apricot) !important;
-  transition: background-color 0s, color 0s;
+.heroBtn {
+  --btn-border: var(--apricot);
+  --btn-fg: var(--apricot);
+  --btn-hover-bg: var(--apricot);
+  --btn-hover-fg: var(--ink);
+  --btn-fade: 0s;
 }
-@media (hover: hover) and (pointer: fine) {
-  .heroBtn:hover {
-    background: var(--apricot) !important;
-    color: var(--ink) !important;
-  }
-}
-.corpBtn.corpBtn {
-  transition: background-color 0s, border-color var(--dur) var(--ease), color 0s;
-}
-@media (hover: hover) and (pointer: fine) {
-  .corpBtn:hover {
-    background: var(--white) !important;
-    border-color: var(--white) !important;
-    color: var(--ink) !important;
-  }
+/* Corporate CTA: fills white on hover */
+.corpBtn {
+  --btn-hover-bg: var(--white);
+  --btn-hover-fg: var(--ink);
+  --btn-fade: 0s;
 }
 .corpBody {
   max-width: 600px;
@@ -383,6 +381,8 @@
   grid-template-columns: minmax(0, 42fr) minmax(0, 50fr);
   /* 48 = the carousel's two 24px gaps, so the image comes out the same width as its large slot */
   column-gap: 48px;
+  /* the carousel's 24px gap between images, so stacked images never touch */
+  row-gap: 24px;
   align-items: center;
   /* 80 to the corporate banner: tighter than a section break, since it's the group's third item */
   padding: 0 var(--gutter) 80px; /* same side gutters as the carousel */
@@ -401,6 +401,25 @@
 .splitImg img {
   object-fit: cover;
 }
+/* Desktop: the next image slides up over the pinned one; a page-colour band along its top edge keeps
+   the 24px gap between them while it does */
+@media (min-width: 901px) {
+  .split + .split .splitImg {
+    overflow: visible;
+  }
+  .split + .split .splitImg::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 100%;
+    height: 24px;
+    background: var(--cream);
+  }
+  .split + .split .splitImg img {
+    border-radius: 4px;
+  }
+}
 .splitSide {
   padding: 0 0 0 clamp(24px, 5vw, 96px);
 }
@@ -416,7 +435,7 @@
 .splitHeading {
   font-family: var(--display);
   font-weight: 400;
-  font-size: clamp(36px, 3.9vw, 56px);
+  font-size: var(--heading-size, clamp(36px, 3.9vw, 56px));
   line-height: 1.08;
   letter-spacing: -0.015em;
   text-wrap: balance;
@@ -541,7 +560,7 @@
 .panelHeading {
   font-family: var(--display);
   font-weight: 400;
-  font-size: clamp(36px, 3.9vw, 56px);
+  font-size: var(--heading-size, clamp(36px, 3.9vw, 56px));
   line-height: 1.08;
   letter-spacing: -0.015em;
 }
@@ -552,13 +571,9 @@
   margin-bottom: 40px;
 }
 .oliveBtn {
-  border-color: var(--ink) !important;
-}
-@media (hover: hover) and (pointer: fine) {
-  .oliveBtn:hover {
-    background: var(--ink) !important;
-    color: var(--cream) !important;
-  }
+  --btn-border: var(--ink);
+  --btn-hover-bg: var(--ink);
+  --btn-hover-fg: var(--cream);
 }
 
 /* ---------- FAQ / Where we work ---------- */
@@ -570,8 +585,10 @@
   flex-direction: column;
   gap: 40px;
 }
-/* While the About section is hidden, the FAQ follows the Who we help group directly */
-.who + .faq {
+/* Its own top spacing when the section before it has none: after the Who we help group (while About is
+   hidden), or after a full-width photo (.faqSpaced) */
+.who + .faq,
+.faqSpaced {
   padding-top: 120px;
 }
 
@@ -687,22 +704,31 @@
     --inset-r: var(--gutter);
     margin: 0 calc(-1 * var(--gutter));
     height: auto;
-    aspect-ratio: 4 / 5;
+  }
+  /* The box is at least 4:5 and grows when the copy is long (e.g. two stacked buttons), so the copy
+     never rides up over the photo. The band's slanted top is set in vw (34% / 52% of the 4:5 height),
+     and the copy is padded to start below it. */
+  .heroPhoto {
+    position: relative;
+    min-height: 125vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
   }
   /* Mobile: the copy spans the width at the bottom, so the block becomes a band across the bottom with
      a slanted top edge (same as the stacked banners), rising in from below */
   .heroBlock {
     right: -1px;
-    clip-path: polygon(0 34%, 100% 52%, 100% 100%, 0 100%);
+    clip-path: polygon(0 42.5vw, 100% 65vw, 100% 100%, 0 100%);
   }
   .heroBlock {
     --block-from: translateY(66%);
   }
   .heroCopy {
-    left: calc(var(--inset-l) + 24px);
-    right: calc(var(--inset-r) + 24px);
-    top: auto;
-    bottom: 32px;
+    position: relative;
+    inset: auto;
+    margin: 0 calc(var(--inset-r) + 24px) 32px calc(var(--inset-l) + 24px);
+    padding-top: calc(65vw + 24px);
     translate: none;
   }
   .heroCard {
@@ -802,7 +828,8 @@
   .faq {
     padding-bottom: 80px;
   }
-  .who + .faq {
+  .who + .faq,
+  .faqSpaced {
     padding-top: 80px;
   }
   .footTop {

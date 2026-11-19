@@ -1,4 +1,7 @@
-/* Square buttons. Hover: background/border tint (300ms, Røros default ease), arrow nudges 3px.
+/* Square buttons. A section can restyle a button without overrides by setting these on it:
+   --btn-border / --btn-fg (resting), --btn-hover-bg / --btn-hover-border / --btn-hover-fg (hover),
+   and --btn-fade: 0s when the hover swaps text colour (a fade would pass through an unreadable mid-tone).
+   Square buttons. Hover: background/border tint (300ms, Røros default ease), arrow nudges 3px.
    Press: Røros "squish" — scale(0.97), 100ms linear. */
 .btn {
   display: inline-flex;
@@ -48,8 +51,8 @@
 .primary,
 .outline-light {
   transition:
-    background-color var(--dur) var(--ease),
-    border-color var(--dur) var(--ease),
+    background-color var(--btn-fade, var(--dur)) var(--ease),
+    border-color var(--btn-fade, var(--dur)) var(--ease),
     transform var(--dur-press) var(--ease-out);
 }
 @media (hover: hover) and (pointer: fine) {
@@ -61,25 +64,26 @@
 .outline {
   background: transparent;
   /* a section can set --outline-border where tan wouldn't show (e.g. on the caramel block) */
-  border-color: var(--outline-border, var(--tan));
-  color: var(--ink);
+  border-color: var(--btn-border, var(--outline-border, var(--tan)));
+  color: var(--btn-fg, var(--ink));
 }
 @media (hover: hover) and (pointer: fine) {
   .outline:hover {
-    background: var(--espresso);
-    border-color: var(--espresso);
-    color: var(--cream);
+    background: var(--btn-hover-bg, var(--espresso));
+    border-color: var(--btn-hover-border, var(--btn-hover-bg, var(--espresso)));
+    color: var(--btn-hover-fg, var(--cream));
   }
 }
 
 .outline-light {
   background: transparent;
-  border-color: rgb(var(--white-rgb) / 0.9);
-  color: var(--white);
+  border-color: var(--btn-border, rgb(var(--white-rgb) / 0.9));
+  color: var(--btn-fg, var(--white));
 }
 @media (hover: hover) and (pointer: fine) {
   .outline-light:hover {
-    background: rgb(var(--white-rgb) / 0.12);
-    border-color: var(--white);
+    background: var(--btn-hover-bg, rgb(var(--white-rgb) / 0.12));
+    border-color: var(--btn-hover-border, var(--btn-hover-bg, var(--white)));
+    color: var(--btn-hover-fg, var(--btn-fg, var(--white)));
   }
 }

@@ -5,25 +5,18 @@ import m from "./NetworkMap.module.css";
 
 /* A map of how a request gets sorted (after fragment.ai's living map). "Your request" comes in from the
    left as one line to Sorted by Us in the middle; from us, lines run out to the people we work with.
-   They sit in loose groups around the six things we sort; each group is named, but nothing ends at the
-   name. The people are the destinations: florist, baker, plumber, painter, caterer and so on.
+   They sit in loose groups around the six things we sort (the groups aren't labelled). The people are
+   the destinations: florist, baker, plumber, painter, caterer and so on.
    Your request's line is dotted and meets nothing but Sorted by Us. Each story closes the loop: the request
-   travels in, the routes go out to one or more people, the answer travels back to you and the tag reads Sorted.
+   travels in (butter), the routes go out to one or more people, the answer travels back to you (olive)
+   and the tag reads Sorted.
+   Only labelled points are drawn: every line runs to a named person.
    Drawn the way the logo is drawn: straight runs joined by rounded turns, round ends. Every few seconds
-   one request lights up in butter, from you, through us, to one person; their group's name lights too and
-   the caption says what was asked for. Fixed seed, so server, client and captures draw the same picture.
-   With reduced motion it holds still on the first story. */
+   one request lights up in butter, from you, through us, to one person, and the caption says what was
+   asked for. With reduced motion it holds still on the first story. */
 
 type P = { x: number; y: number };
 
-function rng(seed: number) {
-  return () => {
-    seed |= 0; seed = (seed + 0x6d2b79f5) | 0;
-    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
 const f = (n: number) => n.toFixed(1);
 const sg = (n: number) => (n < 0 ? -1 : 1);
 
@@ -40,13 +33,6 @@ function sRoute(a: P, b: P, vertical = false, radius = 22) {
   const r = Math.min(radius, Math.abs(dx) / 2, Math.abs(dy) / 2);
   return `M${f(a.x)} ${f(a.y)}V${f(my - sy * r)}Q${f(a.x)} ${f(my)} ${f(a.x + sx * r)} ${f(my)}H${f(b.x - sx * r)}Q${f(b.x)} ${f(my)} ${f(b.x)} ${f(my + sy * r)}V${f(b.y)}`;
 }
-/** Short link: one rounded corner. */
-function lRoute(a: P, b: P, radius = 10) {
-  const dx = b.x - a.x, dy = b.y - a.y;
-  const r = Math.min(radius, Math.abs(dx), Math.abs(dy));
-  if (r < 1) return `M${f(a.x)} ${f(a.y)}L${f(b.x)} ${f(b.y)}`;
-  return `M${f(a.x)} ${f(a.y)}H${f(b.x - sg(dx) * r)}Q${f(b.x)} ${f(a.y)} ${f(b.x)} ${f(a.y + sg(dy) * r)}V${f(b.y)}`;
-}
 
 type Supplier = { label: string; x: number; y: number };
 type Group = { label: string; x: number; y: number; suppliers: Supplier[] };
@@ -62,8 +48,16 @@ const TRADES: Record<string, string[]> = {
   "Events & Experiences": ["Caterer", "Chef", "Decorator", "DJ"],
 };
 
-/* Wide: a full-width band. Request on the left, us in the middle, groups above, below and to the right. */
-const WIDE: Layout = {
+/** Stretch a layout to a new height, spacing everything out evenly (for a more open, portrait map). */
+const tallen = (L: Layout, H: number): Layout => {
+  const k = H / L.H;
+  const y = <T extends P>(p: T): T => ({ ...p, y: p.y * k });
+  return { ...L, H, request: y(L.request), hub: y(L.hub), groups: L.groups.map((g) => ({ ...y(g), suppliers: g.suppliers.map(y) })) };
+};
+
+/* Wide: a full-width band. Request on the left, us in the middle, groups above, below and to the right.
+   Drawn at 1600 x 820, then stretched to 1000 tall so it feels more open. */
+const WIDE: Layout = tallen({
   W: 1600, H: 820, request: { x: 210, y: 410 }, hub: { x: 700, y: 410 }, vertical: false,
   groups: [
     { label: "Gifts & Celebrations", x: 300, y: 120, suppliers: [{ label: "Florist", x: 190, y: 220 }, { label: "Baker", x: 330, y: 260 }, { label: "Hamper maker", x: 450, y: 190 }] },
@@ -73,7 +67,7 @@ const WIDE: Layout = {
     { label: "Events & Experiences", x: 780, y: 750, suppliers: [{ label: "Caterer", x: 620, y: 600 }, { label: "Chef", x: 780, y: 630 }, { label: "Decorator", x: 900, y: 570 }, { label: "DJ", x: 940, y: 690 }] },
     { label: "Home & Lifestyle", x: 1300, y: 720, suppliers: [{ label: "Plumber", x: 1130, y: 560 }, { label: "Painter", x: 1290, y: 590 }, { label: "Electrician", x: 1420, y: 540 }, { label: "Cleaner", x: 1160, y: 660 }] },
   ],
-};
+}, 1000);
 
 /* Tall: a column or a phone. Request at the top, us below it, the groups in two columns underneath. */
 const tallGroup = (label: string, x: number, y: number): Group => ({
@@ -103,67 +97,20 @@ const STORIES = [
 ];
 
 function build(L: Layout) {
-  const r = rng(771);
-  const gauss = () => (r() + r() + r() - 1.5) / 1.5;
   const { hub, groups } = L;
-  /* rough boxes (in map units) around every piece of text, so no dot or dot-link lands on a word */
-  const ch = L.vertical ? 13 : 8.5; // width per character of a supplier name
-  const gw = L.vertical ? 15 : 11; // and of a group name
-  type Box = { x0: number; x1: number; y0: number; y1: number };
-  const boxes: Box[] = [
-    ...groups.map((g) => ({ x0: g.x - (g.label.length * gw) / 2 - 12, x1: g.x + (g.label.length * gw) / 2 + 12, y0: g.y - 22, y1: g.y + 22 })),
-    ...groups.flatMap((g) => g.suppliers.map((s) => ({ x0: s.x + 4, x1: s.x + 18 + s.label.length * ch, y0: s.y - 16, y1: s.y + 16 }))),
-    L.vertical
-      ? { x0: hub.x - 120, x1: hub.x + 120, y0: hub.y - 45, y1: hub.y + 45 }
-      : { x0: hub.x - 95, x1: hub.x + 95, y0: hub.y - 30, y1: hub.y + 30 },
-    L.vertical
-      ? { x0: L.request.x - 120, x1: L.request.x + 120, y0: L.request.y - 80, y1: L.request.y + 6 }
-      : { x0: L.request.x - 190, x1: L.request.x + 6, y0: L.request.y - 30, y1: L.request.y + 30 },
-  ];
-  const hits = (x0: number, y0: number, x1: number, y1: number) =>
-    boxes.some((b) => Math.min(x0, x1) < b.x1 && Math.max(x0, x1) > b.x0 && Math.min(y0, y1) < b.y1 && Math.max(y0, y1) > b.y0);
-
-  /* loose dots around each group, kept clear of all text, joined to their nearest neighbour */
-  const nodes: (P & { s: number })[] = [];
-  for (const g of groups) {
-    let placed = 0, tries = 0;
-    while (placed < 22 && tries++ < 400) {
-      const x = Math.round((g.x + gauss() * 170) / 6) * 6;
-      const y = Math.round((g.y + (L.vertical ? 70 : g.y < hub.y ? 90 : -90) + gauss() * 110) / 6) * 6;
-      if (x < 20 || x > L.W - 20 || y < 20 || y > L.H - 20) continue;
-      if (hits(x - 8, y - 8, x + 8, y + 8)) continue;
-      nodes.push({ x, y, s: r() < 0.1 ? 4.5 : r() < 0.45 ? 3 : 2 });
-      placed++;
-    }
-  }
-  const links: string[] = [];
-  nodes.forEach((n, i) => {
-    const near = nodes.map((o, j) => ({ j, d: (o.x - n.x) ** 2 + (o.y - n.y) ** 2 })).filter((o) => o.j !== i).sort((a, b) => a.d - b.d);
-    const o = nodes[near[0].j];
-    if ((near[0].j > i || r() < 0.3) && !hits(n.x, n.y, o.x, o.y)) links.push(lRoute(n, o));
-  });
   /* every supplier is wired straight back to us. Routes to people left of us leave the hub upwards or
      downwards (never along the line your request comes in on), so your request only meets Sorted by Us. */
   const spokeTo = (s: Supplier) =>
     sRoute(hub, s, L.vertical || s.x < hub.x || Math.abs(s.y - hub.y) > Math.abs(s.x - hub.x), 18);
-  const spokes: string[] = [];
-  for (const g of groups) for (const s of g.suppliers) {
-    spokes.push(spokeTo(s));
-    // tie each supplier to its nearest dot whose link stays off the text
-    const near = nodes.map((o) => ({ o, d: (o.x - s.x) ** 2 + (o.y - s.y) ** 2 })).sort((a, b) => a.d - b.d);
-    const ok = near.slice(0, 6).find(({ o }) => !hits(s.x + (o.x > s.x ? 6 : 0), s.y, o.x, o.y));
-    if (ok) links.push(lRoute(s, ok.o));
-  }
+  const spokes = groups.flatMap((g) => g.suppliers.map(spokeTo));
   const intake = sRoute(L.request, hub, L.vertical, 18);
   /* stories: you -> us -> one supplier */
   const all = groups.flatMap((g) => g.suppliers.map((s) => ({ s, g })));
   const stories = STORIES.map((st) => {
     const hits = st.who.map((w) => all.find((a) => a.s.label === w)!);
-    const groupsLit = [...new Set(hits.map((h) => h.g))];
-    return { ...st, suppliers: hits.map((h) => h.s), groups: groupsLit, paths: hits.map((h) => spokeTo(h.s)) };
+    return { ...st, suppliers: hits.map((h) => h.s), paths: hits.map((h) => spokeTo(h.s)) };
   });
-  const twinkle = nodes.map(() => ({ dur: 2.5 + r() * 3.5, delay: -r() * 6 }));
-  return { nodes, links, spokes, intake, stories, twinkle };
+  return { spokes, intake, stories };
 }
 
 const pct = (v: number, of: number) => `${(v / of) * 100}%`;
@@ -184,14 +131,19 @@ const timing = (n: number) => {
 export default function NetworkMap({ bare = false, wide = false, className = "" }: { bare?: boolean; wide?: boolean; className?: string }) {
   const L = wide ? WIDE : TALL;
   const { W, H, request, hub, groups } = L;
-  const { nodes, links, spokes, intake, stories, twinkle } = build(L);
+  const { spokes, intake, stories } = build(L);
   const [active, setActive] = useState(0);
   const [inView, setInView] = useState(false);
   const ref = useRef<HTMLElement>(null);
   const anims = useRef<SVGGElement>(null);
-  // which story has come back sorted (compared with `active`, so a new story starts unsorted)
-  const [sortedStory, setSortedStory] = useState(-1);
-  const done = sortedStory === active;
+  // how far the current story has got on its way back: "person" once the answer leaves the person,
+  // "home" once it's travelling along the dotted line to you, "sorted" once it's arrived. Tagged with the
+  // story's index, so a new story always starts on its way out.
+  const [phase, setPhase] = useState<{ story: number; at: "person" | "home" | "sorted" } | null>(null);
+  const at = phase?.story === active ? phase.at : "out";
+  const answering = at !== "out";
+  const home = at === "home" || at === "sorted";
+  const done = at === "sorted";
   const t = timing(stories[active].paths.length);
 
   // Only animate while the map is on screen, and never with reduced motion.
@@ -208,10 +160,14 @@ export default function NetworkMap({ bare = false, wide = false, className = "" 
   useEffect(() => {
     if (!inView) return;
     anims.current?.querySelectorAll<SVGAnimationElement>("[data-at]").forEach((a) => a.beginElementAt(Number(a.dataset.at)));
-    const sorted = window.setTimeout(() => setSortedStory(active), t.done * 1000);
-    const next = window.setTimeout(() => setActive((a) => (a + 1) % stories.length), t.total * 1000);
-    return () => { window.clearTimeout(sorted); window.clearTimeout(next); };
-  }, [active, inView, t.done, t.total, stories.length]);
+    const timers = [
+      window.setTimeout(() => setPhase({ story: active, at: "person" }), t.back * 1000),
+      window.setTimeout(() => setPhase({ story: active, at: "home" }), (t.back + LEG) * 1000),
+      window.setTimeout(() => setPhase({ story: active, at: "sorted" }), t.done * 1000),
+      window.setTimeout(() => setActive((a) => (a + 1) % stories.length), t.total * 1000),
+    ];
+    return () => timers.forEach((id) => window.clearTimeout(id));
+  }, [active, inView, t.back, t.done, t.total, stories.length]);
 
   const story = stories[active];
   return (
@@ -220,22 +176,23 @@ export default function NetworkMap({ bare = false, wide = false, className = "" 
       className={`${m.wrap} ${wide ? "" : m.tall} ${className}`}
       aria-label="A map of how a request gets sorted: your request comes to Sorted by Us, and we take it to the people we work with, from florists and tailors to plumbers and caterers."
     >
+      {/* what this request is: above the map, changes with each story */}
+      <figcaption key={active} className={m.caption} aria-hidden="true">
+        <span className={m.ask}>“{story.ask}”</span>
+        <span className={m.route}>{story.suppliers.map((x) => x.label).join(", ")}</span>
+        {done && <span className={m.sorted}>Sorted</span>}
+      </figcaption>
       <div className={`${m.map} ${bare ? m.bare : ""}`} style={{ aspectRatio: `${W} / ${H}` }}>
         <svg viewBox={`0 0 ${W} ${H}`} className={m.svg} aria-hidden="true">
-          <g className={m.links}>{links.map((d, i) => <path key={i} d={d} />)}</g>
           <g className={m.trunks}>{spokes.map((d, i) => <path key={i} d={d} />)}</g>
-          <g className={m.nodes}>
-            {nodes.map((n, i) => (
-              <circle key={i} cx={n.x} cy={n.y} r={n.s} style={{ animationDuration: `${twinkle[i].dur}s`, animationDelay: `${twinkle[i].delay}s` }} />
-            ))}
-          </g>
           <g className={m.people}>
             {groups.flatMap((g) => g.suppliers).map((s) => (
-              <circle key={s.label} cx={s.x} cy={s.y} r={story.suppliers.includes(s) ? 7 : 4.5} className={story.suppliers.includes(s) ? m.endOn : ""} />
+              <circle key={s.label} cx={s.x} cy={s.y} r={story.suppliers.includes(s) ? 7 : 4.5} className={story.suppliers.includes(s) ? `${m.endOn} ${answering ? m.answered : ""}` : ""} />
             ))}
           </g>
-          {/* your one message in, always lit; then the route out, redrawn for each story */}
-          <path className={m.intake} d={intake} />
+          {/* your one message in, always lit, its dots flowing towards us; once the answer is on its way
+              back to you it turns olive and the dots flow back towards you */}
+          <path className={`${m.intake} ${home ? m.intakeHome : ""}`} d={intake} />
           {/* each story: the request travels in along the dotted line, then the route out draws once it arrives */}
           <g key={active} ref={anims} className={m.highlight}>
             {/* the request travelling in to us */}
@@ -243,38 +200,29 @@ export default function NetworkMap({ bare = false, wide = false, className = "" 
               <animateMotion data-at={0} begin="indefinite" dur={`${TRAVEL}s`} fill="freeze" path={intake} calcMode="spline" keyTimes="0;1" keySplines="0.4 0 0.2 1" />
               <animate data-at={0} attributeName="opacity" begin="indefinite" values="1;1;0" keyTimes="0;0.85;1" dur={`${TRAVEL}s`} fill="freeze" />
             </circle>
-            {/* out to each person, one after another */}
-            {story.paths.map((d, i) => <path key={i} d={d} pathLength={1} style={{ animationDelay: `${TRAVEL + i * STAGGER}s` }} />)}
-            {/* the answers coming back from everyone to us (paths run backwards) */}
+            {/* out to each person, one after another; each route turns olive as the answers start back */}
+            {story.paths.map((d, i) => <path key={i} d={d} pathLength={1} style={{ animationDelay: `${TRAVEL + i * STAGGER}s, ${t.back}s` }} />)}
+            {/* the answers coming back from everyone to us (paths run backwards), in olive */}
             {story.paths.map((d, i) => (
-              <circle key={`b${i}`} className={m.packet} r={L.vertical ? 12 : 8} opacity={0}>
+              <circle key={`b${i}`} className={`${m.packet} ${m.answer}`} r={L.vertical ? 12 : 8} opacity={0}>
                 <animateMotion data-at={t.back} begin="indefinite" dur={`${LEG}s`} fill="freeze" path={d} calcMode="linear" keyPoints="1;0" keyTimes="0;1" />
                 <animate data-at={t.back} attributeName="opacity" begin="indefinite" values="1;1;0" keyTimes="0;0.9;1" dur={`${LEG}s`} fill="freeze" />
               </circle>
             ))}
             {/* and one answer back along the dotted line to you */}
-            <circle className={m.packet} r={L.vertical ? 12 : 8} opacity={0}>
+            <circle className={`${m.packet} ${m.answer}`} r={L.vertical ? 12 : 8} opacity={0}>
               <animateMotion data-at={t.back + LEG} begin="indefinite" dur={`${LEG}s`} fill="freeze" path={intake} calcMode="linear" keyPoints="1;0" keyTimes="0;1" />
               <animate data-at={t.back + LEG} attributeName="opacity" begin="indefinite" values="1;1;0" keyTimes="0;0.9;1" dur={`${LEG}s`} fill="freeze" />
             </circle>
           </g>
         </svg>
-        {groups.map((g) => (
-          <span key={g.label} className={`${m.group} ${story.groups.includes(g) ? m.groupOn : ""}`} style={{ left: pct(g.x, W), top: pct(g.y, H) }} aria-hidden="true">{g.label}</span>
-        ))}
         {groups.flatMap((g) => g.suppliers).map((s) => (
-          <span key={s.label} className={`${m.person} ${story.suppliers.includes(s) ? m.personOn : ""}`} style={{ left: pct(s.x, W), top: pct(s.y, H) }} aria-hidden="true">{s.label}</span>
+          <span key={s.label} className={`${m.person} ${story.suppliers.includes(s) ? `${m.personOn} ${answering ? m.answered : ""}` : ""}`} style={{ left: pct(s.x, W), top: pct(s.y, H) }} aria-hidden="true">{s.label}</span>
         ))}
         <span className={`${m.tag} ${L.vertical ? m.tagTop : m.tagLeft} ${done ? m.tagDone : ""}`} style={{ left: pct(request.x, W), top: pct(request.y, H) }} aria-hidden="true">{done ? "Sorted" : "Your request"}</span>
         <span className={m.request} style={{ left: pct(hub.x, W), top: pct(hub.y, H) }} aria-hidden="true">Sorted by Us</span>
         {!bare && <span className={m.cut} aria-hidden="true" />}
       </div>
-      {/* what this route was: changes with each story */}
-      <figcaption key={active} className={m.caption} aria-hidden="true">
-        <span className={m.ask}>“{story.ask}”</span>
-        <span className={m.route}>{story.suppliers.map((x) => x.label).join(", ")}</span>
-        {done && <span className={m.sorted}>Sorted</span>}
-      </figcaption>
     </figure>
   );
 }

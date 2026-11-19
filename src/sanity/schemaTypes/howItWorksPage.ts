@@ -1,6 +1,6 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
 import { BulbOutlineIcon } from "@sanity/icons/BulbOutline";
-import { faqs, heading, line, para, photo, seoDescription, titledItems } from "./fields";
+import { faqs, heading, line, para, photo, photoBreak, seoDescription, titledItems } from "./fields";
 
 export const howItWorksPage = defineType({
   name: "howItWorksPage",
@@ -35,13 +35,17 @@ export const howItWorksPage = defineType({
           name: "step",
           fields: [
             defineField({ name: "title", title: "Step name", type: "string", validation: (r) => r.required().max(20) }),
-            defineField({ name: "summary", title: "One-line summary", type: "string", validation: (r) => r.required() }),
-            defineField({ name: "you", title: "What the client does", type: "text", rows: 2, validation: (r) => r.required() }),
-            defineField({ name: "we", title: "What we do", type: "text", rows: 2, validation: (r) => r.required() }),
-            defineField({ name: "timing", title: "Timing", type: "text", rows: 2, validation: (r) => r.required() }),
+            defineField({
+              name: "body",
+              title: "Text",
+              type: "text",
+              rows: 6,
+              description: "One or two short paragraphs: what the client does, what we do and how long it takes. Leave a blank line between paragraphs.",
+              validation: (r) => r.required(),
+            }),
             photo("image", "Photo"),
           ],
-          preview: { select: { title: "title", subtitle: "summary", media: "image" } },
+          preview: { select: { title: "title", subtitle: "body", media: "image" } },
         }),
       ],
     }),
@@ -49,6 +53,7 @@ export const howItWorksPage = defineType({
     line("behindLabel", "Small label", undefined, "behind"),
     line("behindHeading", "Heading", "The map animation under this heading stays as it is.", "behind", 90),
     titledItems("behindPoints", "Points under the map", "Four work best.", "behind", 4),
+    ...photoBreak("faq"),
 
     line("costsLabel", "Small label", undefined, "costs"),
     line("costsHeading", "Heading", undefined, "costs"),

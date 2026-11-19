@@ -1,6 +1,6 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
 import { UsersIcon } from "@sanity/icons/Users";
-import { heading, line, para, photo, seoDescription } from "./fields";
+import { heading, line, para, photo, photoBreak, seoDescription } from "./fields";
 
 export const aboutPage = defineType({
   name: "aboutPage",
@@ -69,6 +69,7 @@ export const aboutPage = defineType({
         }),
       ],
     }),
+    ...photoBreak("where"),
 
     line("whereLabel", "Small label", undefined, "where"),
     line("whereHeading", "Heading", undefined, "where"),

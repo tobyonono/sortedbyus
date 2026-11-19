@@ -11,7 +11,6 @@ import h from "../../home.module.css";
 import d from "../_ui/pages.module.css";
 
 import { getHowItWorks } from "@/sanity/queries";
-import { getSite } from "@/sanity/site";
 import { must } from "@/sanity/image";
 import { Lines } from "@/lib/text";
 
@@ -21,19 +20,17 @@ export async function generateMetadata(): Promise<Metadata> {
   return pageMeta({ title: "How it works", description: c.seoDescription || c.heroIntro, path: "/how-it-works" });
 }
 
-/* Page structure: 1 promise · 2 the four steps · 3 behind the scenes · 4 costs and payment · 5 if something goes wrong
+/* Page structure: 1 promise · 2 the four steps · 3 behind the scenes · photo break · 4 costs and payment · 5 if something goes wrong
    · 6 FAQ · 7 close. Copy and photos come from Sanity (Pages → How it works). */
 
 /* "If something goes wrong" card colour bands, in order. */
 const WRONG_CUTS = ["#b89562", "var(--olive)", "var(--butter)", "#9e8f7f"];
 
 export default async function HowItWorksPage() {
-  const [c, { wa }] = await Promise.all([getHowItWorks(), getSite()]);
-  const waHref = wa("Hi, I’d like to get something sorted.");
+  const c = await getHowItWorks();
   const steps = c.steps.map((st) => ({
     title: st.title,
-    body: st.summary,
-    facts: [["You", st.you], ["We", st.we], ["Timing", st.timing]] as [string, string][],
+    body: st.body,
     img: must(st.image, st.title),
   }));
   return (
@@ -47,7 +44,6 @@ export default async function HowItWorksPage() {
       >
         <div className={d.heroBtns}>
           <ButtonLink href="/contact" variant="primary" arrow>Make a request</ButtonLink>
-          <ButtonLink href={waHref} variant="outline-light" className={h.heroBtn} arrow>WhatsApp us</ButtonLink>
         </div>
       </PageHero>
       <main>
@@ -81,7 +77,7 @@ export default async function HowItWorksPage() {
           <SectionIntro id="wrong-heading" label={c.wrongLabel} title={c.wrongHeading} intro={c.wrongIntro} sub />
           <ul className={`${d.cards} ${d.cards4}`}>
             {c.wrong.map((w, i) => (
-              <li key={w.title} className={`${d.card} ${d.cutCard}`} style={{ minHeight: 400, "--cut": WRONG_CUTS[i % WRONG_CUTS.length] } as React.CSSProperties}>
+              <li key={w.title} className={`${d.card} ${d.cutCard}`} style={{ "--cut": WRONG_CUTS[i % WRONG_CUTS.length] } as React.CSSProperties}>
                 <span className={d.cut} aria-hidden="true" />
                 <h3 className={d.cardHeading}>{w.title}</h3>
                 <p className={d.cardBody}>{w.body}</p>
@@ -95,7 +91,7 @@ export default async function HowItWorksPage() {
           <Accordion items={c.faqs} defaultOpen={0} />
         </section>
 
-        <Closing image={must(c.closingImage)} title={c.closingHeading} />
+        <Closing image={must(c.closingImage)} title={c.closingHeading} words={c.breakText} levels={c.breakLevels} />
       </main>
       <Footer />
     </>

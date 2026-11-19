@@ -7,7 +7,8 @@ import { useEffect, useId, useState } from "react";
 import { ButtonLink } from "@/components/Button";
 import f from "./FeatureTabs.module.css";
 
-export type Feature = { title: string; body: string; items?: string[]; facts?: [string, string][]; img: Pic; cta?: { label: string; href: string } };
+/** `body` may hold several paragraphs, separated by a blank line. */
+export type Feature = { title: string; body: string; items?: string[]; img: Pic; cta?: { label: string; href: string } };
 
 const CYCLE = 7000; // ms each item stays open before the next one (Harvey-style auto-advance)
 
@@ -53,12 +54,7 @@ export default function FeatureTabs({ items }: { items: Feature[] }) {
                 <div className={f.mobileImg}>
                   <Image {...picProps(it.img)} alt="" fill sizes="100vw" style={{ objectPosition: it.img.focus }} />
                 </div>
-                <p className={f.body}>{it.body}</p>
-                {it.facts && (
-                  <dl className={f.facts}>
-                    {it.facts.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}
-                  </dl>
-                )}
+                {it.body.split(/\n\s*\n/).map((para, j) => <p key={j} className={f.body}>{para.trim()}</p>)}
                 {it.cta && (
                   <ButtonLink href={it.cta.href} className={f.link} arrow>{it.cta.label}</ButtonLink>
                 )}

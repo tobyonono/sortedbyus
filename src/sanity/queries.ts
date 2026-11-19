@@ -22,26 +22,29 @@ export const getHome = () =>
   sanityFetch<Home>(`*[_id == "homePage"][0]{..., heroImage${IMG}, catchallImage${IMG}, corpImage${IMG}, closingImage${IMG},
     examples[]{label, text, image${IMG}}, processSteps[]{title, body, image${IMG}}, audiences[]{label, heading, body, button, image${IMG}}}`);
 
+/** The page’s footer banner phrase and its levels (plus the hidden photo-break photo). */
+type PhotoBreakFields = { breakText?: string; breakImage?: SanityImg; breakLevels?: string };
+
 export type Service = {
   title: string; slug: string; short: string; heroHeading: string; intro: string; heroImage: SanityImg;
   offers: Item[]; examples: Example[]; sideImage: SanityImg; faqs: Faq[]; closingImage?: SanityImg; seoDescription?: string;
-};
+} & PhotoBreakFields;
 const SERVICE = `{title, "slug": slug.current, short, heroHeading, intro, heroImage${IMG}, offers[]{title, body},
-  examples[]{label, text, image${IMG}}, sideImage${IMG}, faqs[]{q, a}, closingImage${IMG}, seoDescription}`;
+  examples[]{label, text, image${IMG}}, sideImage${IMG}, faqs[]{q, a}, closingImage${IMG}, breakText, breakImage${IMG}, breakLevels, seoDescription}`;
 export const getService = (slug: string) => sanityFetch<Service | null>(`*[_type == "service" && slug.current == $slug][0]${SERVICE}`, { slug });
 export const getServiceSlugs = () => sanityFetch<string[]>(`*[_type == "service" && defined(slug.current)].slug.current`);
 
 export type HowItWorks = {
   heroHeading: string; heroIntro: string; heroImage: SanityImg;
   stepsLabel: string; stepsHeading: string; stepsIntro: string;
-  steps: { title: string; summary: string; you: string; we: string; timing: string; image: SanityImg }[];
+  steps: { title: string; body: string; image: SanityImg }[];
   behindLabel: string; behindHeading: string; behindPoints: Item[];
   costsLabel: string; costsHeading: string; costs: Item[];
   wrongLabel: string; wrongHeading: string; wrongIntro: string; wrong: Item[];
   faqs: Faq[]; closingHeading: string; closingImage: SanityImg; seoDescription?: string;
-};
+} & PhotoBreakFields;
 export const getHowItWorks = () =>
-  sanityFetch<HowItWorks>(`*[_id == "howItWorksPage"][0]{..., heroImage${IMG}, closingImage${IMG}, steps[]{title, summary, you, we, timing, image${IMG}}}`);
+  sanityFetch<HowItWorks>(`*[_id == "howItWorksPage"][0]{..., heroImage${IMG}, breakImage${IMG}, closingImage${IMG}, steps[]{title, body, image${IMG}}}`);
 
 export type Corporate = {
   heroHeading: string; heroIntro: string; heroImage: SanityImg; ctaLabel: string;
@@ -50,9 +53,9 @@ export type Corporate = {
   peopleLabel: string; peopleHeading: string; people: { title: string; body: string; showButton?: boolean; image: SanityImg }[];
   modelsLabel: string; modelsHeading: string; modelsIntro: string; models: { title: string; body: string; bestFor: string }[];
   faqs: Faq[]; closingHeading: string; closingImage: SanityImg; seoDescription?: string;
-};
+} & PhotoBreakFields;
 export const getCorporate = () =>
-  sanityFetch<Corporate>(`*[_id == "corporatePage"][0]{..., heroImage${IMG}, closingImage${IMG},
+  sanityFetch<Corporate>(`*[_id == "corporatePage"][0]{..., heroImage${IMG}, breakImage${IMG}, closingImage${IMG},
     offers[]{title, body, items, image${IMG}}, people[]{title, body, showButton, image${IMG}}}`);
 
 export type About = {
@@ -60,9 +63,9 @@ export type About = {
   storyLabel: string; storyHeading: string; storySignName?: string; storySignRole?: string; story: { _key: string; children: { _key: string; text: string; marks?: string[] }[] }[];
   valuesLabel: string; valuesHeading: string; values: { title: string; body: string; buttonLabel?: string; buttonLink?: string; image: SanityImg }[];
   whereLabel: string; whereHeading: string; whereList: string[]; whereImage: SanityImg; closingImage: SanityImg; seoDescription?: string;
-};
+} & PhotoBreakFields;
 export const getAbout = () =>
-  sanityFetch<About>(`*[_id == "aboutPage"][0]{..., heroImage${IMG}, whereImage${IMG}, closingImage${IMG}, values[]{title, body, buttonLabel, buttonLink, image${IMG}}}`);
+  sanityFetch<About>(`*[_id == "aboutPage"][0]{..., heroImage${IMG}, whereImage${IMG}, breakImage${IMG}, closingImage${IMG}, values[]{title, body, buttonLabel, buttonLink, image${IMG}}}`);
 
 export type Contact = { heroHeading: string; heroIntro: string; heroImage: SanityImg; formLabel: string; formHeading: string; formIntro: string; seoDescription?: string };
 export const getContact = () => sanityFetch<Contact>(`*[_id == "contactPage"][0]{..., heroImage${IMG}}`);

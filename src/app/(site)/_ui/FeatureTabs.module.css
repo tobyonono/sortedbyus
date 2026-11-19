@@ -97,28 +97,6 @@
 .link {
   margin-top: 4px;
 }
-/* who does what, and how long: short rows between hairlines */
-.facts {
-  margin: 4px 0 0;
-  width: 100%;
-}
-.facts > div {
-  display: grid;
-  grid-template-columns: 88px 1fr;
-  gap: 16px;
-  padding: 12px 0;
-  border-top: 1px solid rgb(var(--espresso-rgb) / 0.15);
-  font-size: 16px;
-  line-height: 1.5;
-}
-.facts dt {
-  font-weight: 500;
-}
-.facts dd {
-  margin: 0;
-  color: var(--muted);
-}
-
 /* Photo: stays in view beside the list; slides crossfade */
 .media {
   position: sticky;

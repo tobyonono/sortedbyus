@@ -69,7 +69,7 @@ export default async function AboutPage() {
           </div>
         </section>
 
-        <Closing image={must(c.closingImage)} />
+        <Closing image={must(c.closingImage)} words={c.breakText} levels={c.breakLevels} />
       </main>
       <Footer />
     </>

@@ -20,7 +20,6 @@ import Footer from "../../_ui/Footer";
 import h from "../../../home.module.css";
 import d from "../../_ui/pages.module.css";
 
-
 export async function generateStaticParams() {
   return (await getServiceSlugs()).map((slug) => ({ slug }));
 }
@@ -28,7 +27,8 @@ export async function generateStaticParams() {
 export const dynamicParams = false;
 
 /* Offer-card colour bands, in order. */
-const CUTS = ["#b89562", "#a5745b", "var(--espresso)", "var(--espresso)", "#b89562", "#a5745b"];
+/* "What we can sort" card colour blocks, in order: caramel, olive, espresso / deep butter (the button hover yellow), terracotta, taupe */
+const CUTS = ["#b89562", "var(--olive)", "var(--espresso)", "var(--butter-hover)", "#a5745b", "#9e8f7f"];
 
 export async function generateMetadata({ params }: PageProps<"/services/[slug]">): Promise<Metadata> {
   const s = await getService((await params).slug);
@@ -115,8 +115,7 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
           </div>
         </section>
 
-
-        <section className={h.faq} style={{ paddingTop: 120 }} aria-labelledby="faq-heading">
+        <section className={`${h.faq} ${h.faqSpaced}`} aria-labelledby="faq-heading">
           <h2 id="faq-heading" className={`${h.h2} ${h.subHeading}`}>Good to know</h2>
           <Accordion items={s.faqs} defaultOpen={0} />
         </section>
@@ -135,7 +134,7 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
           </ul>
         </section>
 
-        <Closing image={closing} title="Tell us what you need." cta={`Request ${s.short}`} />
+        <Closing image={closing} title="Tell us what you need." words={s.breakText} levels={s.breakLevels} cta={`Request ${s.short}`} />
       </main>
       <Footer />
     </>

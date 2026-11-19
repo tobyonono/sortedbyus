@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
+import Script from "next/script";
 import "./globals.css";
 import { site } from "@/lib/site";
 import HeroPrefetch from "@/components/HeroPrefetch";
@@ -37,11 +38,12 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     // suppressHydrationWarning: the inline script adds the `js` class before React hydrates.
     <html lang="en-NG" data-scroll-behavior="smooth" className={`${herbik.variable} ${turnery.variable}`} suppressHydrationWarning>
-      <head>
-        {/* Enables reveal animations only when JS runs, so content is never hidden without it. */}
-        <script dangerouslySetInnerHTML={{ __html: "if('IntersectionObserver' in window)document.documentElement.classList.add('js')" }} />
-      </head>
       <body>
+        {/* Enables reveal animations only when JS runs, so content is never hidden without it. next/script
+            injects it into the server HTML ahead of hydration (a raw <script> would warn on client render). */}
+        <Script id="js-class" strategy="beforeInteractive">
+          {"if('IntersectionObserver' in window)document.documentElement.classList.add('js')"}
+        </Script>
         {children}
         <HeroPrefetch map={heroes} />
       </body>

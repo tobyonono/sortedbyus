@@ -1,0 +1,37 @@
+/* Edge to edge, a little shorter than the screen so the next section always peeks in below (a full-screen
+   photo reads as the end of the page).
+   svh keeps the height steady while mobile browser bars show and hide. */
+.break {
+  position: relative;
+  height: 90svh;
+  min-height: 560px;
+  overflow: hidden;
+  background: var(--espresso);
+}
+.break img {
+  object-fit: cover;
+}
+/* same flat espresso tint as the closing banner (CutBanner .base::after with .banner's --shade) */
+.break::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgb(var(--espresso-rgb) / 0.52);
+  pointer-events: none;
+}
+.words {
+  position: absolute;
+  z-index: 1;
+  /* centred both ways over the photo */
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 0 var(--gutter);
+  margin: 0;
+  font-family: var(--display);
+  /* the site's h2 size */
+  font-size: clamp(36px, 3.9vw, 56px);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  color: var(--white);
+}

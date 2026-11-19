@@ -1,6 +1,6 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
 import { CaseIcon } from "@sanity/icons/Case";
-import { faqs, heading, line, para, photo, seoDescription } from "./fields";
+import { faqs, heading, line, para, photo, photoBreak, seoDescription } from "./fields";
 
 export const corporatePage = defineType({
   name: "corporatePage",
@@ -90,6 +90,7 @@ export const corporatePage = defineType({
       ],
     }),
 
+    ...photoBreak("faq"),
     faqs("faqs", "Questions and answers", "faq"),
     line("closingHeading", "Bottom banner heading", undefined, "faq"),
     photo("closingImage", "Bottom banner photo", undefined, "faq"),

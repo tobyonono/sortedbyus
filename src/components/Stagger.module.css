@@ -1,0 +1,33 @@
+/* Words on three levels in a wave (0, up, 0, down, repeating: set per word as --level from Stagger.tsx),
+   each word starting where the previous one ends. --stagger-gap sets the space between words. */
+.stagger {
+  --stagger-step: 0.9em;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  column-gap: var(--stagger-gap, 0.22em);
+  /* if it has to wrap, keep the rows' levels apart */
+  row-gap: calc(2 * var(--stagger-step));
+  /* room for the upper and lower levels, so the middle level stays centred */
+  padding-block: var(--stagger-step);
+}
+.word {
+  display: block;
+  white-space: nowrap;
+  translate: 0 calc(var(--level, 0) * -1 * var(--stagger-step));
+}
+
+/* Entrance: inside a Reveal, the words come in one at a time once it is in view, each with the site's
+   rise + fade (Medina's one-by-one sequence, in our own motion). `transform` carries the rise so it
+   never fights the level offset on `translate`. The transition only runs on the way in, so the words
+   hide instantly before then. Reduced motion keeps only the fade. */
+:global(.js) :global([data-reveal]:not([data-in])) .word {
+  opacity: 0;
+  transform: translateY(var(--rise));
+}
+:global([data-in]) .word {
+  transition:
+    opacity var(--dur-enter) var(--ease-out),
+    transform var(--dur-enter) var(--ease-out);
+  transition-delay: calc(0.1s + var(--i) * var(--stagger-beat, 360ms));
+}

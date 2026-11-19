@@ -70,7 +70,7 @@ export default async function CorporatePage() {
           <Accordion items={c.faqs} defaultOpen={0} />
         </section>
 
-        <Closing image={must(c.closingImage)} title={c.closingHeading} cta={c.ctaLabel} href={corpCta} />
+        <Closing image={must(c.closingImage)} title={c.closingHeading} words={c.breakText} levels={c.breakLevels} cta={c.ctaLabel} href={corpCta} />
       </main>
       <Footer />
     </>

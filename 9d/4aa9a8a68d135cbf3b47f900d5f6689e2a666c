@@ -1,0 +1,120 @@
+src/app/(site)/corporate/page.tsx
+  s_4961e1430d7cba::t_27d457d277fdaf 73
+src/app/(site)/about/page.tsx
+  s_4961e1430d7cba::t_27d457d277fdaf 72
+src/app/(site)/_ui/PhotoBreak.module.css
+  s_4961e1430d7cba::t_40199386616d5f 25-29
+  s_4961e1430d7cba::t_a7b6d3c53b9d2c 32-35
+  s_4961e1430d7cba::t_0d1f08fc322d2a 14,19
+  s_4961e1430d7cba::t_93a40bf0f291b8 1-2,6
+  s_4961e1430d7cba::t_d14fc24284b351 3-5,7-13,15-18,20-24,30-31,36-37
+src/app/(site)/how-it-works/page.tsx
+  s_4961e1430d7cba::t_4dce1ba5caf79a 30
+  s_4961e1430d7cba::t_27d457d277fdaf 94
+  s_4961e1430d7cba::t_d14fc24284b351 23
+  s_4961e1430d7cba::t_6b02180bc1eb78 80
+  s_4961e1430d7cba::t_9f8b5ccad16351 33
+src/app/(site)/services/[slug]/page.tsx
+  s_4961e1430d7cba::t_41141f805355a3 118
+  s_4961e1430d7cba::t_fd7d2acb39f9b9 30-31
+  s_4961e1430d7cba::t_27d457d277fdaf 137
+src/sanity/schemaTypes/fields.ts
+  s_4961e1430d7cba::t_cda29db6c1a67b 103,107-108,111-114,128
+  s_4961e1430d7cba::t_27d457d277fdaf 104-106,109-110,117,123-127
+  s_4961e1430d7cba::t_89347eb74a4d14 115-116,118-122
+src/components/Stagger.tsx
+  s_4961e1430d7cba::t_89347eb74a4d14 3-4,12-18,25
+  s_4961e1430d7cba::t_494255909b00a9 1-2,6,9,11,19-24,26-30
+  s_4961e1430d7cba::t_d2fe6d0e5ebe39 5,7-8
+  s_4961e1430d7cba::t_a7b6d3c53b9d2c 10
+src/app/(site)/_ui/FeatureTabs.tsx
+  s_4961e1430d7cba::t_9f8b5ccad16351 10-11,57
+src/app/(site)/_ui/NetworkMap.module.css
+  s_4961e1430d7cba::t_d2ee2eff403855 57,64
+  s_4961e1430d7cba::t_ece236e8088696 48,118-120,135-136,138,140-143,145-158,194-195
+  s_4961e1430d7cba::t_27e5e7007ee243 117,169,173-175,177,196
+  s_4961e1430d7cba::t_1462278f9b29fc 36-39,41,43,137,139,144
+  s_4961e1430d7cba::t_82fbdb7d13bad3 25,28,46,109,116,188
+src/components/Button.module.css
+  s_4961e1430d7cba::t_289618d6077453 1-4,54-55,67-68,72-74,80-81,85-87
+src/app/(site)/_ui/NetworkMap.tsx
+  s_4961e1430d7cba::t_d0dab9bc82a6ac 13,105,113,134
+  s_4961e1430d7cba::t_1462278f9b29fc 203-204
+  s_4961e1430d7cba::t_d2ee2eff403855 179-184
+  s_4961e1430d7cba::t_ece236e8088696 139-146,163-170,190,193-195,220
+  s_4961e1430d7cba::t_27e5e7007ee243 8-9,11-12,15-16,51-60,70,111,205,207,213
+src/components/Stagger.module.css
+  s_4961e1430d7cba::t_b05ce5791130a9 9
+  s_4961e1430d7cba::t_d2fe6d0e5ebe39 1-2,10-12,17
+  s_4961e1430d7cba::t_a7b6d3c53b9d2c 19-21,24-26,33
+  s_4961e1430d7cba::t_bd2fa31b1e11ff 22-23,27-32
+  s_4961e1430d7cba::t_8fbc383424acf4 3-8,13-16,18
+src/app/(site)/_ui/Closing.tsx
+  s_4961e1430d7cba::t_27d457d277fdaf 4,7-9,11-14,21-23,29-30
+src/app/home.module.css
+  s_4961e1430d7cba::t_41141f805355a3 588-591,831-832
+  s_4961e1430d7cba::t_a9399bb6b92d10 384-385
+  s_4961e1430d7cba::t_fe5fe8cc36ba0b 409,418,421,707-716
+  s_4961e1430d7cba::t_9acb4b23bc6380 91-96,98-100
+  s_4961e1430d7cba::t_289618d6077453 349-360,422,574-576
+  s_4961e1430d7cba::t_ad0a103035bcdf 101,141
+  s_4961e1430d7cba::t_0efc2518aee0d0 5,13,344,438,563
+  s_4961e1430d7cba::t_6148c9ef11c919 728-731
+  s_4961e1430d7cba::t_1d1a73742c2c6c 722
+  s_4961e1430d7cba::t_29456eab89d5e9 404-408,410-417,419-420
+src/app/(site)/_ui/pages.module.css
+  s_4961e1430d7cba::t_7202f6334e57ed 287-289
+  s_4961e1430d7cba::t_ad42a94ac0ad02 292-293,295,298-300,319-320,325,328-329
+  s_4961e1430d7cba::t_ad0a103035bcdf 10
+  s_4961e1430d7cba::t_be8b592917207b 302,318
+  s_4961e1430d7cba::t_597518e2f3de32 350
+  s_4961e1430d7cba::t_e3e40312f76e03 315
+  s_4961e1430d7cba::t_99384dd6588c87 290-291,301,316-317,330,334
+src/app/(site)/_ui/PhotoBreak.tsx
+  s_4961e1430d7cba::t_4599e2dbfdab7a 2,9,11-12,15
+  s_4961e1430d7cba::t_a7b6d3c53b9d2c 5,14,17
+  s_4961e1430d7cba::t_98237bd41901b1 1,3-4,6-7,13,18-19
+  s_4961e1430d7cba::t_3414593d7555bf 8
+  s_4961e1430d7cba::t_89347eb74a4d14 10,16
+src/sanity/queries.ts
+  s_4961e1430d7cba::t_80e3f38f2d19d5 27,31,45,56,58,66,68
+  s_4961e1430d7cba::t_dcb1d5f699dfb1 25
+  s_4961e1430d7cba::t_9f8b5ccad16351 40,47
+  s_4961e1430d7cba::t_89347eb74a4d14 26,33
+src/sanity/schemaTypes/howItWorksPage.ts
+  s_4961e1430d7cba::t_9f8b5ccad16351 38-45,48
+  s_4961e1430d7cba::t_cda29db6c1a67b 3
+  s_4961e1430d7cba::t_dcb1d5f699dfb1 56
+src/sanity/schemaTypes/corporatePage.ts
+  s_4961e1430d7cba::t_80e3f38f2d19d5 3
+  s_4961e1430d7cba::t_27d457d277fdaf 93
+src/sanity/schemaTypes/service.ts
+  s_4961e1430d7cba::t_27d457d277fdaf 68
+  s_4961e1430d7cba::t_80e3f38f2d19d5 3
+src/app/(site)/_ui/PageHero.tsx
+  s_4961e1430d7cba::t_9acb4b23bc6380 22
+src/app/page.tsx
+  s_4961e1430d7cba::t_fea412ab90f3d5 62
+  s_4961e1430d7cba::t_9acb4b23bc6380 54-61,63-65
+src/sanity/schemaTypes/aboutPage.ts
+  s_4961e1430d7cba::t_27d457d277fdaf 72
+  s_4961e1430d7cba::t_80e3f38f2d19d5 3
+src/app/layout.tsx
+  s_4961e1430d7cba::t_117bba63d38694 3,42-46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9d4aa9a8a68d135cbf3b47f900d5f6689e2a666c",
+  "prompts": {},
+  "sessions": {
+    "s_4961e1430d7cba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e12df23b-4e6e-4727-8b0d-c94b2851c69f",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Toby Onono <ononop@tcd.ie>"
+    }
+  }
+}

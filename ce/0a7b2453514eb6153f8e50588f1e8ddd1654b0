@@ -1,0 +1,85 @@
+src/components/layout/Footer.tsx
+  s_4961e1430d7cba::t_436a32b4525f23 1-49
+src/app/(site)/about/page.tsx
+  s_4961e1430d7cba::t_436a32b4525f23 3-10,12-14
+src/components/layout/Header.tsx
+  s_4961e1430d7cba::t_436a32b4525f23 1-197
+src/app/llms.txt/route.ts
+  s_4961e1430d7cba::t_436a32b4525f23 2
+src/app/(site)/corporate/page.tsx
+  s_4961e1430d7cba::t_436a32b4525f23 2-11,13-15
+src/app/(site)/terms/page.tsx
+  s_4961e1430d7cba::t_436a32b4525f23 2-3
+src/app/api/request/route.ts
+  s_4961e1430d7cba::t_436a32b4525f23 2
+src/components/ui/CutBanner.tsx
+  s_4961e1430d7cba::t_436a32b4525f23 1-59
+sanity.config.ts
+  s_4961e1430d7cba::t_436a32b4525f23 3-5
+src/app/(site)/how-it-works/page.tsx
+  s_4961e1430d7cba::t_436a32b4525f23 2-11,13-14
+src/app/(site)/_archive/services-overview.tsx
+  s_4961e1430d7cba::t_436a32b4525f23 3-13
+src/app/sitemap.ts
+  s_4961e1430d7cba::t_436a32b4525f23 3
+src/components/sections/PhotoBreak.tsx
+  s_4961e1430d7cba::t_436a32b4525f23 1-19
+src/components/sections/Timeline.tsx
+  s_4961e1430d7cba::t_436a32b4525f23 1-63
+src/components/sections/RequestTicker.tsx
+  s_4961e1430d7cba::t_436a32b4525f23 1-106
+src/components/sections/Bento.tsx
+  s_4961e1430d7cba::t_436a32b4525f23 1-31
+src/app/layout.tsx
+  s_4961e1430d7cba::t_436a32b4525f23 4,6-7
+src/components/layout/SiteHeader.tsx
+  s_4961e1430d7cba::t_436a32b4525f23 1-8
+src/components/sections/FeatureTabs.tsx
+  s_4961e1430d7cba::t_436a32b4525f23 1-75
+src/components/sections/ProcessCarousel.tsx
+  s_4961e1430d7cba::t_436a32b4525f23 1-281
+src/components/sections/RequestCard.tsx
+  s_4961e1430d7cba::t_436a32b4525f23 1-311
+src/components/sections/SectionIntro.tsx
+  s_4961e1430d7cba::t_436a32b4525f23 1-14
+src/components/sections/PageHero.tsx
+  s_4961e1430d7cba::t_436a32b4525f23 1-36
+src/app/(site)/services/[slug]/page.tsx
+  s_4961e1430d7cba::t_436a32b4525f23 2,8-21
+src/components/ui/Ticks.tsx
+  s_4961e1430d7cba::t_436a32b4525f23 1-14
+src/components/ui/picProps.ts
+  s_4961e1430d7cba::t_436a32b4525f23 1-8
+src/app/(site)/privacy/page.tsx
+  s_4961e1430d7cba::t_436a32b4525f23 2-3
+src/app/(site)/contact/page.tsx
+  s_4961e1430d7cba::t_436a32b4525f23 2-7,9-10
+src/components/sections/ContactForm.tsx
+  s_4961e1430d7cba::t_436a32b4525f23 1-97
+src/app/not-found.tsx
+  s_4961e1430d7cba::t_436a32b4525f23 3-9,13
+src/components/sections/Closing.tsx
+  s_4961e1430d7cba::t_436a32b4525f23 1-30
+src/app/page.tsx
+  s_4961e1430d7cba::t_436a32b4525f23 3-17,19,22,30
+src/components/sections/Legal.tsx
+  s_4961e1430d7cba::t_436a32b4525f23 1-30
+src/components/sections/tickerItems.ts
+  s_4961e1430d7cba::t_436a32b4525f23 1-18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ce0a7b2453514eb6153f8e50588f1e8ddd1654b0",
+  "prompts": {},
+  "sessions": {
+    "s_4961e1430d7cba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e12df23b-4e6e-4727-8b0d-c94b2851c69f",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Toby Onono <ononop@tcd.ie>"
+    }
+  }
+}

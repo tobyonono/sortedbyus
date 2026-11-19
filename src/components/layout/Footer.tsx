@@ -1,5 +1,5 @@
 import Link from "next/link";
-import LogoMark from "@/components/ui/LogoMark";
+import Wordmark from "@/components/ui/Wordmark";
 import { site } from "@/lib/site";
 import { getSite } from "@/lib/sanity/site";
 import h from "@/styles/home.module.css";
@@ -10,9 +10,8 @@ export default async function Footer() {
   return (
     <footer className={h.footer}>
       <div className={h.footTop}>
-        <Link href="/" className={h.footBrand} aria-label={`${site.name} — home`}>
-          <LogoMark size={64} />
-          <span>Sorted<br />by Us</span>
+        <Link href="/" className={h.footBrand}>
+          <Wordmark title={`${site.name} home`} />
         </Link>
         <div className={h.footCol}>
           <h2 className={h.footHead}>Explore</h2>

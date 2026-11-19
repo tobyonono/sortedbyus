@@ -650,15 +650,17 @@
   text-decoration-color: transparent;
 }
 .footBrand {
-  display: flex;
-  align-items: center;
-  gap: 16px;
+  display: block;
   align-self: start;
   color: var(--butter);
   text-decoration: none;
-  font-family: var(--display);
-  font-size: 28px;
-  line-height: 1;
+}
+/* same size as the header wordmark (Header.module.css .mark svg) */
+.footBrand svg {
+  display: block;
+  height: 45px;
+  width: auto;
+  aspect-ratio: 805 / 294;
 }
 .footBottom {
   display: flex;

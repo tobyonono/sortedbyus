@@ -100,6 +100,7 @@ aso-ebi · owambe · Detty December · back home · Mum / Mummy and Daddy · the
 | Short brand lines | Consider it sorted. · Here or away, consider it sorted. · More life, less admin |
 | Buttons | Make a request · See what we sort · Talk to us about your team |
 | Errors and prompts | Add your name. · Add a WhatsApp or phone number so we can reply. · Pick a date, or choose Today. |
+| 404 | This page got stuck in traffic / We can't find the page you were looking for. (wit in a small place; the line under it stays plain and doesn't repeat the "Back home" button) |
 | About intro | In Lagos or London, we're the people you trust to get things done at home in Nigeria. |
 | Meta description | Your person on the ground in Nigeria. Whether you live in Lagos or abroad, tell us what needs doing and we'll get it sorted. |
 

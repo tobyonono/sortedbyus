@@ -6,6 +6,7 @@ import SectionIntro from "@/components/sections/SectionIntro";
 import { getSite } from "@/lib/sanity/site";
 import { must } from "@/lib/sanity/image";
 import { picProps } from "@/components/ui/picProps";
+import { Lines } from "@/lib/text";
 import d from "@/styles/pages.module.css";
 
 import binoculars from "@/assets/home/binoculars.jpg";
@@ -21,7 +22,8 @@ export default async function NotFound() {
     <>
       <PageHero
         label="404"
-        title="Page not found"
+        title={<Lines text={"This page got\nstuck in traffic"} />}
+        intro="We can’t find the page you were looking for."
         image={{ src: binoculars, alt: "A hiker looking out over a valley through a viewing telescope" }}
         flip
         focus="center 40%"

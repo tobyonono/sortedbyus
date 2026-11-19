@@ -4,7 +4,7 @@ export const site = {
   /** Canonical address: sitemap, canonical links, social previews, llms.txt. Other hosts (workers.dev) aren't indexed. */
   url: "https://sortedbyus.com",
   description:
-    "Personal concierge and lifestyle solutions for individuals, families and businesses in Nigeria. Tell us what you need and we’ll get it sorted.",
+    "Your person on the ground in Nigeria. Whether you live in Lagos or abroad, tell us what needs doing and we’ll get it sorted.",
   tagline: "Your need. Our solution.",
   whatsappNumber: "2348000000000",
   whatsappDisplay: "+234 800 000 0000",

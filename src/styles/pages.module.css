@@ -18,6 +18,7 @@
 .heroIntro {
   margin-top: 24px;
   max-width: 420px;
+  text-wrap: pretty;
   font-size: 18px;
   line-height: 1.5;
   color: var(--apricot);

@@ -40,8 +40,9 @@ Warm, direct, reassuring, quietly confident, a little playful. A friend who's go
 | Process step (Ask) | Send us a request on the website or WhatsApp. Tell us what you need, where, when, and your budget. Add photos if they help. |
 | Request examples | A boat to Tarkwa Bay for six on Sunday · Get Mum's prescription to her in Surulere. I'm in Houston · A birthday gift for my sister in Lagos, sent from London |
 | Short brand lines | Consider it sorted. · Here or away, consider it sorted. · More life, less admin |
-| Buttons | Make a request · See what we sort |
+| Buttons | Make a request · See what we sort · Talk to us about your team |
 | Errors and prompts | Add your name. · Add a WhatsApp or phone number so we can reply. · Pick a date, or choose Today. |
+| About intro | In Lagos or London, we're the people you trust to get things done at home in Nigeria. |
 | Meta description | Your person on the ground in Nigeria. Whether you live in Lagos or abroad, tell us what needs doing and we'll get it sorted. |
 
 ## Hard constraints

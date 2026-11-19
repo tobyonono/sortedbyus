@@ -1,4 +1,4 @@
-import type { Pic } from "@/sanity/image";
+import type { Pic } from "@/lib/sanity/image";
 
 /** next/image props for a Pic: blurred preview while loading, and the editor's focal point. */
 export const picProps = (p: Pic) => ({

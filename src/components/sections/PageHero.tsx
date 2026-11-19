@@ -1,11 +1,11 @@
 import Image from "next/image";
-import type { Pic } from "@/sanity/image";
-import { picProps } from "@/components/picProps";
+import type { Pic } from "@/lib/sanity/image";
+import { picProps } from "@/components/ui/picProps";
 import type { ReactNode } from "react";
-import SiteHeader from "@/components/SiteHeader";
-import Reveal from "@/components/Reveal";
-import h from "../../home.module.css";
-import d from "./pages.module.css";
+import SiteHeader from "@/components/layout/SiteHeader";
+import Reveal from "@/components/ui/Reveal";
+import h from "@/styles/home.module.css";
+import d from "@/styles/pages.module.css";
 
 /** Inner-page hero: the homepage's espresso band and pointed colour block on a photo, shorter, no request card. */
 export default function PageHero({ label, title, intro, image, focus, flip, children }: {

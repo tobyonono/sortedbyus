@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { site } from "@/lib/site";
-import { getServiceSlugs } from "@/sanity/queries";
+import { getServiceSlugs } from "@/lib/sanity/queries";
 
 /** /sitemap.xml: every public page on the canonical domain. */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

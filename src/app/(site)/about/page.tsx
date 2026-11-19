@@ -1,17 +1,17 @@
 import { pageMeta } from "@/lib/seo";
 import Image from "next/image";
-import PageHero from "../_ui/PageHero";
-import SectionIntro from "../_ui/SectionIntro";
-import Closing from "../_ui/Closing";
-import Footer from "../_ui/Footer";
-import Ticks from "../_ui/Ticks";
-import Principles from "../_ui/Principles";
-import h from "../../home.module.css";
-import d from "../_ui/pages.module.css";
+import PageHero from "@/components/sections/PageHero";
+import SectionIntro from "@/components/sections/SectionIntro";
+import Closing from "@/components/sections/Closing";
+import Footer from "@/components/layout/Footer";
+import Ticks from "@/components/ui/Ticks";
+import Principles from "@/components/sections/Principles";
+import h from "@/styles/home.module.css";
+import d from "@/styles/pages.module.css";
 
-import { getAbout } from "@/sanity/queries";
-import { must } from "@/sanity/image";
-import { picProps } from "@/components/picProps";
+import { getAbout } from "@/lib/sanity/queries";
+import { must } from "@/lib/sanity/image";
+import { picProps } from "@/components/ui/picProps";
 import { Lines } from "@/lib/text";
 
 import type { Metadata } from "next";

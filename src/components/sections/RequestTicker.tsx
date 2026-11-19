@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import type { Pic } from "@/sanity/image";
-import { picProps } from "./picProps";
+import type { Pic } from "@/lib/sanity/image";
+import { picProps } from "@/components/ui/picProps";
 import { useEffect, useRef } from "react";
 import styles from "./RequestTicker.module.css";
 

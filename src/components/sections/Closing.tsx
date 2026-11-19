@@ -1,8 +1,8 @@
-import type { Pic } from "@/sanity/image";
-import CutBanner from "@/components/CutBanner";
-import { ButtonLink } from "@/components/Button";
-import Stagger from "@/components/Stagger";
-import h from "../../home.module.css";
+import type { Pic } from "@/lib/sanity/image";
+import CutBanner from "@/components/ui/CutBanner";
+import { ButtonLink } from "@/components/ui/Button";
+import Stagger from "@/components/ui/Stagger";
+import h from "@/styles/home.module.css";
 
 /** The closing banner, with its own line and CTA. When the page sets `words` (its short phrase in Sanity),
  *  they replace the title, set on staggered levels and coming in one at a time. */

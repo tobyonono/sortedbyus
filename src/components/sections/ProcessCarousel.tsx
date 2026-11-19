@@ -1,10 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import type { Pic } from "@/sanity/image";
-import { picProps } from "./picProps";
+import type { Pic } from "@/lib/sanity/image";
+import { picProps } from "@/components/ui/picProps";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import Reveal from "./Reveal";
+import Reveal from "@/components/ui/Reveal";
 import styles from "./ProcessCarousel.module.css";
 
 export type ProcessStep = {

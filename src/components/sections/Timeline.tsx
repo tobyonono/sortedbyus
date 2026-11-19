@@ -1,10 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import type { Pic } from "@/sanity/image";
-import { picProps } from "@/components/picProps";
+import type { Pic } from "@/lib/sanity/image";
+import { picProps } from "@/components/ui/picProps";
 import { useEffect, useRef } from "react";
-import { ButtonLink } from "@/components/Button";
+import { ButtonLink } from "@/components/ui/Button";
 import t from "./Timeline.module.css";
 
 export type TimelineItem = { title: string; body: string; img: Pic; cta?: { label: string; href: string } };

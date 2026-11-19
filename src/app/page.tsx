@@ -1,25 +1,25 @@
 import Image from "next/image";
 import Link from "next/link";
-import RequestCard from "@/components/RequestCard";
-import RequestPanel from "@/components/RequestPanel";
-import { ButtonLink, Arrow } from "@/components/Button";
-import ProcessCarousel, { type ProcessStep } from "@/components/ProcessCarousel";
-import RequestTicker from "@/components/RequestTicker";
-import Accordion from "@/components/Accordion";
-import Reveal from "@/components/Reveal";
-import ScrollGrow from "@/components/ScrollGrow";
-import CutBanner from "@/components/CutBanner";
-import SiteHeader from "@/components/SiteHeader";
-import { getHome } from "@/sanity/queries";
-import { getSite } from "@/sanity/site";
-import { must } from "@/sanity/image";
-import { picProps } from "@/components/picProps";
-import { tickerItems } from "@/components/tickerItems";
+import RequestCard from "@/components/sections/RequestCard";
+import RequestPanel from "@/components/sections/RequestPanel";
+import { ButtonLink, Arrow } from "@/components/ui/Button";
+import ProcessCarousel, { type ProcessStep } from "@/components/sections/ProcessCarousel";
+import RequestTicker from "@/components/sections/RequestTicker";
+import Accordion from "@/components/ui/Accordion";
+import Reveal from "@/components/ui/Reveal";
+import ScrollGrow from "@/components/ui/ScrollGrow";
+import CutBanner from "@/components/ui/CutBanner";
+import SiteHeader from "@/components/layout/SiteHeader";
+import { getHome } from "@/lib/sanity/queries";
+import { getSite } from "@/lib/sanity/site";
+import { must } from "@/lib/sanity/image";
+import { picProps } from "@/components/ui/picProps";
+import { tickerItems } from "@/components/sections/tickerItems";
 import { Lines } from "@/lib/text";
-import s from "./home.module.css";
+import s from "@/styles/home.module.css";
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
-import JsonLd, { business } from "@/components/JsonLd";
+import JsonLd, { business } from "@/components/layout/JsonLd";
 
 export async function generateMetadata(): Promise<Metadata> {
   const [c, { settings }] = await Promise.all([getHome(), getSite()]);
@@ -27,7 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 // after the other imports, so home.module.css still loads after CutBanner.module.css (its overrides win)
-import Footer from "./(site)/_ui/Footer";
+import Footer from "@/components/layout/Footer";
 
 // About + "Why trust us" section is hidden for now; flip to true to bring it (and its nav/footer links) back.
 const SHOW_ABOUT = false;

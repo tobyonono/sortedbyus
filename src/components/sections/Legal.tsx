@@ -1,7 +1,7 @@
-import SiteHeader from "@/components/SiteHeader";
-import Footer from "./Footer";
-import h from "../../home.module.css";
-import d from "./pages.module.css";
+import SiteHeader from "@/components/layout/SiteHeader";
+import Footer from "@/components/layout/Footer";
+import h from "@/styles/home.module.css";
+import d from "@/styles/pages.module.css";
 
 /** Plain text page for policies: espresso header band, a centred 720px column. */
 export default function Legal({ title, updated, sections }: { title: string; updated?: string; sections: { h: string; p: string[] }[] }) {

@@ -1,6 +1,6 @@
 import { pageMeta } from "@/lib/seo";
-import Legal from "../_ui/Legal";
-import { getLegal } from "@/sanity/queries";
+import Legal from "@/components/sections/Legal";
+import { getLegal } from "@/lib/sanity/queries";
 import type { Metadata } from "next";
 
 export async function generateMetadata(): Promise<Metadata> {

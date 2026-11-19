@@ -1,10 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import type { Pic } from "@/sanity/image";
-import { picProps } from "@/components/picProps";
+import type { Pic } from "@/lib/sanity/image";
+import { picProps } from "@/components/ui/picProps";
 import { useEffect, useId, useState } from "react";
-import { ButtonLink } from "@/components/Button";
+import { ButtonLink } from "@/components/ui/Button";
 import f from "./FeatureTabs.module.css";
 
 /** `body` may hold several paragraphs, separated by a blank line. */

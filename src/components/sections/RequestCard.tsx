@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
-import { Button } from "./Button";
-import Select from "./Select";
-import Calendar from "./Calendar";
+import { Button } from "@/components/ui/Button";
+import Select from "@/components/ui/Select";
+import Calendar from "@/components/ui/Calendar";
 import { whatsappHref } from "@/lib/site";
 import styles from "./RequestCard.module.css";
 

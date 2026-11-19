@@ -1,8 +1,8 @@
 import { defineConfig } from "sanity";
 import { structureTool } from "sanity/structure";
-import { projectId, dataset, apiVersion } from "./src/sanity/env";
-import { schemaTypes, singletons } from "./src/sanity/schemaTypes";
-import { structure } from "./src/sanity/structure";
+import { projectId, dataset, apiVersion } from "./src/lib/sanity/env";
+import { schemaTypes, singletons } from "./src/lib/sanity/schemaTypes";
+import { structure } from "./src/lib/sanity/structure";
 
 /** Studio at /studio: built to static files in public/studio by `npm run build:studio`; the /studio base path is set in sanity.cli.ts. */
 export default defineConfig({

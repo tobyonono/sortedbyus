@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { ButtonLink, Arrow } from "@/components/Button";
-import PageHero from "./(site)/_ui/PageHero";
-import SectionIntro from "./(site)/_ui/SectionIntro";
-import { getSite } from "@/sanity/site";
-import { must } from "@/sanity/image";
-import { picProps } from "@/components/picProps";
-import d from "./(site)/_ui/pages.module.css";
+import { ButtonLink, Arrow } from "@/components/ui/Button";
+import PageHero from "@/components/sections/PageHero";
+import SectionIntro from "@/components/sections/SectionIntro";
+import { getSite } from "@/lib/sanity/site";
+import { must } from "@/lib/sanity/image";
+import { picProps } from "@/components/ui/picProps";
+import d from "@/styles/pages.module.css";
 
 import binoculars from "@/assets/home/binoculars.jpg";
 // last, as on the homepage, so its styles load after the banner's
-import Footer from "./(site)/_ui/Footer";
+import Footer from "@/components/layout/Footer";
 
 export const metadata: Metadata = { title: "Page not found" };
 

@@ -1,8 +1,8 @@
 import Image from "next/image";
-import { pic, type SanityImg } from "@/sanity/image";
-import { picProps } from "@/components/picProps";
-import Stagger from "@/components/Stagger";
-import Reveal from "@/components/Reveal";
+import { pic, type SanityImg } from "@/lib/sanity/image";
+import { picProps } from "@/components/ui/picProps";
+import Stagger from "@/components/ui/Stagger";
+import Reveal from "@/components/ui/Reveal";
 import styles from "./PhotoBreak.module.css";
 
 /** A pause between sections: an edge-to-edge photo just under the height of the screen, with a few

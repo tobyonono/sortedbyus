@@ -1,5 +1,5 @@
 import type { TickerItem } from "./RequestTicker";
-import { pic, type SanityImg } from "@/sanity/image";
+import { pic, type SanityImg } from "@/lib/sanity/image";
 
 /** Card sizes and offsets for the scrolling request strip, in order (they repeat if there are more cards). */
 const SHAPES = [

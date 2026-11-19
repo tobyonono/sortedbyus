@@ -1,8 +1,8 @@
 import Link from "next/link";
-import LogoMark from "@/components/LogoMark";
+import LogoMark from "@/components/ui/LogoMark";
 import { site } from "@/lib/site";
-import { getSite } from "@/sanity/site";
-import h from "../../home.module.css";
+import { getSite } from "@/lib/sanity/site";
+import h from "@/styles/home.module.css";
 
 /** Site footer: shared by the homepage and every inner page. */
 export default async function Footer() {

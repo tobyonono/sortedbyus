@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { Button } from "@/components/Button";
-import d from "./pages.module.css";
+import { Button } from "@/components/ui/Button";
+import d from "@/styles/pages.module.css";
 
 /**
  * Contact page form. Saves to Sanity (Website requests) via /api/request.

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import type { Pic } from "@/sanity/image";
+import type { Pic } from "@/lib/sanity/image";
 import { picProps } from "./picProps";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import Reveal from "./Reveal";

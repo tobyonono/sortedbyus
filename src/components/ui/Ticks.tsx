@@ -1,4 +1,4 @@
-import d from "./pages.module.css";
+import d from "@/styles/pages.module.css";
 
 /** Plain list between hairlines (no tick icons). */
 export default function Ticks({ items }: { items: string[] }) {

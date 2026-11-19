@@ -1,5 +1,5 @@
 import Header from "./Header";
-import { getSite } from "@/sanity/site";
+import { getSite } from "@/lib/sanity/site";
 
 /** The header, with the service menu and contact details from Sanity. */
 export default async function SiteHeader() {

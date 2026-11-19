@@ -1,6 +1,6 @@
-import Reveal from "@/components/Reveal";
-import h from "../../home.module.css";
-import d from "./pages.module.css";
+import Reveal from "@/components/ui/Reveal";
+import h from "@/styles/home.module.css";
+import d from "@/styles/pages.module.css";
 
 /** Centred label → heading → intro, as on the homepage sections. */
 export default function SectionIntro({ label, title, intro, id, sub }: { label?: string; title: string; intro?: string; id?: string; sub?: boolean }) {

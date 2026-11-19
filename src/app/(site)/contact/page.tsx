@@ -1,13 +1,13 @@
 import { pageMeta } from "@/lib/seo";
-import PageHero from "../_ui/PageHero";
-import Footer from "../_ui/Footer";
-import ContactForm from "../_ui/ContactForm";
-import { getContact } from "@/sanity/queries";
-import { getSite } from "@/sanity/site";
-import { must } from "@/sanity/image";
+import PageHero from "@/components/sections/PageHero";
+import Footer from "@/components/layout/Footer";
+import ContactForm from "@/components/sections/ContactForm";
+import { getContact } from "@/lib/sanity/queries";
+import { getSite } from "@/lib/sanity/site";
+import { must } from "@/lib/sanity/image";
 import { Lines } from "@/lib/text";
-import h from "../../home.module.css";
-import d from "../_ui/pages.module.css";
+import h from "@/styles/home.module.css";
+import d from "@/styles/pages.module.css";
 
 import type { Metadata } from "next";
 export async function generateMetadata(): Promise<Metadata> {

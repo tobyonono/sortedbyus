@@ -1,5 +1,5 @@
 import { site } from "@/lib/site";
-import { sanityFetch } from "@/sanity/client";
+import { sanityFetch } from "@/lib/sanity/client";
 
 // Built once at build time, like the pages.
 export const dynamic = "force-static";

@@ -1,6 +1,6 @@
 import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
-import { Arrow } from "@/components/Button";
+import { Arrow } from "@/components/ui/Button";
 import b from "./Bento.module.css";
 
 export type BentoItem = { title: string; body: string; img: StaticImageData; alt: string; href: string };

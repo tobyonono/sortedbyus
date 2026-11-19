@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-nocheck -- archived design (not a route); still uses the pre-Sanity local photos
-import { ButtonLink } from "@/components/Button";
-import CutBanner from "@/components/CutBanner";
-import Accordion from "@/components/Accordion";
-import PageHero from "../_ui/PageHero";
-import SectionIntro from "../_ui/SectionIntro";
-import Closing from "../_ui/Closing";
-import Footer from "../_ui/Footer";
-import Bento from "../_ui/Bento";
-import { serviceList } from "../_ui/serviceData";
-import h from "../../home.module.css";
-import d from "../_ui/pages.module.css";
+import { ButtonLink } from "@/components/ui/Button";
+import CutBanner from "@/components/ui/CutBanner";
+import Accordion from "@/components/ui/Accordion";
+import PageHero from "@/components/sections/PageHero";
+import SectionIntro from "@/components/sections/SectionIntro";
+import Closing from "@/components/sections/Closing";
+import Footer from "@/components/layout/Footer";
+import Bento from "@/components/sections/Bento";
+import { serviceList } from "@/components/sections/serviceData";
+import h from "@/styles/home.module.css";
+import d from "@/styles/pages.module.css";
 
 import clothesRack from "@/assets/home/clothes-rack.jpg";
 import shoppingFabrics from "@/assets/home/shopping-fabrics.jpg";

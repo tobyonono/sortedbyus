@@ -1,17 +1,17 @@
 import { pageMeta } from "@/lib/seo";
-import { ButtonLink } from "@/components/Button";
-import Accordion from "@/components/Accordion";
-import PageHero from "../_ui/PageHero";
-import SectionIntro from "../_ui/SectionIntro";
-import Closing from "../_ui/Closing";
-import Footer from "../_ui/Footer";
-import FeatureTabs from "../_ui/FeatureTabs";
-import MapBanner from "../_ui/MapBanner";
-import h from "../../home.module.css";
-import d from "../_ui/pages.module.css";
+import { ButtonLink } from "@/components/ui/Button";
+import Accordion from "@/components/ui/Accordion";
+import PageHero from "@/components/sections/PageHero";
+import SectionIntro from "@/components/sections/SectionIntro";
+import Closing from "@/components/sections/Closing";
+import Footer from "@/components/layout/Footer";
+import FeatureTabs from "@/components/sections/FeatureTabs";
+import MapBanner from "@/components/sections/MapBanner";
+import h from "@/styles/home.module.css";
+import d from "@/styles/pages.module.css";
 
-import { getHowItWorks } from "@/sanity/queries";
-import { must } from "@/sanity/image";
+import { getHowItWorks } from "@/lib/sanity/queries";
+import { must } from "@/lib/sanity/image";
 import { Lines } from "@/lib/text";
 
 import type { Metadata } from "next";

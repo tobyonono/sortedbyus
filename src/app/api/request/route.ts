@@ -1,5 +1,5 @@
 import { createClient } from "@sanity/client";
-import { projectId, dataset, apiVersion } from "@/sanity/env";
+import { projectId, dataset, apiVersion } from "@/lib/sanity/env";
 
 const FIELDS = ["form", "name", "phone", "email", "service", "subject", "when", "where", "message", "page"] as const;
 const MAX: Record<string, number> = { message: 4000, page: 200 };

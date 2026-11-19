@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import Wordmark from "./Wordmark";
-import { Arrow } from "./Button";
+import Wordmark from "@/components/ui/Wordmark";
+import { Arrow } from "@/components/ui/Button";
 import { nav, serviceNav, site, whatsappHref } from "@/lib/site";
 import styles from "./Header.module.css";
 

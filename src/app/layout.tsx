@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import Script from "next/script";
-import "./globals.css";
+import "@/styles/globals.css";
 import { site } from "@/lib/site";
-import HeroPrefetch from "@/components/HeroPrefetch";
-import { getHeroes } from "@/sanity/queries";
+import HeroPrefetch from "@/components/layout/HeroPrefetch";
+import { getHeroes } from "@/lib/sanity/queries";
 
 const herbik = localFont({
   src: "./fonts/Herbik-Regular.woff2",

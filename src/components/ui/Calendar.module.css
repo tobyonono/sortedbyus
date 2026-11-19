@@ -29,7 +29,7 @@
 }
 .month {
   font-family: var(--display);
-  font-size: 20px;
+  font-size: var(--fs-lead);
   line-height: 1;
 }
 .nav {
@@ -70,7 +70,7 @@
   place-items: center;
   border: 1.5px solid transparent;
   background: none;
-  font-size: 15px;
+  font-size: var(--fs-field);
   cursor: pointer;
   transition: background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
 }

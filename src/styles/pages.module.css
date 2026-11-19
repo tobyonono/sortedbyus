@@ -12,15 +12,15 @@
 }
 .heroLabel {
   margin-bottom: 16px;
-  font-size: 16px;
+  font-size: var(--fs-ui);
   color: var(--butter);
 }
 .heroIntro {
   margin-top: 24px;
   max-width: 420px;
   text-wrap: pretty;
-  font-size: 18px;
-  line-height: 1.5;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
   color: var(--apricot);
 }
 .heroCopy > a {
@@ -43,7 +43,7 @@
   gap: 16px;
   padding: 14px 0;
   border-top: 1px solid var(--line);
-  font-size: 17px;
+  font-size: var(--fs-compact);
   line-height: 1.45;
 }
 .contactList > div:last-child {
@@ -65,7 +65,7 @@
   text-decoration-thickness: 1px;
 }
 .contactList small {
-  font-size: 14px;
+  font-size: var(--fs-sm);
   color: var(--muted);
 }
 
@@ -99,17 +99,17 @@
 .section + .section {
   padding-top: 0;
 }
-/* Tinted bands: caramel (#B89562) for text-led sections, taupe (#9E8F7F, lightened from #92816F so espresso
+/* Tinted bands: caramel for text-led sections, taupe (lightened from #92816F so espresso
    text reaches 5:1) for picture-led ones. Muted text and hairlines go to espresso on both so they stay readable. */
 .tinted {
   --muted: var(--espresso);
   /* outline buttons: espresso border (the colour they fill with on hover), since tan vanishes on caramel */
   --outline-border: var(--espresso);
   --line: rgb(var(--espresso-rgb) / 0.25);
-  background: #b89562;
+  background: var(--caramel);
 }
 .taupe {
-  background: #9e8f7f;
+  background: var(--taupe);
 }
 .tinted + .section,
 .section + .tinted {
@@ -132,10 +132,10 @@
   color: var(--apricot);
 }
 .dark .card {
-  border-color: rgb(255 235 208 / 0.4);
+  border-color: rgb(var(--apricot-rgb) / 0.4);
 }
 .dark .cardBody {
-  color: rgb(255 235 208 / 0.78);
+  color: rgb(var(--apricot-rgb) / 0.78);
 }
 .wrap {
   max-width: var(--content);
@@ -186,7 +186,7 @@
   margin-bottom: -12px;
 }
 .eyebrow {
-  font-size: 16px;
+  font-size: var(--fs-ui);
 }
 .num {
   font-family: var(--display);
@@ -197,13 +197,13 @@
 .rowHeading {
   font-family: var(--display);
   font-weight: 400;
-  font-size: clamp(32px, 2.92vw, 42px);
-  line-height: 1.08;
-  letter-spacing: -0.015em;
+  font-size: var(--fs-h3);
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-display);
   text-wrap: balance;
 }
 .rowBody {
-  font-size: 18px;
+  font-size: var(--fs-body);
   line-height: 1.55;
   color: var(--muted);
 }
@@ -212,7 +212,7 @@
   margin: 0;
   padding: 0;
   width: 100%;
-  font-size: 16px;
+  font-size: var(--fs-ui);
   line-height: 1.45;
 }
 .ticks li {
@@ -270,10 +270,13 @@
 .cutCard .cardMeta {
   color: var(--espresso);
 }
-/* meta line on the darkest block reads in apricot */
-.cutDark .cardMeta {
-  color: var(--apricot);
-}
+/* Cuts, one shape per job:
+     pointed block (home.module.css .heroBlock)   heroes
+     angled photo cut (CutBanner)                 banners
+     single angle (.cut)                          cards
+     two teeth merging into one (.saw + .offerCard) the service offer cards
+     double cut (Principles.module.css)           the hover state on the About tiles
+   Cut colours come from the earth family in one shared order (src/lib/palette.ts). */
 .cut {
   position: absolute;
   inset: auto -1px -1px;
@@ -308,7 +311,7 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  font-size: 18px;
+  font-size: var(--fs-body);
   font-weight: 500;
   color: var(--cta, var(--espresso));
   opacity: 0;
@@ -348,18 +351,18 @@
 .cardHeading {
   font-family: var(--display);
   font-weight: 400;
-  font-size: 32px;
+  font-size: var(--fs-h4);
   line-height: 1.15;
 }
 .cardBody {
-  font-size: 18px;
-  line-height: 1.5;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
   color: rgb(var(--espresso-rgb) / 0.68);
 }
 .cardMeta {
   margin-top: auto;
   padding-top: 8px;
-  font-size: 16px;
+  font-size: var(--fs-ui);
   font-weight: 500;
   display: inline-flex;
   align-items: center;
@@ -377,9 +380,9 @@
 .twoCol h2 {
   font-family: var(--display);
   font-weight: 400;
-  font-size: clamp(32px, 2.92vw, 42px);
-  line-height: 1.08;
-  letter-spacing: -0.015em;
+  font-size: var(--fs-h3);
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-display);
 }
 /* About "Our story" as a founder's note: a narrow letter-like column, left-aligned, signed at the foot */
 .note {
@@ -394,15 +397,15 @@
   font-family: var(--display);
   font-weight: 400;
   font-size: clamp(32px, 3.3vw, 48px);
-  line-height: 1.08;
-  letter-spacing: -0.015em;
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-display);
   text-wrap: balance;
 }
 .noteBody {
   display: flex;
   flex-direction: column;
   gap: 24px;
-  font-size: 20px;
+  font-size: var(--fs-lead);
   line-height: 1.6;
   color: var(--muted);
 }
@@ -417,7 +420,7 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  font-size: 16px;
+  font-size: var(--fs-ui);
   color: var(--muted);
 }
 .noteSign::before {
@@ -431,19 +434,19 @@
 }
 .noteSign span {
   font-family: var(--display);
-  font-size: 28px;
+  font-size: var(--fs-h5);
   color: var(--ink);
 }
 @media (max-width: 900px) {
   .noteBody {
-    font-size: 18px;
+    font-size: var(--fs-body);
   }
 }
 .prose {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  font-size: 18px;
+  font-size: var(--fs-body);
   line-height: 1.6;
   color: var(--muted);
 }
@@ -474,7 +477,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  font-size: 14px;
+  font-size: var(--fs-sm);
   font-weight: 500;
 }
 .fieldFull {
@@ -484,7 +487,7 @@
 .field select,
 .field textarea {
   font: inherit;
-  font-size: 16px;
+  font-size: var(--fs-ui);
   font-weight: 400;
   padding: 14px 16px;
   border: 1px solid rgb(var(--espresso-rgb) / 0.35);
@@ -503,7 +506,7 @@
   justify-content: space-between;
   gap: 16px;
   margin-top: 8px;
-  font-size: 14px;
+  font-size: var(--fs-sm);
   color: rgb(var(--espresso-rgb) / 0.68);
 }
 .chips {
@@ -515,7 +518,7 @@
   padding: 8px 14px;
   border: 1px solid rgb(var(--espresso-rgb) / 0.35);
   border-radius: 999px;
-  font-size: 14px;
+  font-size: var(--fs-sm);
   font-weight: 400;
 }
 .chip[data-on] {
@@ -532,7 +535,7 @@
   border: 1px dashed rgb(var(--espresso-rgb) / 0.4);
   border-radius: 2px;
   font-weight: 400;
-  font-size: 16px;
+  font-size: var(--fs-ui);
   color: rgb(var(--espresso-rgb) / 0.68);
 }
 
@@ -557,17 +560,17 @@
   content: "0" counter(n);
   grid-row: span 2;
   font-family: var(--display);
-  font-size: 24px;
+  font-size: var(--fs-h6);
   line-height: 1.1;
   color: var(--olive);
 }
 .next strong {
   font-weight: 500;
-  font-size: 18px;
+  font-size: var(--fs-body);
 }
 .next span {
-  font-size: 16px;
-  line-height: 1.5;
+  font-size: var(--fs-ui);
+  line-height: var(--lh-body);
   color: var(--muted);
 }
 
@@ -578,7 +581,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  font-size: 17px;
+  font-size: var(--fs-compact);
   line-height: 1.65;
   color: var(--muted);
 }
@@ -586,7 +589,7 @@
   margin-top: 32px;
   font-family: var(--display);
   font-weight: 400;
-  font-size: 28px;
+  font-size: var(--fs-h5);
   line-height: 1.15;
   color: var(--ink);
 }
@@ -597,13 +600,13 @@
 .updated {
   padding-bottom: 24px;
   border-bottom: 1px solid var(--line);
-  font-size: 14px;
+  font-size: var(--fs-sm);
 }
 .draftNote {
   padding: 16px 20px;
   background: var(--butter);
   border-radius: 2px;
-  font-size: 14px;
+  font-size: var(--fs-sm);
   color: var(--ink);
 }
 
@@ -615,7 +618,7 @@
   }
   .heroIntro {
     margin-top: 16px;
-    font-size: 16px;
+    font-size: var(--fs-ui);
   }
   .section {
     padding: 80px var(--gutter);
@@ -686,9 +689,9 @@
 }
 .quoteText {
   font-family: var(--display);
-  font-size: 24px;
+  font-size: var(--fs-h6);
   line-height: 1.25;
-  letter-spacing: -0.01em;
+  letter-spacing: var(--tracking-tight);
 }
 .others {
   list-style: none;
@@ -725,7 +728,7 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  font-size: 18px;
+  font-size: var(--fs-body);
   font-weight: 500;
 }
 @media (max-width: 900px) {

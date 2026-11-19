@@ -30,8 +30,8 @@
   margin: 0;
   font-family: var(--display);
   /* the site's h2 size */
-  font-size: clamp(36px, 3.9vw, 56px);
-  line-height: 1.08;
-  letter-spacing: -0.015em;
+  font-size: var(--fs-h2);
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-display);
   color: var(--white);
 }

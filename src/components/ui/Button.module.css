@@ -12,7 +12,7 @@
   border-radius: 2px;
   border: 1.5px solid transparent;
   font-family: var(--body);
-  font-size: 16px;
+  font-size: var(--fs-ui);
   font-weight: 500;
   line-height: 1.2;
   text-decoration: none;

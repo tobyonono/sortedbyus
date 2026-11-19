@@ -34,7 +34,7 @@
 
 .label {
   margin-bottom: 10px;
-  font-size: 14px;
+  font-size: var(--fs-sm);
   font-weight: 500;
   color: var(--ink);
 }
@@ -58,7 +58,7 @@
   font-family: var(--display);
   font-size: clamp(19px, 1.6vw, 24px);
   line-height: 1.15;
-  letter-spacing: -0.01em;
+  letter-spacing: var(--tracking-tight);
 }
 
 .photo img {
@@ -77,7 +77,7 @@
   position: relative;
   z-index: 1;
   color: var(--white);
-  font-size: 16px;
+  font-size: var(--fs-ui);
   font-weight: 500;
   line-height: 1.35;
 }

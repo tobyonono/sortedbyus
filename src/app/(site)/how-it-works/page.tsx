@@ -1,4 +1,5 @@
 import { pageMeta } from "@/lib/seo";
+import { earth } from "@/lib/palette";
 import { ButtonLink } from "@/components/ui/Button";
 import Accordion from "@/components/ui/Accordion";
 import PageHero from "@/components/sections/PageHero";
@@ -23,8 +24,6 @@ export async function generateMetadata(): Promise<Metadata> {
 /* Page structure: 1 promise · 2 the four steps · 3 behind the scenes · photo break · 4 costs and payment · 5 if something goes wrong
    · 6 FAQ · 7 close. Copy and photos come from Sanity (Pages → How it works). */
 
-/* "If something goes wrong" card colour bands, in order. */
-const WRONG_CUTS = ["#b89562", "var(--olive)", "var(--butter)", "#9e8f7f"];
 
 export default async function HowItWorksPage() {
   const c = await getHowItWorks();
@@ -77,7 +76,7 @@ export default async function HowItWorksPage() {
           <SectionIntro id="wrong-heading" label={c.wrongLabel} title={c.wrongHeading} intro={c.wrongIntro} sub />
           <ul className={`${d.cards} ${d.cards4}`}>
             {(c.wrong ?? []).map((w, i) => (
-              <li key={w.title} className={`${d.card} ${d.cutCard}`} style={{ "--cut": WRONG_CUTS[i % WRONG_CUTS.length] } as React.CSSProperties}>
+              <li key={w.title} className={`${d.card} ${d.cutCard}`} style={{ "--cut": earth(i) } as React.CSSProperties}>
                 <span className={d.cut} aria-hidden="true" />
                 <h3 className={d.cardHeading}>{w.title}</h3>
                 <p className={d.cardBody}>{w.body}</p>

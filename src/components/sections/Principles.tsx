@@ -2,8 +2,8 @@ import s from "./Principles.module.css";
 
 /* Brand colours, light to dark; the last tile takes apricot type. CUTS: the hover cut on each tile
    (espresso on the lighter tiles, taupe on the espresso one). */
-const TONES = ["#9e8f7f", "var(--olive)", "#a5745b", "var(--espresso)"];
-const CUTS = ["var(--espresso)", "var(--espresso)", "var(--espresso)", "#9e8f7f"];
+const TONES = ["var(--taupe)", "var(--olive)", "var(--terracotta)", "var(--espresso)"];
+const CUTS = ["var(--espresso)", "var(--espresso)", "var(--espresso)", "var(--taupe)"];
 
 /**
  * Values as tall colour tiles (Human After All "creative principles" pattern): each shows its name;

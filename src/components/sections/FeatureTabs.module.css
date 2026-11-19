@@ -54,9 +54,9 @@
   background: none;
   text-align: left;
   font-family: var(--display);
-  font-size: 28px;
+  font-size: var(--fs-h5);
   line-height: 1.15;
-  letter-spacing: -0.01em;
+  letter-spacing: var(--tracking-tight);
   color: rgb(var(--espresso-rgb) / 0.5);
   cursor: pointer;
   transition: color var(--dur) var(--ease);
@@ -90,7 +90,7 @@
   to { opacity: 1; transform: none; }
 }
 .body {
-  font-size: 18px;
+  font-size: var(--fs-body);
   line-height: 1.55;
   color: var(--muted);
 }
@@ -142,7 +142,7 @@
     object-fit: cover;
   }
   .title {
-    font-size: 24px;
+    font-size: var(--fs-h6);
     padding: 22px 0;
   }
 }

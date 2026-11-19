@@ -4,6 +4,7 @@ import { site } from "@/lib/site";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { earth } from "@/lib/palette";
 import { notFound } from "next/navigation";
 import { ButtonLink, Arrow } from "@/components/ui/Button";
 import Accordion from "@/components/ui/Accordion";
@@ -25,10 +26,6 @@ export async function generateStaticParams() {
 }
 // only the services that exist in Sanity at build time; anything else is a 404
 export const dynamicParams = false;
-
-/* Offer-card colour bands, in order. */
-/* "What we can sort" card colour blocks, in order: caramel, olive, espresso / deep butter (the button hover yellow), terracotta, taupe */
-const CUTS = ["#b89562", "var(--olive)", "var(--espresso)", "var(--butter-hover)", "#a5745b", "#9e8f7f"];
 
 export async function generateMetadata({ params }: PageProps<"/services/[slug]">): Promise<Metadata> {
   const s = await getService((await params).slug);
@@ -75,7 +72,7 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
                 <Link
                   href={`/contact?service=${s.slug}&item=${encodeURIComponent(o.title)}`}
                   className={`${d.card} ${d.cutCard} ${d.offerCard}`}
-                  style={{ minHeight: 320, height: "100%", "--cut": CUTS[i % CUTS.length], "--cta": CUTS[i % CUTS.length] === "var(--espresso)" ? "var(--apricot)" : "var(--espresso)" } as React.CSSProperties}
+                  style={{ minHeight: 320, height: "100%", "--cut": earth(i), "--cta": "var(--espresso)" } as React.CSSProperties}
                 >
                   <span className={`${d.cut} ${d.saw}`} aria-hidden="true" />
                   <h3 className={d.cardHeading}>{o.title}</h3>

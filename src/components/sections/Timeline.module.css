@@ -56,12 +56,12 @@
   font-family: var(--display);
   font-weight: 400;
   font-size: clamp(30px, 2.5vw, 36px);
-  line-height: 1.08;
-  letter-spacing: -0.015em;
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-display);
   color: var(--ink);
 }
 .body {
-  font-size: 18px;
+  font-size: var(--fs-body);
   line-height: 1.55;
   color: var(--muted);
 }
@@ -112,7 +112,7 @@
   color: var(--apricot);
 }
 .dark .body {
-  color: rgb(255 235 208 / 0.78);
+  color: rgb(var(--apricot-rgb) / 0.78);
 }
 
 @media (max-width: 900px) {

@@ -23,10 +23,34 @@
   --white: #ffffff;
   --white-rgb: 255 255 255;
   --error: #9a3b2a; /* form validation text */
+  /* The earth family: section bands, tiles and card cuts */
+  --caramel: #b89562;
+  --terracotta: #a5745b;
+  --taupe: #9e8f7f;
+  --apricot-rgb: 255 235 208; /* for rgb(var(--apricot-rgb) / alpha) on dark backgrounds */
 
   /* Type */
   --display: var(--font-display), Georgia, serif;
   --body: var(--font-body), "Helvetica Neue", Arial, sans-serif;
+  /* Type scale. Every size used more than once has a step here; true one-offs stay literal where they're used. */
+  --fs-display: clamp(48px, 5vw, 72px);
+  --fs-h1: clamp(40px, 3.9vw, 56px);
+  --fs-h2: clamp(36px, 3.9vw, 56px);
+  --fs-h3: clamp(32px, 2.92vw, 42px);
+  --fs-h4: 32px; /* card headings */
+  --fs-h5: 28px;
+  --fs-h6: 24px;
+  --fs-lead: 20px;
+  --fs-body: 18px; /* page default and section copy */
+  --fs-compact: 17px; /* compact copy: request panel, carousel, bento, lists */
+  --fs-ui: 16px; /* labels, buttons, nav */
+  --fs-field: 15px; /* form fields, map labels */
+  --fs-sm: 14px;
+  --fs-xs: 13px;
+  --lh-display: 1.08;
+  --lh-body: 1.5;
+  --tracking-display: -0.015em;
+  --tracking-tight: -0.01em;
 
   /* Layout. Content that isn't full-bleed sits in a centred column at most --max wide (side padding
      included, like bristoldockyards.org): past 1600px the gutter grows to keep it centred. */
@@ -107,8 +131,8 @@ body {
   background: var(--cream);
   color: var(--ink);
   font-family: var(--body);
-  font-size: 17px;
-  line-height: 1.5;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: clip;

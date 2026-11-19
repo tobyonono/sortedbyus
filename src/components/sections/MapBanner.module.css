@@ -8,15 +8,15 @@
   display: block;
 }
 .label {
-  font-size: 16px;
+  font-size: var(--fs-ui);
   margin-bottom: 16px;
 }
 .heading {
   font-family: var(--display);
   font-weight: 400;
-  font-size: clamp(32px, 2.92vw, 42px);
-  line-height: 1.08;
-  letter-spacing: -0.015em;
+  font-size: var(--fs-h3);
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-display);
   text-wrap: balance;
   max-width: 560px;
 }
@@ -40,15 +40,15 @@
   flex-direction: column;
   gap: 8px;
   padding-top: 20px;
-  border-top: 1px solid rgb(255 235 208 / 0.3);
-  font-size: 16px;
-  line-height: 1.5;
-  color: rgb(255 235 208 / 0.8);
+  border-top: 1px solid rgb(var(--apricot-rgb) / 0.3);
+  font-size: var(--fs-ui);
+  line-height: var(--lh-body);
+  color: rgb(var(--apricot-rgb) / 0.8);
 }
 .points strong {
   font-family: var(--display);
   font-weight: 400;
-  font-size: 24px;
+  font-size: var(--fs-h6);
   color: var(--apricot);
 }
 

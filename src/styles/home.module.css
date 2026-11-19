@@ -2,9 +2,9 @@
 .h2 {
   font-family: var(--display);
   font-weight: 400;
-  font-size: var(--heading-size, clamp(36px, 3.9vw, 56px));
-  line-height: 1.08;
-  letter-spacing: -0.015em;
+  font-size: var(--heading-size, var(--fs-h2));
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-display);
   text-align: center;
 }
 /* Heading scale (display face): 72 step titles / 56 section headings / 42 secondary headings / 28 card titles.
@@ -13,20 +13,20 @@
   --heading-size: clamp(32px, 2.92vw, 42px);
 }
 .label {
-  font-size: 16px;
+  font-size: var(--fs-ui);
 }
 .intro {
   max-width: 600px;
   margin: 20px auto 0;
   text-wrap: balance;
-  font-size: 18px;
+  font-size: var(--fs-body);
   line-height: 1.45;
   text-align: center;
 }
 /* Centred eyebrow above a centred .h2 (16px gap, like every other section label) */
 .labelCenter {
   margin-bottom: 16px;
-  font-size: 16px;
+  font-size: var(--fs-ui);
   text-align: center;
 }
 /* Section intro entrance (label → heading → intro), same rise + fade as CutBanner content,
@@ -143,9 +143,9 @@
 .heroCopy h1 {
   font-family: var(--display);
   font-weight: 400;
-  font-size: clamp(40px, 3.9vw, 56px);
+  font-size: var(--fs-h1);
   line-height: 1.02;
-  letter-spacing: -0.01em;
+  letter-spacing: var(--tracking-tight);
   color: var(--apricot);
 }
 /* the optional line under the heading (Sanity: hero "Line under the heading"), styled like the inner-page hero intros */
@@ -153,8 +153,8 @@
   margin-top: 24px;
   max-width: 480px;
   text-wrap: pretty;
-  font-size: 18px;
-  line-height: 1.5;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
   color: var(--apricot);
 }
 .heroCard {
@@ -268,7 +268,7 @@
 }
 .tileTitle {
   /* same face and size as the description; hierarchy comes from colour (full ink vs 68%) */
-  font-size: 18px;
+  font-size: var(--fs-body);
   line-height: 1.45;
   color: var(--ink);
 }
@@ -276,7 +276,7 @@
   margin-top: -16px; /* 20px stack gap → 4px, so title and description read as one block */
   max-width: 34ch;
   min-height: 2.9em; /* reserve two lines so Explore buttons align across a row */
-  font-size: 18px;
+  font-size: var(--fs-body);
   line-height: 1.45;
   color: rgb(var(--espresso-rgb) / 0.68); /* ≈4.9:1 on cream, passes AA */
 }
@@ -288,7 +288,7 @@
   padding: 13px 20px;
   border: 1.5px solid var(--espresso);
   border-radius: 2px;
-  font-size: 16px;
+  font-size: var(--fs-ui);
   font-weight: 500;
   line-height: 1.2;
   transition: background-color 0s, border-color var(--dur) var(--ease), color 0s, transform var(--dur-press) var(--ease-out);
@@ -344,15 +344,15 @@
 .corpLabel {
   /* matches the shared .label eyebrow; sits 16px above the heading like every other section
      (the copy stack's 40px gap still separates heading, body and button) */
-  font-size: 16px;
+  font-size: var(--fs-ui);
   margin-bottom: -24px;
 }
 .corpHeading {
   font-family: var(--display);
   font-weight: 400;
-  font-size: var(--heading-size, clamp(36px, 3.9vw, 56px));
-  line-height: 1.08;
-  letter-spacing: -0.015em;
+  font-size: var(--heading-size, var(--fs-h2));
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-display);
 }
 /* Hero CTA: apricot outline, fills solid apricot on hover */
 .heroBtn {
@@ -370,8 +370,8 @@
 }
 .corpBody {
   max-width: 600px;
-  font-size: 18px;
-  line-height: 1.5;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
 }
 
 /* ---------- Audience splits (IIT ID-style stacking) ----------
@@ -444,14 +444,14 @@
 .splitHeading {
   font-family: var(--display);
   font-weight: 400;
-  font-size: var(--heading-size, clamp(36px, 3.9vw, 56px));
-  line-height: 1.08;
-  letter-spacing: -0.015em;
+  font-size: var(--heading-size, var(--fs-h2));
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-display);
   text-wrap: balance;
 }
 .splitBody {
   max-width: 460px;
-  font-size: 18px;
+  font-size: var(--fs-body);
   line-height: 1.55;
   color: var(--muted);
 }
@@ -502,8 +502,8 @@
 }
 .catchallBody {
   max-width: 400px;
-  font-size: 18px;
-  line-height: 1.5;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
 }
 
 /* ---------- About + why trust us ---------- */
@@ -542,13 +542,13 @@
 .trustList h3 {
   font-family: var(--display);
   font-weight: 400;
-  font-size: 24px;
+  font-size: var(--fs-h6);
   line-height: 1.15;
 }
 .trustList p {
   margin-top: 10px;
-  font-size: 16px;
-  line-height: 1.5;
+  font-size: var(--fs-ui);
+  line-height: var(--lh-body);
   color: var(--muted);
 }
 .panel {
@@ -569,14 +569,14 @@
 .panelHeading {
   font-family: var(--display);
   font-weight: 400;
-  font-size: var(--heading-size, clamp(36px, 3.9vw, 56px));
-  line-height: 1.08;
-  letter-spacing: -0.015em;
+  font-size: var(--heading-size, var(--fs-h2));
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-display);
 }
 .panelBody {
   max-width: 340px;
-  font-size: 17px;
-  line-height: 1.5;
+  font-size: var(--fs-compact);
+  line-height: var(--lh-body);
   margin-bottom: 40px;
 }
 .oliveBtn {
@@ -619,9 +619,9 @@
 .bannerCopy h2 {
   font-family: var(--display);
   font-weight: 400;
-  font-size: clamp(36px, 3.9vw, 56px);
-  line-height: 1.08;
-  letter-spacing: -0.015em;
+  font-size: var(--fs-h2);
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-display);
   color: var(--white);
   text-shadow: 0 1px 24px rgb(var(--espresso-rgb) / 0.25);
 }
@@ -645,7 +645,7 @@
 }
 .footHead {
   margin-bottom: 20px;
-  font-size: 14px;
+  font-size: var(--fs-sm);
   font-weight: 500;
   color: var(--butter);
 }
@@ -653,7 +653,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  font-size: 14px;
+  font-size: var(--fs-sm);
 }
 .footTop a {
   text-decoration-color: transparent;
@@ -678,7 +678,7 @@
   flex-wrap: wrap;
   padding: 20px var(--gutter);
   border-top: 1px solid var(--muted);
-  font-size: 14px;
+  font-size: var(--fs-sm);
 }
 .footBottom ul {
   display: flex;

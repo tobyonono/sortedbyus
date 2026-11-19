@@ -1,4 +1,5 @@
 import { pageMeta } from "@/lib/seo";
+import { earth } from "@/lib/palette";
 import { ButtonLink } from "@/components/ui/Button";
 import Accordion from "@/components/ui/Accordion";
 import PageHero from "@/components/sections/PageHero";
@@ -21,8 +22,6 @@ export async function generateMetadata(): Promise<Metadata> {
   return pageMeta({ title: "Corporate services", description: c.seoDescription || c.heroIntro, path: "/corporate" });
 }
 
-/* "Ways to work with us" colour bands: lightest to darkest brown; the last (espresso) card takes light text. */
-const MODEL_CUTS = ["#b89562", "#a5745b", "var(--espresso)"];
 
 export default async function CorporatePage() {
   const [c, { wa }] = await Promise.all([getCorporate(), getSite()]);
@@ -52,7 +51,7 @@ export default async function CorporatePage() {
           <SectionIntro id="models-heading" label={c.modelsLabel} title={c.modelsHeading} intro={c.modelsIntro} />
           <ul className={d.cards}>
             {(c.models ?? []).map((m, i) => (
-              <li key={m.title} className={`${d.card} ${d.cutCard} ${i === MODEL_CUTS.length - 1 ? d.cutDark : ""}`} style={{ "--cut": MODEL_CUTS[i % MODEL_CUTS.length] } as React.CSSProperties}>
+              <li key={m.title} className={`${d.card} ${d.cutCard}`} style={{ "--cut": earth(i) } as React.CSSProperties}>
                 <span className={d.cut} aria-hidden="true" />
                 <h3 className={d.cardHeading}>{m.title}</h3>
                 <p className={d.cardBody}>{m.body}</p>

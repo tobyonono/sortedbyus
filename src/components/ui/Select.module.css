@@ -11,7 +11,7 @@
   padding: 14px 16px;
   border: 1.5px solid transparent;
   background: var(--white);
-  font-size: 16px;
+  font-size: var(--fs-ui);
   text-align: left;
   cursor: pointer;
   transition: border-color var(--dur) var(--ease);
@@ -65,7 +65,7 @@
   justify-content: space-between;
   gap: 12px;
   padding: 11px 12px;
-  font-size: 16px;
+  font-size: var(--fs-ui);
   cursor: pointer;
   transition: background-color var(--dur-fast) var(--ease);
 }

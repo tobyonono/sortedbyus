@@ -19,6 +19,14 @@ export const homePage = defineType({
   ],
   fields: [
     heading("heroHeading", "Main heading", "hero"),
+    defineField({
+      name: "heroSubline",
+      title: "Line under the heading",
+      type: "string",
+      group: "hero",
+      description: "Optional. One short line, e.g. who it’s for. Leave empty to show just the heading.",
+      validation: (r) => r.max(90),
+    }),
     line("heroButton", "Button text", "Scrolls down to the services.", "hero", 30),
     photo("heroImage", "Main photo", undefined, "hero"),
 

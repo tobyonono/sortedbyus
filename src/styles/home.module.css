@@ -148,6 +148,14 @@
   letter-spacing: -0.01em;
   color: var(--apricot);
 }
+/* the optional line under the heading (Sanity: hero "Line under the heading"), styled like the inner-page hero intros */
+.heroSub {
+  margin-top: 24px;
+  max-width: 420px;
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--apricot);
+}
 .heroCard {
   position: absolute;
   /* vertically centred on the photo (translate, so the entrance transition's transform is untouched) */

@@ -449,6 +449,7 @@ export type HomePage = {
   _updatedAt: string;
   _rev: string;
   heroHeading: string;
+  heroSubline?: string;
   heroButton: string;
   heroImage: {
     asset: SanityImageAssetReference;
@@ -718,6 +719,7 @@ export type HomeQueryResult = {
   _updatedAt: string;
   _rev: string;
   heroHeading: string;
+  heroSubline?: string;
   heroButton: string;
   heroImage: {
     alt: string;

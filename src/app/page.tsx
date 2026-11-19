@@ -67,9 +67,12 @@ export default async function Home() {
               {/* Colour block: two mirrored cuts meeting in a point on the right, holding the copy */}
               <div className={s.heroBlock} aria-hidden="true" />
               <div className={s.heroCopy}>
-                <h1 id="hero-heading">
-                  <Lines text={c.heroHeading} />
-                </h1>
+                <div>
+                  <h1 id="hero-heading">
+                    <Lines text={c.heroHeading} />
+                  </h1>
+                  {c.heroSubline && <p className={s.heroSub}>{c.heroSubline}</p>}
+                </div>
                 <ButtonLink href="#offer" variant="outline-light" arrow className={s.heroBtn}>
                   {c.heroButton}
                 </ButtonLink>

@@ -2849,6 +2849,13 @@
         },
         "optional": false
       },
+      "heroSubline": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
       "heroButton": {
         "type": "objectAttribute",
         "value": {

@@ -1,7 +1,7 @@
 # Brand voice: Sorted by Us
 
-Source: copy the owner approved or rejected on the live site, plus the positioning work against the How&How
-branding handbook. Last updated: 19 November 2026. Used by the `site-copy` skill: every line of site copy
+Source: copy the owner approved or rejected on the live site, the positioning work against the How&How
+branding handbook, and the copy research in `docs/copy-research.md`. Last updated: 19 November 2026. Used by the `site-copy` skill: every line of site copy
 should trace back to this file.
 
 ## Audience
@@ -15,6 +15,37 @@ price and process. Premium comes from the look and the care, not from gatekeepin
 
 ## Voice
 Warm, direct, reassuring, quietly confident, a little playful. A friend who's good at this, talking.
+
+## The idea, and what we write against
+- **The idea, said everywhere: "sorted".** It's in the name, "Consider it sorted.", "See what we sort", "What can
+  we sort?". Don't introduce a second organising idea.
+- **What you gain, not what you avoid.** Lead with the life it gives back ("More life, less admin", "Your time,
+  back"); the hassle is the setup, never the headline.
+- **The foil.** Concierge-world gatekeeping (VIP, bespoke, exclusive, "lifestyle management", "solutions") on one
+  side; on the other, the chasing, queues, traffic and follow-ups that eat a Lagos week, and the worry of
+  organising things at home from abroad. We're the opposite of both: open, warm, and on it.
+- **Two registers.** Personality in headings and a few brand lines. Prices, process, payment, policy, errors and
+  FAQs are plain, exact and calm.
+
+## Messaging house
+Draft for the owner to confirm. New pages draw from this rather than reinventing the pitch.
+- **Tagline (the most repeated line):** Consider it sorted.
+- **One-line descriptor:** Your personal concierge in Nigeria, for people living here and abroad.
+- **Short pitch:** Tell us what you need and what matters about it. We find the right options, recommend the one
+  we'd choose and see it through, with updates on WhatsApp until it's done. You see one quote, our fee included,
+  before anything goes ahead.
+- **Points of difference, each with its proof:**
+  1. *We recommend, not just find.* Proof: the options-plus-recommendation quote. (Needs a real example.)
+  2. *You see it done.* Proof: photos at every step and receipts. (Needs a real example or two.)
+  3. *Here or away.* Proof: WhatsApp updates whatever your time zone; most Lagos requests sorted the same day.
+  PENDING: "One person, start to finish" would be the strongest point if it's operationally true.
+- **Missing proof the site needs:** reviews or client quotes, how many requests sorted, the founder's name on
+  About, and real request stories (with permission).
+
+## Customer vocabulary
+Their words for their moments. Use them where they're true; never fake Pidgin or put on an accent.
+aso-ebi · owambe · Detty December · back home · Mum / Mummy and Daddy · the Island / the Mainland · Lagos traffic ·
+"before I land" · "while I'm away" · "for the family house" · suya, jollof, small chops · Tarkwa Bay, Lekki, Surulere
 
 ## Anti-examples (rejected, and why)
 - "We love finding solutions." / "Discuss a corporate solution": corporate, says nothing.
@@ -62,6 +93,7 @@ Warm, direct, reassuring, quietly confident, a little playful. A friend who's go
 - "One quote, our fee included, before anything goes ahead."
 - Payment: "by bank transfer, once you've approved the quote. We'll never ask for card details online."
 - Proof: "photos so you know it's done" / "photos and receipts".
+- Reply time (forms): "usually within the hour during the day". Never "instantly" or "24/7".
 - PENDING owner confirmation, don't use on new copy: "One person handles your request from start to finish, and
   knows you next time." (It's on About already.)
 - Placeholders in [square brackets] on How it works (time windows, returns and cancellation policy, paying from

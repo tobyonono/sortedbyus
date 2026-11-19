@@ -85,6 +85,7 @@ aso-ebi · owambe · Detty December · back home · Mum / Mummy and Daddy · the
   and what matters about it."). Elsewhere say it another way: "the details that make it right", "preferences",
   "what it's for", "what you've asked for".
 - "We don't do anything by half": a stock idiom that doesn't name the section, and "by half" isn't widely understood.
+- "One team for the jobs no one owns": clever but vague, and it repeated the intro under it.
 - Exclusive, VIP, members-only, luxury tones: not who we are.
 - App-interface voice (notifications, quote bubbles, "Your request has been submitted!").
 
@@ -93,7 +94,7 @@ aso-ebi · owambe · Detty December · back home · Mum / Mummy and Daddy · the
 | Element | Examples |
 |---|---|
 | Hero heading | Life is busy. Let us get it sorted. |
-| Section headings | What you can count on · While you get on with your day · What happens after you message us · Lagos, Abuja and wherever you are · What we can sort · We're your personal concierge · Your time, back · Your person at home · Big or small, we'll sort it · Good to know |
+| Section headings | What we can take on for you (label: For the business) · What you can count on · While you get on with your day · What happens after you message us · Lagos, Abuja and wherever you are · What we can sort · We're your personal concierge · Your time, back · Your person at home · Big or small, we'll sort it · Good to know |
 | Service headings | The exact thing, found for you · Surprises, planned and delivered · Booked, arranged and met at arrivals · The queues and paperwork, handled · The right people, at the door |
 | Intros and body | Tell us what you need and what matters about it. We find the right options, recommend the one we'd choose and see it through to done. You get one quote, our fee included, before anything goes ahead. |
 | | You know what needs doing, you just don't have the hours. Hand us the dinner booking, the part no one seems to stock or the morning lost in a queue, and get on with your day. Most Lagos requests are sorted the same day. |

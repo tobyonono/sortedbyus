@@ -1,0 +1,33 @@
+src/components/ui/Calendar.tsx
+  s_4961e1430d7cba::t_5305417882e60c 3,37,42
+src/components/sections/FeatureTabs.tsx
+  s_4961e1430d7cba::t_5305417882e60c 3,28
+src/components/sections/Timeline.tsx
+  s_4961e1430d7cba::t_5305417882e60c 3,23
+src/components/ui/ScrollGrow.tsx
+  s_4961e1430d7cba::t_5305417882e60c 3,24
+src/components/sections/NetworkMap.tsx
+  s_4961e1430d7cba::t_5305417882e60c 3,153
+src/components/sections/ProcessCarousel.tsx
+  s_4961e1430d7cba::t_5305417882e60c 3,157
+src/lib/motion.ts
+  s_4961e1430d7cba::t_08cb8dafa62fa2 1-8
+src/styles/globals.css
+  s_4961e1430d7cba::t_f23504cce7cf4f 223
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a5a49d0dcdf6d62c2cec1a74f4d96267502ba2a0",
+  "prompts": {},
+  "sessions": {
+    "s_4961e1430d7cba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e12df23b-4e6e-4727-8b0d-c94b2851c69f",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Toby Onono <ononop@tcd.ie>"
+    }
+  }
+}

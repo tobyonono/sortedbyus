@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // React Compiler memoizes components and hooks automatically, so the code never needs useMemo/useCallback.
+  reactCompiler: true,
   // cacheComponents / partialPrefetching are off: the site doesn't use them, and on Cloudflare Workers Cache
   // Components hang the render (Next can't rely on the Workers runtime's setTimeout).
   experimental: {

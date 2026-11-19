@@ -3,7 +3,7 @@
 import Image from "next/image";
 import type { Pic } from "@/lib/sanity/image";
 import { picProps } from "@/components/ui/picProps";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useLayoutEffect, useRef, useState } from "react";
 import Reveal from "@/components/ui/Reveal";
 import styles from "./ProcessCarousel.module.css";
 
@@ -82,7 +82,7 @@ export default function ProcessCarousel({ heading, steps }: { heading: string; s
   const progress = useRef(0); // rendered (eased) progress
   const raf = useRef(0);
 
-  const measure = useCallback(() => {
+  const measure = () => {
     const stage = stageRef.current?.getBoundingClientRect();
     const l = largeSlotRef.current?.getBoundingClientRect();
     const s = smallSlotRef.current?.getBoundingClientRect();
@@ -96,90 +96,84 @@ export default function ProcessCarousel({ heading, steps }: { heading: string; s
       seed: { x: small.x + small.w - 1, y: small.y + small.h - 1, w: 1, h: 1 },
       exit: { x: large.x, y: large.y, w: 0, h: 0 },
     };
-  }, []);
+  };
 
-  const render = useCallback(
-    (p: number) => {
-      const r = rects.current;
-      if (!r) return;
-      const t = Math.min(Math.floor(p), n - 1);
-      const f = clamp01(p - t);
-      const fadeOut = clamp01((f - 0.55) / 0.25);
-      const fadeIn = clamp01((f - 0.8) / 0.2);
+  const render = (p: number) => {
+    const r = rects.current;
+    if (!r) return;
+    const t = Math.min(Math.floor(p), n - 1);
+    const f = clamp01(p - t);
+    const fadeOut = clamp01((f - 0.55) / 0.25);
+    const fadeIn = clamp01((f - 0.8) / 0.2);
 
-      frameRefs.current.forEach((el, i) => {
-        if (!el) return;
-        let rect: Rect;
-        let alpha: number;
-        if (i === t) {
-          rect = lerp(r.large, r.exit, f);
-          alpha = 1 - fadeOut;
-        } else if (i === t + 1) {
-          rect = lerp(r.small, r.large, f);
-          alpha = 1;
-        } else if (i === t + 2) {
-          rect = lerp(r.seed, r.small, f);
-          alpha = fadeIn;
-        } else {
-          rect = i < t ? r.exit : r.seed;
-          alpha = 0;
-        }
-        el.style.transform = `translate3d(${rect.x}px, ${rect.y}px, 0)`;
-        el.style.width = `${rect.w}px`;
-        el.style.height = `${rect.h}px`;
-        el.style.opacity = String(alpha);
-        el.style.visibility = alpha > 0 ? "visible" : "hidden";
-      });
+    frameRefs.current.forEach((el, i) => {
+      if (!el) return;
+      let rect: Rect;
+      let alpha: number;
+      if (i === t) {
+        rect = lerp(r.large, r.exit, f);
+        alpha = 1 - fadeOut;
+      } else if (i === t + 1) {
+        rect = lerp(r.small, r.large, f);
+        alpha = 1;
+      } else if (i === t + 2) {
+        rect = lerp(r.seed, r.small, f);
+        alpha = fadeIn;
+      } else {
+        rect = i < t ? r.exit : r.seed;
+        alpha = 0;
+      }
+      el.style.transform = `translate3d(${rect.x}px, ${rect.y}px, 0)`;
+      el.style.width = `${rect.w}px`;
+      el.style.height = `${rect.h}px`;
+      el.style.opacity = String(alpha);
+      el.style.visibility = alpha > 0 ? "visible" : "hidden";
+    });
 
-      if (fillRef.current) fillRef.current.style.transform = `scaleY(${clamp01((p + 1) / n)})`;
-    },
-    [n],
-  );
+    if (fillRef.current) fillRef.current.style.transform = `scaleY(${clamp01((p + 1) / n)})`;
+  };
 
   // Initial measure + keep rects in sync with layout.
-  useLayoutEffect(() => {
+  const sync = useEffectEvent(() => {
     measure();
     render(progress.current);
+  });
+  useLayoutEffect(() => {
+    sync();
     const stage = stageRef.current;
     if (!stage) return;
-    const ro = new ResizeObserver(() => {
-      measure();
-      render(progress.current);
-    });
+    const ro = new ResizeObserver(() => sync());
     ro.observe(stage);
     return () => ro.disconnect();
-  }, [measure, render]);
+  }, []);
 
   useEffect(() => () => cancelAnimationFrame(raf.current), []);
 
-  const goTo = useCallback(
-    (i: number) => {
-      const next = Math.max(0, Math.min(n - 1, i));
-      setActive(next);
+  const goTo = (i: number) => {
+    const next = Math.max(0, Math.min(n - 1, i));
+    setActive(next);
 
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        progress.current = next;
-        render(next);
-        return;
-      }
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      progress.current = next;
+      render(next);
+      return;
+    }
 
-      cancelAnimationFrame(raf.current);
-      const from = progress.current;
-      if (from === next) return;
-      // Start the clock on the first frame, the same frame React commits the new step and the CSS transitions begin.
-      let start = -1;
-      const tick = (now: number) => {
-        if (start < 0) start = now;
-        const k = clamp01((now - start) / DURATION);
-        const p = from + (next - from) * ease(k);
-        progress.current = p;
-        render(p);
-        if (k < 1) raf.current = requestAnimationFrame(tick);
-      };
-      raf.current = requestAnimationFrame(tick);
-    },
-    [n, render],
-  );
+    cancelAnimationFrame(raf.current);
+    const from = progress.current;
+    if (from === next) return;
+    // Start the clock on the first frame, the same frame React commits the new step and the CSS transitions begin.
+    let start = -1;
+    const tick = (now: number) => {
+      if (start < 0) start = now;
+      const k = clamp01((now - start) / DURATION);
+      const p = from + (next - from) * ease(k);
+      progress.current = p;
+      render(p);
+      if (k < 1) raf.current = requestAnimationFrame(tick);
+    };
+    raf.current = requestAnimationFrame(tick);
+  };
 
   const state = (i: number) => (i < active ? "past" : i === active ? "current" : "future");
 

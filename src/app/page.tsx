@@ -196,7 +196,7 @@ export default async function Home() {
                 </h3>
                 <p className={s.corpBody}>{c.corpBody}</p>
                 <ButtonLink
-                  href={wa("Hi, I’d like to discuss a corporate solution.")}
+                  href={wa("Hi, I’d like to talk about support for my team.")}
                   variant="outline-light"
                   className={s.corpBtn}
                   arrow
@@ -219,8 +219,8 @@ export default async function Home() {
                 Sorted by Us?
               </h2>
               <p className={s.panelBody}>
-                A Nigerian personal concierge and solutions company for individuals, families and businesses. Resourceful, honest and
-                transparent — whatever you need, we’ll find a way.
+                A personal concierge in Nigeria, for people living here and abroad. Whatever you need, we’ll find a way, and
+                tell you honestly what it costs.
               </p>
             </Reveal>
             <div className={s.trustCopy}>

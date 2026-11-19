@@ -17,7 +17,7 @@ export async function GET() {
 
 > ${site.description}
 
-${site.name} is a personal concierge and solutions company based in Lagos, with a team on the ground in Abuja. People message us (on WhatsApp or through the website) with what they need; we find the right option from suppliers we know, send one clear quote with our fee included, and arrange it once it's approved and paid by bank transfer. We keep the client updated on WhatsApp until it's delivered, done and closed. Many clients live abroad and use us to sort things for family in Nigeria.
+${site.name} is a personal concierge based in Lagos, with a team on the ground in Abuja. People message us (on WhatsApp or through the website) with what they need; we find the right option from suppliers we know, send one clear quote with our fee included, and arrange it once it's approved and paid by bank transfer. We keep the client updated on WhatsApp until it's delivered, done and closed. Many clients live abroad and use us to sort things for family in Nigeria.
 
 ## Services
 

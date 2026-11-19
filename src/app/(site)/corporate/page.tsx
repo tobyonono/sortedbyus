@@ -25,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function CorporatePage() {
   const [c, { wa }] = await Promise.all([getCorporate(), getSite()]);
-  const corpCta = wa("Hi, I’d like to discuss a corporate solution.");
+  const corpCta = wa("Hi, I’d like to talk about support for my team.");
   return (
     <>
       <PageHero

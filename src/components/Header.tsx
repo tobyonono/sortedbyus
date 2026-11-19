@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import LogoMark from "./LogoMark";
+import Wordmark from "./Wordmark";
 import { Arrow } from "./Button";
 import { nav, serviceNav, site, whatsappHref } from "@/lib/site";
 import styles from "./Header.module.css";
@@ -104,11 +104,8 @@ export default function Header({
         data-mode={open && mode === "hidden" ? "shown" : mode}
         data-animate={animate || undefined}
       >
-        <Link href="/" className={styles.mark} aria-label={`${site.name} home`}>
-          <LogoMark size={64} />
-        </Link>
-        <Link href="/" className={styles.wordmark}>
-          {site.name}
+        <Link href="/" className={styles.mark}>
+          <Wordmark title={`${site.name} home`} />
         </Link>
         <div className={styles.right}>
           <a

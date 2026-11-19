@@ -2,7 +2,7 @@
   position: relative;
   z-index: 50;
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: 1fr auto;
   align-items: center;
   padding: 28px var(--gutter) 0;
   color: var(--apricot);
@@ -16,7 +16,7 @@
   top: 0;
   left: 0;
   right: 0;
-  /* slimmer than the top-of-page header: 16 + 64 logo + 16 = 96px bar */
+  /* slimmer than the top-of-page header: 16 + 55 wordmark + 16 = 87px bar */
   padding-top: 16px;
 }
 .header[data-mode="hidden"]::before,
@@ -42,17 +42,10 @@
   z-index: 2;
 }
 .mark svg {
-  width: 64px;
-  height: 64px;
-}
-
-.wordmark {
-  font-family: var(--display);
-  font-size: 34px;
-  letter-spacing: -0.01em;
-  text-decoration: none;
-  position: relative;
-  z-index: 2;
+  display: block;
+  height: 55px;
+  width: auto;
+  aspect-ratio: 805 / 294;
 }
 
 .right {
@@ -252,11 +245,11 @@
 
 @media (max-width: 900px) {
   .header {
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: 1fr auto;
     gap: 12px;
     padding-top: 18px;
   }
-  /* 12 + 44 logo + 12 = 68px bar */
+  /* 12 + 44 menu button + 12 = 68px bar */
   .header[data-mode="hidden"],
   .header[data-mode="shown"] {
     padding-top: 12px;
@@ -269,12 +262,7 @@
     transform: translateY(calc(-100% - 13px));
   }
   .mark svg {
-    width: 44px;
-    height: 44px;
-  }
-  .wordmark {
-    font-size: 24px;
-    justify-self: center;
+    height: 40px;
   }
   .wa {
     display: none;

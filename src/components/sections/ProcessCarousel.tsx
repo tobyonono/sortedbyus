@@ -1,5 +1,6 @@
 "use client";
 
+import { prefersReducedMotion } from "@/lib/motion";
 import Image from "next/image";
 import type { Pic } from "@/lib/sanity/image";
 import { picProps } from "@/components/ui/picProps";
@@ -153,7 +154,7 @@ export default function ProcessCarousel({ heading, steps }: { heading: string; s
     const next = Math.max(0, Math.min(n - 1, i));
     setActive(next);
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (prefersReducedMotion()) {
       progress.current = next;
       render(next);
       return;

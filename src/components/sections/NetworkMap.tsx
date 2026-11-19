@@ -1,5 +1,6 @@
 "use client";
 
+import { prefersReducedMotion } from "@/lib/motion";
 import { useEffect, useRef, useState } from "react";
 import m from "./NetworkMap.module.css";
 
@@ -149,7 +150,7 @@ export default function NetworkMap({ bare = false, wide = false, className = "" 
   // Only animate while the map is on screen, and never with reduced motion.
   useEffect(() => {
     const el = ref.current;
-    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!el || prefersReducedMotion()) return;
     const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0.25 });
     io.observe(el);
     return () => io.disconnect();

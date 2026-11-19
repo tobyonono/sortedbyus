@@ -1,5 +1,6 @@
 "use client";
 
+import { prefersReducedMotion } from "@/lib/motion";
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import styles from "./Calendar.module.css";
 
@@ -33,12 +34,12 @@ export default function Calendar({
   // of the screen or of the request panel, scroll just enough to show all of it plus its scroll-margin.
   // Does nothing when it already fits.
   const revealFully = () => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduce = prefersReducedMotion();
     rootRef.current?.scrollIntoView({ block: "nearest", behavior: reduce ? "auto" : "smooth" });
   };
   useEffect(() => {
     // reduced motion skips the entrance, so there may be no animationend
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) revealFully();
+    if (prefersReducedMotion()) revealFully();
   }, []);
 
   useEffect(() => {

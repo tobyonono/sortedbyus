@@ -220,7 +220,7 @@ p {
 
 /* Reduced motion: gentler, not zero. Fades and colour changes still transition; anything that moves
    (transform, translate, scale, height, position) changes instantly; keyframe entrances are skipped.
-   Components that run motion from JS (carousel, ticker, scroll-grow) check the query themselves. */
+   Components that run motion from JS check prefersReducedMotion() (src/lib/motion.ts). */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

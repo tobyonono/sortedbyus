@@ -1,5 +1,6 @@
 "use client";
 
+import { prefersReducedMotion } from "@/lib/motion";
 import Image from "next/image";
 import type { Pic } from "@/lib/sanity/image";
 import { picProps } from "@/components/ui/picProps";
@@ -24,7 +25,7 @@ export default function FeatureTabs({ items }: { items: Feature[] }) {
   const [paused, setPaused] = useState(false);
 
   useEffect(() => {
-    if (!auto || paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!auto || paused || prefersReducedMotion()) return;
     const t = setTimeout(() => setOpen((o) => (o + 1) % items.length), CYCLE);
     return () => clearTimeout(t);
   }, [open, auto, paused, items.length]);

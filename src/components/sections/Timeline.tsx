@@ -1,5 +1,6 @@
 "use client";
 
+import { prefersReducedMotion } from "@/lib/motion";
 import Image from "next/image";
 import type { Pic } from "@/lib/sanity/image";
 import { picProps } from "@/components/ui/picProps";
@@ -19,7 +20,7 @@ export default function Timeline({ items, dark }: { items: TimelineItem[]; dark?
   useEffect(() => {
     const el = ref.current;
     const d = dot.current;
-    if (!el || !d || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!el || !d || prefersReducedMotion()) return;
     // The dot is moved with a transform (no layout work), easing a little towards where the scroll
     // says it should be, so it glides instead of stepping with each scroll event.
     let raf = 0;

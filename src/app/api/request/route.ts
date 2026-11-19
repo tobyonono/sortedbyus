@@ -31,6 +31,13 @@ export async function POST(req: Request) {
   if (!token) return Response.json({ ok: false, error: "Not configured" }, { status: 503 });
 
   const client = createClient({ projectId, dataset, apiVersion, token, useCdn: false });
-  await client.create({ _type: "request", status: "new", receivedAt: new Date().toISOString(), ...clean });
+  try {
+    await client.create({ _type: "request", status: "new", receivedAt: new Date().toISOString(), ...clean });
+  } catch (err) {
+    // Sanity unreachable or the token rejected: log it (Workers observability) and let the form fall back
+    // (the quick request card opens WhatsApp; the contact form shows its error message).
+    console.error("Saving website request to Sanity failed", { form: clean.form, page: clean.page, err: String(err) });
+    return Response.json({ ok: false, error: "Couldn't save the request" }, { status: 502 });
+  }
   return Response.json({ ok: true });
 }

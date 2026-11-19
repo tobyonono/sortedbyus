@@ -9,9 +9,9 @@ const SHAPES = [
 ];
 
 /** CMS examples -> ticker cards: a photo card when the editor added a photo, otherwise the next brand colour. */
-export function tickerItems(examples: { label: string; text: string; image?: SanityImg }[] = [], tones: NonNullable<TickerItem["tone"]>[]): TickerItem[] {
+export function tickerItems(examples: { label: string; text: string; image?: SanityImg }[] | null | undefined, tones: NonNullable<TickerItem["tone"]>[]): TickerItem[] {
   let t = 0;
-  return examples.map((e, i) => {
+  return (examples ?? []).map((e, i) => {
     const p = pic(e.image);
     return { label: e.label, text: e.text, ...SHAPES[i % SHAPES.length], ...(p ? { img: p } : { tone: tones[t++ % tones.length] }) };
   });

@@ -62,7 +62,7 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
           hasOfferCatalog: {
             "@type": "OfferCatalog",
             name: s.title,
-            itemListElement: s.offers.map((o) => ({ "@type": "Offer", itemOffered: { "@type": "Service", name: o.title, description: o.body } })),
+            itemListElement: (s.offers ?? []).map((o) => ({ "@type": "Offer", itemOffered: { "@type": "Service", name: o.title, description: o.body } })),
           },
         }}
       />
@@ -70,7 +70,7 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
         <section className={d.section} aria-labelledby="offer-heading">
           <SectionIntro id="offer-heading" label="What we can sort" title={`${s.title}, handled`} intro="A few of the things we’re asked for most. If yours isn’t here, ask anyway." />
           <ul className={d.cards}>
-            {s.offers.map((o, i) => (
+            {(s.offers ?? []).map((o, i) => (
               <li key={o.title}>
                 <Link
                   href={`/contact?service=${s.slug}&item=${encodeURIComponent(o.title)}`}
@@ -117,7 +117,7 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
 
         <section className={`${h.faq} ${h.faqSpaced}`} aria-labelledby="faq-heading">
           <h2 id="faq-heading" className={`${h.h2} ${h.subHeading}`}>Good to know</h2>
-          <Accordion items={s.faqs} defaultOpen={0} />
+          <Accordion items={s.faqs ?? []} defaultOpen={0} />
         </section>
 
         <section className={`${d.section} ${d.tinted} ${d.taupe}`} aria-labelledby="more-heading">

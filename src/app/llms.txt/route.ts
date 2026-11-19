@@ -1,14 +1,17 @@
 import { site } from "@/lib/site";
+import { defineQuery } from "groq";
 import { sanityFetch } from "@/lib/sanity/client";
+
+const llmsServicesQuery = defineQuery(
+  `*[_type == "service" && defined(slug.current)] | order(order asc){title, "slug": slug.current, intro, "offer": offers[]{title}}`,
+);
 
 // Built once at build time, like the pages.
 export const dynamic = "force-static";
 
 /** /llms.txt (llmstxt.org): a plain-language summary of the site and its pages for AI assistants. */
 export async function GET() {
-  const serviceList = await sanityFetch<{ title: string; slug: string; intro: string; offer: { title: string }[] }[]>(
-    `*[_type == "service" && defined(slug.current)] | order(order asc){title, "slug": slug.current, intro, "offer": offers[]{title}}`,
-  );
+  const serviceList = await sanityFetch(llmsServicesQuery);
   const u = (path: string) => `${site.url}${path}`;
   const body = `# ${site.name}
 
@@ -18,7 +21,7 @@ ${site.name} is a personal concierge and solutions company based in Lagos, with 
 
 ## Services
 
-${serviceList.map((s) => `- [${s.title}](${u(`/services/${s.slug}`)}): ${s.intro} Includes: ${s.offer.map((o) => o.title.toLowerCase()).join(", ")}.`).join("\n")}
+${serviceList.map((s) => `- [${s.title}](${u(`/services/${s.slug}`)}): ${s.intro} Includes: ${(s.offer ?? []).map((o) => o.title.toLowerCase()).join(", ")}.`).join("\n")}
 
 ## About the service
 

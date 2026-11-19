@@ -40,7 +40,7 @@ export default async function AboutPage() {
             <div className={d.noteBody}>
               {c.story.map((para) => (
                 <p key={para._key}>
-                  {para.children.map((sp) =>
+                  {(para.children ?? []).map((sp) =>
                     sp.marks?.includes("strong") ? <strong key={sp._key}>{sp.text}</strong> : sp.marks?.includes("em") ? <em key={sp._key}>{sp.text}</em> : <span key={sp._key}>{sp.text}</span>,
                   )}
                 </p>
@@ -55,7 +55,7 @@ export default async function AboutPage() {
 
         <section className={d.section} aria-labelledby="values-heading">
           <SectionIntro id="values-heading" label={c.valuesLabel} title={c.valuesHeading} sub />
-          <Principles items={c.values.map((v) => ({ title: v.title, body: v.body }))} />
+          <Principles items={(c.values ?? []).map((v) => ({ title: v.title, body: v.body }))} />
         </section>
 
         <section className={`${d.section} ${d.tinted}`} aria-labelledby="where-heading">

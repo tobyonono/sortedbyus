@@ -11,5 +11,5 @@ export async function generateMetadata(): Promise<Metadata> {
 /** Text from Sanity (Legal → Privacy policy). */
 export default async function Page() {
   const c = await getLegal("legal-privacy");
-  return <Legal title={c.title} updated={c.updated} sections={c.sections.map((s) => ({ h: s.heading, p: s.body.split(/\n\s*\n/) }))} />;
+  return <Legal title={c.title} updated={c.updated} sections={(c.sections ?? []).map((s) => ({ h: s.heading, p: s.body.split(/\n\s*\n/) }))} />;
 }

@@ -41,7 +41,7 @@ const trust = [
 
 export default async function Home() {
   const [c, { services, wa }] = await Promise.all([getHome(), getSite()]);
-  const steps: ProcessStep[] = c.processSteps.map((st) => ({ title: st.title, body: st.body, image: must(st.image, st.title) }));
+  const steps: ProcessStep[] = (c.processSteps ?? []).map((st) => ({ title: st.title, body: st.body, image: must(st.image, st.title) }));
   return (
     <>
       {/* ---------- Top band + hero ---------- */}
@@ -159,7 +159,7 @@ export default async function Home() {
 
           {/* Audience splits: full-bleed image left, sticky copy right (IIT ID-style) */}
           <div className={s.audiences}>
-            {c.audiences.map((au, i) => (
+            {(c.audiences ?? []).map((au, i) => (
               <section key={au.label} className={s.split} aria-labelledby={`aud-${i}`}>
                 <Reveal className={s.splitImg}>
                   <Image {...picProps(must(au.image))} alt={must(au.image).alt} style={{ objectPosition: must(au.image).focus }} fill sizes="(min-width: 900px) 50vw, 100vw" />
@@ -241,7 +241,7 @@ export default async function Home() {
           <h2 id="faq-heading" className={`${s.h2} ${s.subHeading}`}>
             {c.faqHeading}
           </h2>
-          <Accordion items={c.faqs} defaultOpen={0} />
+          <Accordion items={c.faqs ?? []} defaultOpen={0} />
         </section>
 
         {/* ---------- Closing banner: photo + angled photo cut + colour block (Narai-style) ---------- */}

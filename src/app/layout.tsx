@@ -34,7 +34,7 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const heroes = Object.fromEntries((await getHeroes()).filter((h) => h.url).map((h) => [h.path, h.url]));
+  const heroes = Object.fromEntries((await getHeroes()).flatMap((h) => (h.url ? [[h.path, h.url] as const] : [])));
   return (
     // suppressHydrationWarning: the inline script adds the `js` class before React hydrates.
     <html lang="en-NG" data-scroll-behavior="smooth" className={`${herbik.variable} ${turnery.variable}`} suppressHydrationWarning>

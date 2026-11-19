@@ -28,7 +28,7 @@ const WRONG_CUTS = ["#b89562", "var(--olive)", "var(--butter)", "#9e8f7f"];
 
 export default async function HowItWorksPage() {
   const c = await getHowItWorks();
-  const steps = c.steps.map((st) => ({
+  const steps = (c.steps ?? []).map((st) => ({
     title: st.title,
     body: st.body,
     img: must(st.image, st.title),
@@ -56,7 +56,7 @@ export default async function HowItWorksPage() {
           <MapBanner
             label={c.behindLabel}
             title={c.behindHeading}
-            points={c.behindPoints.map((p) => ({ t: p.title, b: p.body }))}
+            points={(c.behindPoints ?? []).map((p) => ({ t: p.title, b: p.body }))}
           />
         </section>
 
@@ -68,7 +68,7 @@ export default async function HowItWorksPage() {
               <div style={{ marginTop: 32 }}><ButtonLink href="/contact" arrow>Make a request</ButtonLink></div>
             </div>
             <ul className={h.trustList} style={{ marginTop: 0 }}>
-              {c.costs.map((t) => <li key={t.title}><h3>{t.title}</h3><p>{t.body}</p></li>)}
+              {(c.costs ?? []).map((t) => <li key={t.title}><h3>{t.title}</h3><p>{t.body}</p></li>)}
             </ul>
           </div>
         </section>
@@ -76,7 +76,7 @@ export default async function HowItWorksPage() {
         <section className={d.section} aria-labelledby="wrong-heading">
           <SectionIntro id="wrong-heading" label={c.wrongLabel} title={c.wrongHeading} intro={c.wrongIntro} sub />
           <ul className={`${d.cards} ${d.cards4}`}>
-            {c.wrong.map((w, i) => (
+            {(c.wrong ?? []).map((w, i) => (
               <li key={w.title} className={`${d.card} ${d.cutCard}`} style={{ "--cut": WRONG_CUTS[i % WRONG_CUTS.length] } as React.CSSProperties}>
                 <span className={d.cut} aria-hidden="true" />
                 <h3 className={d.cardHeading}>{w.title}</h3>
@@ -88,7 +88,7 @@ export default async function HowItWorksPage() {
 
         <section className={h.faq} aria-labelledby="faq-heading">
           <h2 id="faq-heading" className={`${h.h2} ${h.subHeading}`}>Good to know</h2>
-          <Accordion items={c.faqs} defaultOpen={0} />
+          <Accordion items={c.faqs ?? []} defaultOpen={0} />
         </section>
 
         <Closing image={must(c.closingImage)} title={c.closingHeading} words={c.breakText} levels={c.breakLevels} />

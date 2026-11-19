@@ -4,12 +4,12 @@ import { projectId, dataset } from "./env";
 
 const builder = createImageUrlBuilder({ projectId, dataset });
 
-/** An image field as returned by the IMG fragment below. */
+/** An image field as returned by the IMG fragment below (Sanity returns null for anything not set). */
 export type SanityImg = {
-  alt?: string;
-  asset?: { _id: string; url: string; metadata?: { lqip?: string } };
-  hotspot?: { x: number; y: number };
-  crop?: { top: number; bottom: number; left: number; right: number };
+  alt?: string | null;
+  asset?: { _id: string; url: string; metadata?: { lqip?: string | null } | null } | null;
+  hotspot?: { x?: number; y?: number; width?: number; height?: number } | null;
+  crop?: { top?: number; bottom?: number; left?: number; right?: number } | null;
 } | null;
 
 /** What components render: a Sanity photo or a local one, with optional focal point. */
@@ -24,13 +24,17 @@ export const IMG = `{alt, hotspot, crop, asset->{_id, url, metadata{lqip}}}`;
  */
 export function pic(img: SanityImg | undefined, fallbackAlt = ""): Pic | null {
   if (!img?.asset?.url) return null;
-  const cropped = img.crop && (img.crop.top || img.crop.bottom || img.crop.left || img.crop.right);
-  const src = cropped ? builder.image({ ...img, asset: { _ref: img.asset._id } }).url() : img.asset.url;
+  const { crop, hotspot } = img;
+  const cropped = crop && (crop.top || crop.bottom || crop.left || crop.right);
+  const spot = hotspot?.x != null && hotspot.y != null ? { x: hotspot.x, y: hotspot.y, width: hotspot.width ?? 1, height: hotspot.height ?? 1 } : undefined;
+  const src = cropped
+    ? builder.image({ asset: { _ref: img.asset._id }, crop: { top: crop.top ?? 0, bottom: crop.bottom ?? 0, left: crop.left ?? 0, right: crop.right ?? 0 }, hotspot: spot }).url()
+    : img.asset.url;
   return {
     src,
     alt: img.alt || fallbackAlt,
-    blur: img.asset.metadata?.lqip,
-    focus: img.hotspot ? `${Math.round(img.hotspot.x * 100)}% ${Math.round(img.hotspot.y * 100)}%` : undefined,
+    blur: img.asset.metadata?.lqip ?? undefined,
+    focus: spot ? `${Math.round(spot.x * 100)}% ${Math.round(spot.y * 100)}%` : undefined,
   };
 }
 

@@ -9,9 +9,9 @@ import h from "@/styles/home.module.css";
 export default function Closing({ image, title = "Consider it sorted.", words, levels, cta = "Make a request", href = "/contact", focus }: {
   image: Pic; title?: string; cta?: string; href?: string;
   /** the page's short phrase, shown staggered instead of the title */
-  words?: string;
+  words?: string | null;
   /** level per word, e.g. "0,1,0,-1" (the default wave when empty) */
-  levels?: string;
+  levels?: string | null;
   /** object-position for the photo, e.g. "center 30%" */
   focus?: string;
 }) {
@@ -27,4 +27,4 @@ export default function Closing({ image, title = "Consider it sorted.", words, l
   );
 }
 
-const parseLevels = (v?: string) => v?.split(",").map(Number).filter((n) => !Number.isNaN(n));
+const parseLevels = (v?: string | null) => v?.split(",").map(Number).filter((n) => !Number.isNaN(n));

@@ -8,7 +8,7 @@ import { ButtonLink } from "@/components/ui/Button";
 import f from "./FeatureTabs.module.css";
 
 /** `body` may hold several paragraphs, separated by a blank line. */
-export type Feature = { title: string; body: string; items?: string[]; img: Pic; cta?: { label: string; href: string } };
+export type Feature = { title: string; body: string; items?: string[] | null; img: Pic; cta?: { label: string; href: string } };
 
 const CYCLE = 7000; // ms each item stays open before the next one (Harvey-style auto-advance)
 

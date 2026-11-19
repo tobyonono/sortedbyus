@@ -4,7 +4,7 @@ import h from "@/styles/home.module.css";
 import d from "@/styles/pages.module.css";
 
 /** Plain text page for policies: espresso header band, a centred 720px column. */
-export default function Legal({ title, updated, sections }: { title: string; updated?: string; sections: { h: string; p: string[] }[] }) {
+export default function Legal({ title, updated, sections }: { title: string; updated?: string | null; sections: { h: string; p: string[] }[] }) {
   return (
     <>
       <div className={h.top}><SiteHeader /></div>

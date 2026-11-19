@@ -16,7 +16,7 @@
   top: 0;
   left: 0;
   right: 0;
-  /* slimmer than the top-of-page header: 16 + 55 wordmark + 16 = 87px bar */
+  /* slimmer than the top-of-page header: 16 + 45 wordmark + 16 = 77px bar */
   padding-top: 16px;
 }
 .header[data-mode="hidden"]::before,
@@ -43,7 +43,7 @@
 }
 .mark svg {
   display: block;
-  height: 55px;
+  height: 45px;
   width: auto;
   aspect-ratio: 805 / 294;
 }

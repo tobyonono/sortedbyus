@@ -107,7 +107,7 @@ export const photoBreak = (group?: string) => [
   defineField({
     name: "breakText",
     title: "Footer banner phrase",
-    description: "The bottom banner’s headline, with its words on staggered levels and coming in one at a time. Five words at most. Leave empty to use the standard banner heading.",
+    description: "The bottom banner’s headline. Five words at most. Leave empty to use the standard banner heading.",
     type: "string",
     group,
     validation: (r) => r.custom((v) => (v && v.trim().split(/\s+/).length > 5 ? "Five words at most" : true)),
@@ -115,7 +115,7 @@ export const photoBreak = (group?: string) => [
   defineField({
     name: "breakLevels",
     title: "Footer banner phrase levels (optional)",
-    description: "The level of each word in turn: 0 = middle, 1 = a line up, -1 = a line down, e.g. 0,1,0,-1 (the default). The pattern repeats if there are more words.",
+    description: "Fill in to set the phrase on staggered levels, its words coming in one at a time. Save it for one or two standout phrases. The level of each word in turn: 0 = middle, 1 = a line up, -1 = a line down, e.g. 0,1,0,-1. Empty = a plain heading.",
     type: "string",
     group,
     validation: (r) => r.regex(/^\s*-?[01](\s*,\s*-?[01])*\s*$/, { name: "levels like 0,1,0,-1" }),

@@ -251,7 +251,7 @@ export default async function Home() {
         {/* ---------- Closing banner: photo + angled photo cut + colour block (Narai-style) ---------- */}
         <CutBanner base={must(c.closingImage)} block={false} className={s.banner} aria-labelledby="banner-heading">
           <div className={s.bannerCopy}>
-            <h2 id="banner-heading"><Stagger text={c.closingHeading} levels={parseLevels(c.closingLevels)} /></h2>
+            <h2 id="banner-heading">{c.closingLevels?.trim() ? <Stagger text={c.closingHeading} levels={parseLevels(c.closingLevels)} /> : c.closingHeading}</h2>
             <ButtonLink href="#request" variant="primary" arrow>
               {c.closingButton}
             </ButtonLink>

@@ -179,7 +179,7 @@ export default function RequestCard({
                 }}
               >
                 <span className={styles.tileBig}>Today</span>
-                <span className={styles.tileSmall}>Urgent</span>
+                <span className={styles.tileSmall}>Same day</span>
               </button>
               <button
                 ref={dateBtnRef}

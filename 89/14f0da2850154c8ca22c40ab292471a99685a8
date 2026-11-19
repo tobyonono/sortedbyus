@@ -1,0 +1,30 @@
+src/app/page.tsx
+  s_4961e1430d7cba::t_e57558031bc750 35-36,213-214
+  s_4961e1430d7cba::t_05fa52fec91302 42,215,238
+  s_4961e1430d7cba::t_e05581bb66fd47 216-237
+  s_4961e1430d7cba::t_e23b510ee70e70 34
+src/components/sections/RequestCard.tsx
+  s_4961e1430d7cba::t_05fa52fec91302 261
+src/components/sections/RequestPanel.tsx
+  s_4961e1430d7cba::t_05fa52fec91302 69
+src/components/sections/ContactForm.tsx
+  s_4961e1430d7cba::t_05fa52fec91302 84
+docs/brand-voice.md
+  s_4961e1430d7cba::t_9831ef3d27ca20 82-86
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8914f0da2850154c8ca22c40ab292471a99685a8",
+  "prompts": {},
+  "sessions": {
+    "s_4961e1430d7cba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e12df23b-4e6e-4727-8b0d-c94b2851c69f",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Toby Onono <ononop@tcd.ie>"
+    }
+  }
+}

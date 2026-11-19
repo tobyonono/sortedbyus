@@ -79,6 +79,11 @@ aso-ebi · owambe · Detty December · back home · Mum / Mummy and Daddy · the
   inside the founder's story on About.)
 - "Here in Nigeria or abroad, one message and it's handled." as a hero subline: the owner didn't like a
   tagline under the hero heading.
+- A "Why trust us / Will it actually get done?" block on the homepage: the owner doesn't want it there. Trust
+  points live in the copy where they're relevant (process, FAQs, service pages), not as a homepage section.
+- "What matters" on every surface: the phrase is strongest once, in the homepage intro ("Tell us what you need
+  and what matters about it."). Elsewhere say it another way: "the details that make it right", "preferences",
+  "what it's for", "what you've asked for".
 - Exclusive, VIP, members-only, luxury tones: not who we are.
 - App-interface voice (notifications, quote bubbles, "Your request has been submitted!").
 

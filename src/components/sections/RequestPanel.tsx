@@ -66,7 +66,7 @@ export default function RequestPanel({ services }: { services?: string[] }) {
             </svg>
           </button>
         </div>
-        <p className={styles.intro}>Tell us what you need. We’ll come back with options and a clear quote.</p>
+        <p className={styles.intro}>Tell us what you need, and the details that make it right. We’ll come back with options and a clear quote.</p>
         <RequestCard key={formKey} initialService={service} services={services} className={styles.form} />
       </div>
     </dialog>

@@ -258,7 +258,7 @@ export default function RequestCard({
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={3}
-              placeholder="Details, budget, links…"
+              placeholder="Preferences, budget, links…"
             />
           </label>
 

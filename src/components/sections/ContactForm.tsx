@@ -81,7 +81,7 @@ export default function ContactForm({ services }: { services: { title: string; s
         </select>
       </label>
       <label className={`${d.field} ${d.fieldFull}`}>Message
-        <textarea name="message" ref={msgRef} placeholder="What do you need, where and when? Add your budget if you have one." required />
+        <textarea name="message" ref={msgRef} placeholder="What do you need, where and when? Any preferences, and your budget if you have one." required />
       </label>
       {(error || state === "error") && (
         <p role="alert" style={{ color: "#a33", fontSize: 15 }}>

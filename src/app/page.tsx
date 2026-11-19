@@ -31,13 +31,15 @@ export async function generateMetadata(): Promise<Metadata> {
 import Footer from "@/components/layout/Footer";
 
 // About + "Why trust us" section is hidden for now; flip to true to bring it (and its nav/footer links) back.
-const SHOW_ABOUT = false;
+
+/** The "Why trust us" block below is off; flip this to show it. */
+const SHOW_TRUST = false;
 
 const trust = [
   { title: "A clear quote, up front", body: "You see the full cost, including our fee, before anything goes ahead." },
   { title: "You approve before you pay", body: "Nothing is bought or booked until you’ve said yes to the quote." },
   { title: "Invoiced, paid by transfer", body: "We send an invoice and you pay by bank transfer. We never ask for card details on the website." },
-  { title: "Updates until it’s closed", body: "We keep you posted on WhatsApp until it’s delivered, done and closed." },
+  { title: "One message to start", body: "No account and no forms. Send your request on WhatsApp or the website." },
 ];
 
 export default async function Home() {
@@ -208,36 +210,32 @@ export default async function Home() {
           </section>
         </section>
 
-        {/* ---------- About + why trust us (hidden for now) ---------- */}
-        {SHOW_ABOUT && (
-          <section className={s.trust} id="about" aria-labelledby="trust-heading">
-            <Reveal className={`${s.panel} ${s.panelApricot}`} variant="fade">
-              <p className={s.label}>About us</p>
-              <h2 className={s.panelHeading}>
-                Who is
-                <br />
-                Sorted by Us?
-              </h2>
-              <p className={s.panelBody}>
-                A personal concierge in Nigeria, for people living here and abroad. Whatever you need, we’ll find a way, and
-                tell you honestly what it costs.
-              </p>
-            </Reveal>
-            <div className={s.trustCopy}>
-              <p className={s.label}>Why trust us</p>
-              <h2 id="trust-heading" className={s.splitHeading}>
-                Straightforward, start to finish
-              </h2>
-              <ul className={s.trustList}>
-                {trust.map((t) => (
-                  <li key={t.title}>
-                    <h3>{t.title}</h3>
-                    <p>{t.body}</p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </section>
+        {/* ---------- Why trust us (hidden: the owner doesn't want it on the homepage) ---------- */}
+        {SHOW_TRUST && (
+        <section className={s.trust} id="trust" aria-labelledby="trust-heading">
+          <Reveal className={`${s.panel} ${s.panelApricot}`} variant="fade">
+            <p className={s.label}>Why trust us</p>
+            <h2 id="trust-heading" className={s.panelHeading}>
+              Will it actually
+              <br />
+              get done?
+            </h2>
+            <p className={s.panelBody}>
+              You’ll see it happen. We send photos as we go and receipts once it’s paid, and keep you posted on WhatsApp,
+              whatever your time zone.
+            </p>
+          </Reveal>
+          <div className={s.trustCopy}>
+            <ul className={s.trustList}>
+              {trust.map((t) => (
+                <li key={t.title}>
+                  <h3>{t.title}</h3>
+                  <p>{t.body}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
         )}
 
         {/* ---------- FAQ ---------- */}

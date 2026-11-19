@@ -65,7 +65,7 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
       />
       <main>
         <section className={d.section} aria-labelledby="offer-heading">
-          <SectionIntro id="offer-heading" label="What we can sort" title={`${s.title}, handled`} intro="A few of the things we’re asked for most. If yours isn’t here, ask anyway." />
+          <SectionIntro id="offer-heading" label={s.title} title="What we can sort" intro="A few of the things we’re asked for most. If yours isn’t here, ask anyway." />
           <ul className={d.cards}>
             {(s.offers ?? []).map((o, i) => (
               <li key={o.title}>

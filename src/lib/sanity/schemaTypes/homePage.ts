@@ -114,7 +114,15 @@ export const homePage = defineType({
     line("faqHeading", "Heading", undefined, "faq"),
     faqs("faqs", "Questions and answers", "faq"),
 
-    line("closingHeading", "Heading", undefined, "closing"),
+    line("closingHeading", "Heading", "Its words sit on staggered levels and come in one at a time.", "closing"),
+    defineField({
+      name: "closingLevels",
+      title: "Heading levels (optional)",
+      description: "The level of each word in turn: 0 = middle, 1 = a line up, -1 = a line down, e.g. 0,1,0,-1 (the default). The pattern repeats if there are more words.",
+      type: "string",
+      group: "closing",
+      validation: (r) => r.regex(/^\s*-?[01](\s*,\s*-?[01])*\s*$/, { name: "levels like 0,1,0,-1" }),
+    }),
     line("closingButton", "Button text", undefined, "closing", 30),
     photo("closingImage", "Photo", "Full-width banner. Wide photos work best.", "closing"),
 

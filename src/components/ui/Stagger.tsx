@@ -3,6 +3,9 @@ import styles from "./Stagger.module.css";
 /** Default level of each word in turn (1 = a line up, -1 = a line down), repeating. */
 export const WAVE = [0, 1, 0, -1];
 
+/** Levels as editors type them in Sanity ("0,1,0,-1") -> numbers; empty or invalid -> undefined (the default wave). */
+export const parseLevels = (v?: string | null) => v?.split(",").map(Number).filter((n) => !Number.isNaN(n));
+
 /**
  * Words set on three levels in a wave, each starting where the one before it ends:
  * middle, up, middle, down, repeating ("More" / "life," up / "less" / "admin" down). Screen readers get the plain sentence.

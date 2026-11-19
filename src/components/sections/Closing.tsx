@@ -1,7 +1,7 @@
 import type { Pic } from "@/lib/sanity/image";
 import CutBanner from "@/components/ui/CutBanner";
 import { ButtonLink } from "@/components/ui/Button";
-import Stagger from "@/components/ui/Stagger";
+import Stagger, { parseLevels } from "@/components/ui/Stagger";
 import h from "@/styles/home.module.css";
 
 /** The closing banner, with its own line and CTA. When the page sets `words` (its short phrase in Sanity),
@@ -26,5 +26,3 @@ export default function Closing({ image, title = "Consider it sorted.", words, l
     </CutBanner>
   );
 }
-
-const parseLevels = (v?: string | null) => v?.split(",").map(Number).filter((n) => !Number.isNaN(n));

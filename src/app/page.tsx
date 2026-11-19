@@ -7,6 +7,7 @@ import ProcessCarousel, { type ProcessStep } from "@/components/sections/Process
 import RequestTicker from "@/components/sections/RequestTicker";
 import Accordion from "@/components/ui/Accordion";
 import Reveal from "@/components/ui/Reveal";
+import Stagger, { parseLevels } from "@/components/ui/Stagger";
 import ScrollGrow from "@/components/ui/ScrollGrow";
 import CutBanner from "@/components/ui/CutBanner";
 import SiteHeader from "@/components/layout/SiteHeader";
@@ -250,7 +251,7 @@ export default async function Home() {
         {/* ---------- Closing banner: photo + angled photo cut + colour block (Narai-style) ---------- */}
         <CutBanner base={must(c.closingImage)} block={false} className={s.banner} aria-labelledby="banner-heading">
           <div className={s.bannerCopy}>
-            <h2 id="banner-heading">{c.closingHeading}</h2>
+            <h2 id="banner-heading"><Stagger text={c.closingHeading} levels={parseLevels(c.closingLevels)} /></h2>
             <ButtonLink href="#request" variant="primary" arrow>
               {c.closingButton}
             </ButtonLink>

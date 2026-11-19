@@ -3510,6 +3510,13 @@
         },
         "optional": false
       },
+      "closingLevels": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
       "closingButton": {
         "type": "objectAttribute",
         "value": {

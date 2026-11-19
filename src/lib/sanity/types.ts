@@ -544,6 +544,7 @@ export type HomePage = {
     _key: string;
   }>;
   closingHeading: string;
+  closingLevels?: string;
   closingButton: string;
   closingImage: {
     asset: SanityImageAssetReference;
@@ -832,6 +833,7 @@ export type HomeQueryResult = {
     _key: string;
   }>;
   closingHeading: string;
+  closingLevels?: string;
   closingButton: string;
   closingImage: {
     alt: string;

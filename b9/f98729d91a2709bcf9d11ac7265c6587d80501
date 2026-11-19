@@ -1,0 +1,21 @@
+src/lib/site.ts
+  s_4961e1430d7cba::t_88c6aa0bda8ef0 7
+src/styles/pages.module.css
+  s_4961e1430d7cba::t_0433c8945f4165 21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b9f98729d91a2709bcf9d11ac7265c6587d80501",
+  "prompts": {},
+  "sessions": {
+    "s_4961e1430d7cba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e12df23b-4e6e-4727-8b0d-c94b2851c69f",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Toby Onono <ononop@tcd.ie>"
+    }
+  }
+}

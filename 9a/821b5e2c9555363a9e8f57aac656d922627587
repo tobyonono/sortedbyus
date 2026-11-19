@@ -1,0 +1,69 @@
+src/lib/sanity/types.ts
+  s_4961e1430d7cba::t_1f2acacf404bcf 699-710,1328-1377,1382,1392
+  s_4961e1430d7cba::t_a63b1dd36a87bb 1-698,711-712,728,747,767,785,805,822,848-941,960,978-979,998,1001,1037,1042-1044,1063,1084,1102-1103,1124,1127,1146,1151-1153,1172,1209-1210,1221,1236,1239,1251,1256-1258,1274,1285-1287,1298-1300,1302-1327,1378-1381,1384-1385,1393-1398
+  s_4961e1430d7cba::t_1f2fc5c6b83487 713-727,729-746,748-766,768-784,786-804,806-821,823-847,942-959,961-977,980-997,999-1000,1002-1036,1038-1041,1045-1062,1064-1083,1085-1101,1104-1123,1125-1126,1128-1145,1147-1150,1154-1171,1173-1208,1211-1220,1222-1235,1237-1238,1240-1250,1252-1255,1259-1273,1275-1284,1288-1297,1301,1383,1386-1391
+src/lib/sanity/schema.json
+  s_4961e1430d7cba::t_a63b1dd36a87bb 1-4304
+src/components/sections/FeatureTabs.tsx
+  s_4961e1430d7cba::t_3d39ba40cbcc61 11
+eslint.config.mjs
+  s_4961e1430d7cba::t_211b8d272d02a1 15-16
+src/app/(site)/privacy/page.tsx
+  s_4961e1430d7cba::t_3d39ba40cbcc61 14
+src/app/(site)/corporate/page.tsx
+  s_4961e1430d7cba::t_3d39ba40cbcc61 43,48,54,70
+src/lib/sanity/site.ts
+  s_4961e1430d7cba::t_1f2acacf404bcf 2,4,17-18,21-24
+src/app/llms.txt/route.ts
+  s_4961e1430d7cba::t_1f2acacf404bcf 2,5-8,14
+  s_4961e1430d7cba::t_3d39ba40cbcc61 24
+src/lib/sanity/image.ts
+  s_4961e1430d7cba::t_bf7dee7c736e0f 7,9-12,27-32,36-37
+src/app/(site)/how-it-works/page.tsx
+  s_4961e1430d7cba::t_3d39ba40cbcc61 31,59,71,79,91
+src/app/page.tsx
+  s_4961e1430d7cba::t_3d39ba40cbcc61 44,162,244
+src/lib/sanity/client.ts
+  s_4961e1430d7cba::t_b2d7973875ea11 1,3,8-9
+package.json
+  s_4961e1430d7cba::t_1e40a5edbb76fd 16-17,23
+src/app/layout.tsx
+  s_4961e1430d7cba::t_3d39ba40cbcc61 37
+src/components/sections/tickerItems.ts
+  s_4961e1430d7cba::t_3d39ba40cbcc61 12,14
+src/components/sections/Legal.tsx
+  s_4961e1430d7cba::t_3d39ba40cbcc61 7
+src/app/(site)/terms/page.tsx
+  s_4961e1430d7cba::t_3d39ba40cbcc61 14
+src/app/(site)/services/[slug]/page.tsx
+  s_4961e1430d7cba::t_3d39ba40cbcc61 65,73,120
+src/lib/sanity/queries.ts
+  s_4961e1430d7cba::t_1f2fc5c6b83487 16,27,30,34,37,40,45-49
+  s_4961e1430d7cba::t_9650f69e83333f 9-15,18,28,32,35,38,41
+  s_4961e1430d7cba::t_0343f967289d95 1,3,5-7,20-22,24-25,44,51
+sanity.cli.ts
+  s_4961e1430d7cba::t_635479de79c20d 9-14
+src/components/sections/Closing.tsx
+  s_4961e1430d7cba::t_211b8d272d02a1 30
+  s_4961e1430d7cba::t_3d39ba40cbcc61 12,14
+src/app/(site)/about/page.tsx
+  s_4961e1430d7cba::t_3d39ba40cbcc61 43,58
+package-lock.json
+  s_4961e1430d7cba::t_95cf66922d29d6 14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9a821b5e2c9555363a9e8f57aac656d922627587",
+  "prompts": {},
+  "sessions": {
+    "s_4961e1430d7cba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e12df23b-4e6e-4727-8b0d-c94b2851c69f",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Toby Onono <ononop@tcd.ie>"
+    }
+  }
+}

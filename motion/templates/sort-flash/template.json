@@ -1,0 +1,202 @@
+{
+  "id": "sort-flash",
+  "name": "Sort flash",
+  "description": "“Sort” holds while requests flash past on photos, then lands on “Sorted by Us”.",
+  "engine": "code",
+  "cavalryScene": "Sorted-by-Us-Film-studio.cv",
+  "maxBeats": 9,
+  "controls": [
+    {
+      "key": "lead",
+      "type": "text",
+      "label": "Lead word",
+      "group": "Copy"
+    },
+    {
+      "key": "suffix",
+      "type": "text",
+      "label": "Joins the lead",
+      "group": "Copy"
+    },
+    {
+      "key": "closer",
+      "type": "text",
+      "label": "Last line",
+      "group": "Copy"
+    },
+    {
+      "key": "beats",
+      "type": "list",
+      "label": "Requests",
+      "group": "Screens",
+      "max": 9,
+      "item": [
+        {
+          "key": "word",
+          "type": "text",
+          "label": "Request"
+        },
+        {
+          "key": "image",
+          "type": "image",
+          "label": "Photo"
+        }
+      ]
+    },
+    {
+      "key": "typeSize",
+      "type": "number",
+      "label": "Type size",
+      "unit": "%",
+      "min": 6,
+      "max": 18,
+      "step": 0.1,
+      "group": "Type"
+    },
+    {
+      "key": "beatSeconds",
+      "type": "number",
+      "label": "Each request",
+      "unit": "s",
+      "min": 0.3,
+      "max": 2,
+      "step": 0.05,
+      "group": "Timing"
+    },
+    {
+      "key": "endSeconds",
+      "type": "number",
+      "label": "Hold the end",
+      "unit": "s",
+      "min": 1,
+      "max": 5,
+      "step": 0.1,
+      "group": "Timing"
+    },
+    {
+      "key": "wordMotion",
+      "type": "choice",
+      "label": "Words",
+      "group": "Timing",
+      "options": [
+        {
+          "value": "cut",
+          "label": "Cut"
+        },
+        {
+          "value": "rise",
+          "label": "Rise"
+        }
+      ]
+    },
+    {
+      "key": "wordSpring",
+      "type": "spring",
+      "label": "Rise spring",
+      "group": "Timing",
+      "hint": "Used when words rise"
+    },
+    {
+      "key": "colours.background",
+      "type": "colour",
+      "label": "Background",
+      "group": "Colour"
+    },
+    {
+      "key": "colours.text",
+      "type": "colour",
+      "label": "Text",
+      "group": "Colour"
+    },
+    {
+      "key": "colours.overlay",
+      "type": "colour",
+      "label": "Photo tint",
+      "group": "Colour"
+    },
+    {
+      "key": "overlayOpacity",
+      "type": "number",
+      "label": "Photo darken",
+      "unit": "%",
+      "min": 0,
+      "max": 80,
+      "step": 1,
+      "group": "Colour"
+    },
+    {
+      "key": "format",
+      "type": "format",
+      "label": "Format",
+      "group": "Export"
+    },
+    {
+      "key": "fps",
+      "type": "fps",
+      "label": "Frame rate",
+      "group": "Export"
+    }
+  ],
+  "defaults": {
+    "lead": "Sort",
+    "suffix": "ed",
+    "closer": "by Us",
+    "beats": [
+      {
+        "word": "flowers",
+        "image": "gifts.png"
+      },
+      {
+        "word": "wedding beads",
+        "image": "sourcing.png"
+      },
+      {
+        "word": "drinks",
+        "image": "events.jpg"
+      },
+      {
+        "word": "lunch",
+        "image": "dinners.png"
+      },
+      {
+        "word": "birthday decorations",
+        "image": "celebrations.png"
+      },
+      {
+        "word": "a weekend away",
+        "image": "getaways.png"
+      },
+      {
+        "word": "a boat trip",
+        "image": "boat.png"
+      },
+      {
+        "word": "party food",
+        "image": "suya.png"
+      },
+      {
+        "word": "a house check",
+        "image": "family-home.png"
+      }
+    ],
+    "beatSeconds": 0.8,
+    "endSeconds": 2.4,
+    "typeSize": 11.1,
+    "colours": {
+      "background": "espresso",
+      "text": "cream",
+      "overlay": "espresso"
+    },
+    "overlayOpacity": 36,
+    "format": "portrait",
+    "fps": 25,
+    "wordMotion": "cut",
+    "wordSpring": {
+      "preset": "card",
+      "stiffness": 388,
+      "damping": 39.39,
+      "mass": 1,
+      "velocity": 0
+    }
+  }
+}

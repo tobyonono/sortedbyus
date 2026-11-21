@@ -1,3 +1,6 @@
+/* Easings, durations and springs, shared with the motion studio. Generated: edit motion/brand.json. */
+@import "./motion-tokens.css";
+
 /* Scroll progress for the hero grow (ScrollGrow sets it every scroll frame). Registered as
    non-inheriting so updating it restyles only .heroGrow itself, not every element inside it. */
 @property --p {
@@ -58,23 +61,7 @@
   --gutter: max(40px, calc((100vw - var(--max)) / 2 + 40px));
   --content: 1128px;
 
-  /* Motion — three curves, one job each:
-       --ease-out     anything entering, leaving or being pressed (strong ease-out)
-       --ease-reveal  big on-screen movement: process carousel, hero block (Thirdway in-out)
-       --ease         hover and colour changes
-     plus --ease-drawer for the slide-over panel and linear for the ticker. */
-  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-  --ease-reveal: cubic-bezier(0.66, 0.01, 0.12, 0.98);
-  --ease: cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
-  /* Durations: press feedback, UI (dropdowns, accordion, form steps, header), hover, marketing entrances */
-  --dur-press: 160ms;
-  --dur-fast: 150ms;
-  --dur-ui: 250ms;
-  --dur: 300ms;
-  --dur-enter: 900ms;
-  /* how far marketing content rises as it enters (hero copy, banner copy, request card) */
-  --rise: 16px;
+  /* Motion (easings, durations, --rise, springs) comes from motion-tokens.css, generated from motion/brand.json. */
 }
 
 /* v2 palette (/v2): navy in place of the browns. Cream, butter and olive stay; the warm neutrals

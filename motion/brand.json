@@ -1,0 +1,128 @@
+{
+  "$comment": "Motion brand tokens: the one place colours, easings and springs are defined. scripts/motion-tokens.mjs turns the easings and springs into CSS variables for the website (src/styles/motion-tokens.css); the motion studio reads this file directly.",
+  "palette": {
+    "espresso": "#2f2116",
+    "cream": "#fcfaf6",
+    "butter": "#fee197",
+    "apricot": "#ffebd0",
+    "olive": "#a3a46e",
+    "tan": "#987f61",
+    "caramel": "#b89562",
+    "terracotta": "#a5745b",
+    "taupe": "#9e8f7f",
+    "muted": "#4f3622",
+    "white": "#ffffff"
+  },
+  "fonts": {
+    "display": "Herbik",
+    "body": "Turnery"
+  },
+  "ease": {
+    "out": [
+      0.23,
+      1,
+      0.32,
+      1
+    ],
+    "reveal": [
+      0.66,
+      0.01,
+      0.12,
+      0.98
+    ],
+    "standard": [
+      0.4,
+      0,
+      0.2,
+      1
+    ],
+    "drawer": [
+      0.32,
+      0.72,
+      0,
+      1
+    ]
+  },
+  "formats": {
+    "portrait": {
+      "label": "Portrait 4:5",
+      "video": [
+        1080,
+        1350
+      ]
+    },
+    "story": {
+      "label": "Story 9:16",
+      "video": [
+        1080,
+        1920
+      ]
+    },
+    "square": {
+      "label": "Square 1:1",
+      "video": [
+        1080,
+        1080
+      ]
+    },
+    "landscape": {
+      "label": "Landscape 16:9",
+      "video": [
+        1920,
+        1080
+      ]
+    }
+  },
+  "fps": [
+    24,
+    25,
+    30,
+    50,
+    60
+  ],
+  "springs": {
+    "card": {
+      "label": "Card",
+      "stiffness": 388,
+      "damping": 39.39,
+      "mass": 1,
+      "velocity": 0
+    },
+    "glide": {
+      "label": "Glide",
+      "stiffness": 22,
+      "damping": 9.4,
+      "mass": 1,
+      "velocity": 0
+    },
+    "gentle": {
+      "label": "Gentle",
+      "stiffness": 170,
+      "damping": 26,
+      "mass": 1,
+      "velocity": 0
+    },
+    "snappy": {
+      "label": "Snappy",
+      "stiffness": 520,
+      "damping": 46,
+      "mass": 1,
+      "velocity": 0
+    },
+    "bouncy": {
+      "label": "Bouncy",
+      "stiffness": 280,
+      "damping": 14,
+      "mass": 1,
+      "velocity": 0
+    }
+  },
+  "durations": {
+    "press": 160,
+    "fast": 150,
+    "ui": 250,
+    "base": 300,
+    "enter": 900
+  },
+  "rise": 16
+}

@@ -1,0 +1,379 @@
+{
+  "id": "card-journey",
+  "name": "Card journey",
+  "description": "A camera glides across a wall of request cards, stopping on each featured photo card. Loops.",
+  "engine": "code",
+  "cavalryScene": "Sorted-by-Us-Card-Journey.cv",
+  "controls": [
+    {
+      "key": "stops",
+      "type": "list",
+      "label": "Stops",
+      "group": "Featured cards",
+      "max": 6,
+      "item": [
+        {
+          "key": "image",
+          "type": "image",
+          "label": "Photo"
+        },
+        {
+          "key": "label",
+          "type": "text",
+          "label": "Label"
+        },
+        {
+          "key": "request",
+          "type": "text",
+          "label": "Request"
+        }
+      ]
+    },
+    {
+      "key": "fill",
+      "type": "list",
+      "label": "Cards",
+      "group": "Wall of requests",
+      "max": 40,
+      "item": [
+        {
+          "key": "image",
+          "type": "image",
+          "label": "Photo (optional)"
+        },
+        {
+          "key": "colour",
+          "type": "colour",
+          "label": "Card colour"
+        },
+        {
+          "key": "label",
+          "type": "text",
+          "label": "Label (optional)"
+        },
+        {
+          "key": "request",
+          "type": "text",
+          "label": "Request"
+        }
+      ]
+    },
+    {
+      "key": "holdSeconds",
+      "type": "number",
+      "label": "Hold on each card",
+      "unit": "s",
+      "min": 0.2,
+      "max": 3,
+      "step": 0.05,
+      "group": "Camera"
+    },
+    {
+      "key": "spring",
+      "type": "spring",
+      "label": "Camera glide",
+      "group": "Camera",
+      "hint": "Travel time is set by the spring"
+    },
+    {
+      "key": "zoomIn",
+      "type": "number",
+      "label": "Zoom on a card",
+      "unit": "×",
+      "min": 0.8,
+      "max": 2,
+      "step": 0.01,
+      "group": "Camera"
+    },
+    {
+      "key": "zoomOut",
+      "type": "number",
+      "label": "Zoom while travelling",
+      "unit": "×",
+      "min": 0.4,
+      "max": 1.3,
+      "step": 0.01,
+      "group": "Camera"
+    },
+    {
+      "key": "colours.background",
+      "type": "colour",
+      "label": "Background",
+      "group": "Colour"
+    },
+    {
+      "key": "overlayOpacity",
+      "type": "number",
+      "label": "Photo darken",
+      "unit": "%",
+      "min": 0,
+      "max": 80,
+      "step": 1,
+      "group": "Colour"
+    },
+    {
+      "key": "format",
+      "type": "format",
+      "label": "Format",
+      "group": "Export"
+    },
+    {
+      "key": "fps",
+      "type": "fps",
+      "label": "Frame rate",
+      "group": "Export"
+    }
+  ],
+  "defaults": {
+    "stops": [
+      {
+        "label": "Celebrations",
+        "request": "Décor for a birthday at home",
+        "image": "celebrations"
+      },
+      {
+        "label": "Gifts",
+        "request": "Flowers for Mum on Sunday",
+        "image": "gifts"
+      },
+      {
+        "label": "Sourcing",
+        "request": "Coral beads for a wedding",
+        "image": "sourcing"
+      },
+      {
+        "label": "Travel",
+        "request": "A quiet weekend away for two",
+        "image": "getaways"
+      }
+    ],
+    "fill": [
+      {
+        "image": "",
+        "colour": "olive",
+        "label": "",
+        "request": "Book a family day out"
+      },
+      {
+        "image": "",
+        "colour": "cream",
+        "label": "",
+        "request": "Collect Mum’s prescription today"
+      },
+      {
+        "image": "events",
+        "colour": "cream",
+        "label": "Hosting",
+        "request": "Drinks for the whole party"
+      },
+      {
+        "image": "",
+        "colour": "tan",
+        "label": "",
+        "request": "A plumber who can come today"
+      },
+      {
+        "image": "",
+        "colour": "apricot",
+        "label": "",
+        "request": "Hang curtains in the new flat"
+      },
+      {
+        "image": "",
+        "colour": "butter",
+        "label": "",
+        "request": "Pick up a parcel in Ikeja"
+      },
+      {
+        "image": "",
+        "colour": "muted",
+        "label": "",
+        "request": "A hamper for a new baby"
+      },
+      {
+        "image": "",
+        "colour": "apricot",
+        "label": "",
+        "request": "Find that shirt in my size"
+      },
+      {
+        "image": "",
+        "colour": "cream",
+        "label": "",
+        "request": "Book tickets for Friday"
+      },
+      {
+        "image": "dinners",
+        "colour": "cream",
+        "label": "Lunch",
+        "request": "Lunch for twelve at home"
+      },
+      {
+        "image": "",
+        "colour": "tan",
+        "label": "",
+        "request": "Collect signed documents"
+      },
+      {
+        "image": "",
+        "colour": "olive",
+        "label": "",
+        "request": "A cake delivered before six"
+      },
+      {
+        "image": "",
+        "colour": "tan",
+        "label": "",
+        "request": "Find a reliable electrician"
+      },
+      {
+        "image": "",
+        "colour": "cream",
+        "label": "",
+        "request": "Book a table for two tonight"
+      },
+      {
+        "image": "",
+        "colour": "butter",
+        "label": "",
+        "request": "Arrange an airport pickup"
+      },
+      {
+        "image": "",
+        "colour": "apricot",
+        "label": "",
+        "request": "A cleaner before guests arrive"
+      },
+      {
+        "image": "boat",
+        "colour": "cream",
+        "label": "Days out",
+        "request": "A boat trip for six on Sunday"
+      },
+      {
+        "image": "",
+        "colour": "muted",
+        "label": "",
+        "request": "Renew my car papers"
+      },
+      {
+        "image": "",
+        "colour": "tan",
+        "label": "",
+        "request": "Get a replacement laptop charger"
+      },
+      {
+        "image": "",
+        "colour": "olive",
+        "label": "",
+        "request": "Find six yards of navy lace"
+      },
+      {
+        "image": "",
+        "colour": "butter",
+        "label": "",
+        "request": "Book a photographer for Sunday"
+      },
+      {
+        "image": "",
+        "colour": "apricot",
+        "label": "",
+        "request": "Deliver a gift to my sister"
+      },
+      {
+        "image": "",
+        "colour": "apricot",
+        "label": "",
+        "request": "A driver for the week"
+      },
+      {
+        "image": "suya",
+        "colour": "cream",
+        "label": "Catering",
+        "request": "Suya for Saturday’s party"
+      },
+      {
+        "image": "",
+        "colour": "olive",
+        "label": "",
+        "request": "Move a two-bed flat"
+      },
+      {
+        "image": "",
+        "colour": "muted",
+        "label": "",
+        "request": "Find a hotel near the airport"
+      },
+      {
+        "image": "",
+        "colour": "butter",
+        "label": "",
+        "request": "Send thank-you gifts to clients"
+      },
+      {
+        "image": "",
+        "colour": "olive",
+        "label": "",
+        "request": "A cook three days a week"
+      },
+      {
+        "image": "",
+        "colour": "muted",
+        "label": "",
+        "request": "Pick up groceries for Dad"
+      },
+      {
+        "image": "",
+        "colour": "cream",
+        "label": "",
+        "request": "Find a dining table for eight"
+      },
+      {
+        "image": "family-home",
+        "colour": "cream",
+        "label": "Family",
+        "request": "Check on the family house"
+      },
+      {
+        "image": "",
+        "colour": "tan",
+        "label": "",
+        "request": "Arrange a graduation lunch"
+      },
+      {
+        "image": "",
+        "colour": "apricot",
+        "label": "",
+        "request": "Get the garden ready for guests"
+      },
+      {
+        "image": "",
+        "colour": "muted",
+        "label": "",
+        "request": "Set up an outdoor dinner"
+      },
+      {
+        "image": "",
+        "colour": "cream",
+        "label": "",
+        "request": "Flowers for an anniversary"
+      }
+    ],
+    "holdSeconds": 0.72,
+    "zoomIn": 1.35,
+    "zoomOut": 0.85,
+    "colours": {
+      "background": "espresso"
+    },
+    "overlayOpacity": 36,
+    "format": "landscape",
+    "fps": 25,
+    "spring": {
+      "preset": "glide",
+      "stiffness": 22,
+      "damping": 9.4,
+      "mass": 1,
+      "velocity": 0
+    }
+  }
+}

@@ -31,6 +31,10 @@ const nextConfig: NextConfig = {
     // first-time visitors paint sooner. Client-side navigations still use cached <link>ed stylesheets.
     inlineCss: true,
   },
+  // Short address for the motion studio (a Studio tool).
+  async redirects() {
+    return [{ source: "/motion", destination: "/studio/motion", permanent: false }];
+  },
   async headers() {
     return [
       {

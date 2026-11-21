@@ -1,0 +1,106 @@
+/* Studio home (/studio). Colours come from the Sanity UI card so light and
+   dark Studio themes both work; the type is the site's display serif. */
+@font-face {
+  font-family: "Herbik";
+  src: url("../../../app/fonts/Herbik-Regular.woff2") format("woff2");
+  font-display: swap;
+}
+
+.sbu-home-inner {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: 100%;
+  max-width: 1280px;
+  min-height: 100%;
+  margin: 0 auto;
+  padding: clamp(32px, 7vh, 88px) 32px 48px;
+}
+
+.sbu-home-title {
+  margin: 0;
+  color: var(--card-fg-color);
+  font: 400 clamp(32px, 3.4vw, 44px) / 1.08 "Herbik", Georgia, serif;
+  letter-spacing: -0.015em;
+}
+
+.sbu-home-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.sbu-home-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 6px;
+  box-sizing: border-box;
+  min-width: 0;
+  aspect-ratio: 3 / 4;
+  min-height: 0;
+  overflow: hidden;
+  margin: 0;
+  padding: 24px;
+  border: 1px solid var(--card-border-color);
+  border-radius: 10px;
+  background: var(--card-bg-color);
+  color: var(--card-fg-color);
+  font: inherit;
+  text-align: left;
+  transition:
+    border-color 160ms ease,
+    transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+button.sbu-home-card {
+  cursor: pointer;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  button.sbu-home-card:hover {
+    border-color: var(--card-fg-color);
+  }
+}
+
+button.sbu-home-card:active {
+  transform: scale(0.99);
+}
+
+button.sbu-home-card:focus-visible {
+  outline: 2px solid var(--card-focus-ring-color, var(--card-fg-color));
+  outline-offset: 2px;
+}
+
+.sbu-home-name {
+  font: 400 clamp(28px, 2.8vw, 44px) / 1 "Herbik", Georgia, serif;
+  letter-spacing: -0.015em;
+}
+
+.sbu-home-card.is-soon {
+  color: var(--card-muted-fg-color);
+}
+
+.sbu-home-soon {
+  font: 400 13px / 1.4 ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+
+@media (max-width: 900px) {
+  .sbu-home-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .sbu-home-inner {
+    padding-inline: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sbu-home-card {
+    transition: none;
+  }
+}

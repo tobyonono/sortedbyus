@@ -12,6 +12,8 @@ import { Stage } from "./Stage";
 import { templateById, TEMPLATES } from "./templates";
 import { baseId, isDraft, readComposition, slugify, type Doc, type StoredDoc } from "./compositions";
 import { Campaigns } from "./Campaigns";
+import { LibraryView, type Campaign, type LibraryFilter } from "./LibraryView";
+import { pushRecent, readRecents, type RecentItem } from "./recents";
 import { compositionLinks } from "./links";
 import { SiteServices, useLoadSiteServices } from "./siteServices";
 import { ReelEditor } from "./ReelEditor";
@@ -21,6 +23,7 @@ const TYPE = "motionComposition";
 
 /** One composition in the list. `_id` is what opens: the draft if there is one. */
 type Row = { _id: string; title: string; template: string; _updatedAt: string; screens?: number; draft: boolean; published: boolean };
+type ReelRow = { _id: string; title: string; _updatedAt?: string; screens: number; draft: boolean };
 
 // Links: ?c=<id> opens a composition; &export=story,portrait renders those formats
 // on load and saves them to Sanity (for agents with a browser, or a person).
@@ -39,7 +42,15 @@ export function Studio({ client }: { client: SanityClient }) {
   const siteServices = useLoadSiteServices(client);
   const [rows, setRows] = useState<Row[] | null>(null);
   // Reels: a separate document type that sequences compositions.
-  const [reelRows, setReelRows] = useState<{ _id: string; title: string; screens: number; draft: boolean }[] | null>(null);
+  const [reelRows, setReelRows] = useState<ReelRow[] | null>(null);
+  // A just-created reel or composition: its name field is focused so it gets a real name.
+  const [nameFocus, setNameFocus] = useState<string | null>(null);
+  // Library sidebar: search, the All videos view, campaigns and your recents.
+  const [query, setQuery] = useState("");
+  const searchRef = useRef<HTMLInputElement>(null);
+  const [library, setLibrary] = useState<{ filter: LibraryFilter; title: string } | null>(null);
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [recents, setRecents] = useState<RecentItem[]>(() => readRecents());
   const [reelId, setReelId] = useState<string | null>(null);
   const [usedIn, setUsedIn] = useState<{ _id: string; title: string }[]>([]);
   const [doc, setDoc] = useState<Doc | null>(null);
@@ -88,17 +99,23 @@ export function Studio({ client }: { client: SanityClient }) {
           setRows([...byBase.values()]);
         })
         .then(() =>
-          client.fetch<{ _id: string; title: string; screens: number }[]>(`*[_type == "motionReel"] | order(_updatedAt desc){_id, title, "screens": count(screens)}`),
+          client.fetch<Omit<ReelRow, "draft">[]>(`*[_type == "motionReel"] | order(_updatedAt desc){_id, title, _updatedAt, "screens": count(screens)}`),
         )
         .then((reels) => {
           if (!reels) return;
-          const byBase = new Map<string, { _id: string; title: string; screens: number; draft: boolean }>();
+          const byBase = new Map<string, ReelRow>();
           for (const r of reels) {
             const key = baseId(r._id);
             if (!byBase.has(key) || isDraft(r._id)) byBase.set(key, { ...r, draft: isDraft(r._id) });
           }
           setReelRows([...byBase.values()]);
         })
+        .then(() =>
+          client
+            .fetch<Campaign[]>(`*[_type == "campaign" && !(_id in path("drafts.**"))] | order(startDate desc){_id, title, status, "motion": coalesce(motion[]._ref, [])}`)
+            .then((c) => setCampaigns(c ?? []))
+            .catch(() => setCampaigns([])),
+        )
         .catch((e) => fail("Couldn’t load compositions", e)),
     [client, fail],
   );
@@ -155,6 +172,7 @@ export function Studio({ client }: { client: SanityClient }) {
   }, [client, fail]);
 
   const select = useCallback((next: Doc) => {
+    setRecents(pushRecent({ id: baseId(next._id), kind: "composition" }));
     latest.current = next;
     setDoc(next);
     setPicker(null);
@@ -174,6 +192,7 @@ export function Studio({ client }: { client: SanityClient }) {
   const open = useCallback(
     async (id: string) => {
       if (publishingRef.current) return;
+      setLibrary(null);
       const request = ++openRequest.current;
       if (!(await saveNow()) || request !== openRequest.current || latest.current?._id === id) return;
       const d = await client.getDocument<StoredDoc>(id).catch((e) => (fail("Couldn’t open that composition", e), undefined));
@@ -220,6 +239,8 @@ export function Studio({ client }: { client: SanityClient }) {
   const openReel = useCallback(
     async (id: string) => {
       if (!(await saveNow())) return;
+      setLibrary(null);
+      setRecents(pushRecent({ id: baseId(id), kind: "reel" }));
       ++openRequest.current;
       latest.current = null;
       setDoc(null);
@@ -247,10 +268,11 @@ export function Studio({ client }: { client: SanityClient }) {
   const createReel = async () => {
     if (!(await saveNow())) return;
     const created = await client
-      .create({ _type: "motionReel", title: "New reel", format: "story", fps: 25, screens: [] })
+      .create({ _type: "motionReel", title: uniqueName("New reel", (reelRows ?? []).map((r) => r.title)), format: "story", fps: 25, screens: [] })
       .catch((e) => (fail("Couldn’t create the reel", e), null));
     if (!created) return;
     await refresh();
+    setNameFocus(created._id);
     void openReel(created._id);
   };
 
@@ -276,6 +298,19 @@ export function Studio({ client }: { client: SanityClient }) {
     await refresh();
     void openReel(created._id);
   };
+
+  // "/" jumps to search (unless you're typing somewhere).
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey) return;
+      const el = e.target instanceof Element ? e.target : null;
+      if (el?.closest("input, textarea, select, [contenteditable]") || document.querySelector(".studio .modal-scrim[open]")) return;
+      e.preventDefault();
+      searchRef.current?.focus();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   // Which reels use the open composition (so edits to it are visible as shared).
   useEffect(() => {
@@ -411,7 +446,7 @@ export function Studio({ client }: { client: SanityClient }) {
     const created = await client
       .create({
         _type: TYPE,
-        title: from ? `${from.title} copy` : t.name,
+        title: uniqueName(from ? `${from.title} copy` : t.name, (rows ?? []).map((r) => r.title)),
         template: t.id,
         [templateField(t.id)]: from ? from.data : t.defaults,
         ...compositionLinks(t.id, from ? from.data : t.defaults),
@@ -419,6 +454,7 @@ export function Studio({ client }: { client: SanityClient }) {
       .catch((e) => (fail("Couldn’t create the composition", e), null));
     if (!created) return;
     await refresh();
+    setNameFocus(created._id);
     open(created._id);
   };
 
@@ -488,11 +524,133 @@ export function Studio({ client }: { client: SanityClient }) {
 
   const template = doc ? templateById(doc.template) : null;
 
+
+  // ---------- library sidebar: rows, search, recent, review ----------
+  const reelItem = (r: ReelRow) => (
+    <li key={r._id} className={!library && reelId && baseId(reelId) === baseId(r._id) ? "is-on" : ""}>
+                    <button className="comp" onClick={() => void openReel(r._id)}>
+                      <span className="comp-text">
+                        <strong>
+                          <span className="comp-title">{r.title}</span>
+                        </strong>
+                        <RowMeta parts={[r.screens ? countLabel("reel", r.screens) : "Empty"]} status={r.draft ? "Draft" : null} updatedAt={r._updatedAt} />
+                      </span>
+                    </button>
+                    <details className="comp-menu">
+                      <summary aria-label="More">⋯</summary>
+                      <div>
+                        <button
+                          onClick={(e) => {
+                            closeMenu(e.currentTarget);
+                            void duplicateReel(r);
+                          }}
+                        >
+                          Duplicate
+                        </button>
+                        <button
+                          className="danger"
+                          onClick={(e) => {
+                            closeMenu(e.currentTarget);
+                            void removeReel(r);
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </details>
+                  </li>
+  );
+  const compItem = (r: Row) => {
+    const t = templateById(r.template);
+    if (!t) return null;
+    return (
+      <li key={r._id} className={!library && doc && baseId(doc._id) === baseId(r._id) ? "is-on" : ""}>
+                      <button className="comp" onClick={() => open(r._id)}>
+                        <span className="comp-text">
+                          <strong>
+                            <span className="comp-title">{r.title}</span>
+                          </strong>
+                          <RowMeta
+                            parts={r.screens ? [countLabel(t.id, r.screens)] : []}
+                            status={r.draft ? (r.published ? "Unpublished changes" : "Draft") : null}
+                            updatedAt={r._updatedAt}
+                          />
+                        </span>
+                      </button>
+                      <details className="comp-menu">
+                        <summary aria-label="More">⋯</summary>
+                        <div>
+                          <button
+                            onClick={async (e) => {
+                              closeMenu(e.currentTarget);
+                              if (!(await saveNow())) return;
+                              const d = await client.getDocument<StoredDoc>(r._id)
+                                .catch((error) => (fail("Couldn’t duplicate the composition", error), undefined));
+                              if (d && templateById(d.template)) create(d.template, readComposition(d));
+                            }}
+                          >
+                            Duplicate
+                          </button>
+                          <button
+                            className="danger"
+                            onClick={(e) => {
+                              closeMenu(e.currentTarget);
+                              remove(r);
+                            }}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </details>
+                    </li>
+    );
+  };
+
+  type Entry = { kind: "reel" | "composition"; row: Row | ReelRow };
+  const entries: Entry[] = [
+    ...(reelRows ?? []).map((row) => ({ kind: "reel" as const, row })),
+    ...(rows ?? []).map((row) => ({ kind: "composition" as const, row })),
+  ];
+  const totalCount = entries.length;
+  const reviewCount = entries.filter((e) => e.row.draft).length;
+  const q = query.trim().toLowerCase();
+  const results = q
+    ? entries
+        .filter((e) => `${e.row.title} ${e.kind === "reel" ? "reel" : templateById((e.row as Row).template)?.name ?? ""}`.toLowerCase().includes(q))
+        .slice(0, 50)
+    : [];
+  // What you opened in this browser first, then topped up with the most recently edited.
+  const recentItems = (() => {
+    const byId = new Map(entries.map((e) => [baseId(e.row._id), e]));
+    const mine = recents.map((r) => byId.get(baseId(r.id))).filter((x): x is Entry => !!x);
+    const latest = [...entries].sort((a, b) => (b.row._updatedAt ?? "").localeCompare(a.row._updatedAt ?? ""));
+    return [...mine, ...latest.filter((e) => !mine.includes(e))].slice(0, 5);
+  })();
+  const activeCampaigns = campaigns.filter((c) => c.status !== "done").slice(0, 6);
+  const openLibrary = (filter: LibraryFilter, title: string) => {
+    void saveNow().then((ok) => ok && setLibrary({ filter, title }));
+  };
+
   return (
     <SiteServices.Provider value={siteServices}>
     <div className="studio">
-      {reelId ? (
+      {library ? (
+        <LibraryView
+          client={client}
+          filter={library.filter}
+          title={library.title}
+          campaigns={campaigns}
+          onFilter={(filter) => setLibrary((l) => (l ? { ...l, filter } : l))}
+          onOpen={(id, kind) => {
+            setLibrary(null);
+            if (kind === "reel") void openReel(id);
+            else void open(id);
+          }}
+        />
+      ) : reelId ? (
         <ReelEditor
+            focusName={!!nameFocus && !!reelId && baseId(nameFocus) === baseId(reelId)}
+            onNameFocused={() => setNameFocus(null)}
           key={reelId}
           client={client}
           id={reelId}
@@ -511,7 +669,21 @@ export function Studio({ client }: { client: SanityClient }) {
             <span>Motion</span>
           </div>
           {doc ? (
-            <input className="title-input" value={doc.title} onChange={(e) => rename(e.target.value)} aria-label="Composition name" disabled={publishing} />
+            <input
+              key={doc._id}
+              className="title-input"
+              value={doc.title}
+              onChange={(e) => rename(e.target.value)}
+              aria-label="Composition name"
+              disabled={publishing}
+              ref={(el) => {
+                if (el && nameFocus && baseId(nameFocus) === baseId(doc._id)) {
+                  el.focus();
+                  el.select();
+                  setNameFocus(null);
+                }
+              }}
+            />
           ) : (
             <span className="title-input" />
           )}
@@ -566,102 +738,75 @@ export function Studio({ client }: { client: SanityClient }) {
             New
           </button>
         </div>
+        <div className="side-search">
+          <svg viewBox="0 0 16 16" aria-hidden><circle cx="7" cy="7" r="4.5" /><path d="m10.5 10.5 3 3" /></svg>
+          <input
+            ref={searchRef}
+            className="input"
+            placeholder="Search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => e.key === "Escape" && (setQuery(""), e.currentTarget.blur())}
+            aria-label="Search the library"
+          />
+          {!query && <kbd>/</kbd>}
+        </div>
         <div className="comp-groups">
-          {!!reelRows?.length && (
+          {query.trim() ? (
             <div className="comp-group">
-              <h3 className="comp-group-title">Reels</h3>
-              <ul className="comp-list">
-                {reelRows.map((r) => (
-                  <li key={r._id} className={reelId && baseId(reelId) === baseId(r._id) ? "is-on" : ""}>
-                    <button className="comp" onClick={() => void openReel(r._id)}>
-                      <span className="comp-text">
-                        <strong>
-                          <span className="comp-title">{r.title}</span>
-                          {r.draft && <em className="badge">Draft</em>}
-                        </strong>
-                        <small>{r.screens ? countLabel("reel", r.screens) : "Empty"}</small>
-                      </span>
-                    </button>
-                    <details className="comp-menu">
-                      <summary aria-label="More">⋯</summary>
-                      <div>
-                        <button
-                          onClick={(e) => {
-                            closeMenu(e.currentTarget);
-                            void duplicateReel(r);
-                          }}
-                        >
-                          Duplicate
-                        </button>
-                        <button
-                          className="danger"
-                          onClick={(e) => {
-                            closeMenu(e.currentTarget);
-                            void removeReel(r);
-                          }}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </details>
-                  </li>
-                ))}
-              </ul>
+              <h3 className="comp-group-title">{results.length ? `${results.length} found` : "Nothing found"}</h3>
+              <ul className="comp-list">{results.map((x) => (x.kind === "reel" ? reelItem(x.row as ReelRow) : compItem(x.row as Row)))}</ul>
             </div>
-          )}
-          {TEMPLATES.map((t) => {
-            const group = rows?.filter((r) => r.template === t.id) ?? [];
-            if (!group.length) return null;
-            return (
-              <div key={t.id} className="comp-group">
-                <h3 className="comp-group-title">{t.name}</h3>
-                <ul className="comp-list">
-                  {group.map((r) => (
-                    <li key={r._id} className={doc && baseId(doc._id) === baseId(r._id) ? "is-on" : ""}>
-                      <button className="comp" onClick={() => open(r._id)}>
-                        <span className="comp-text">
-                          <strong>
-                            <span className="comp-title">{r.title}</span>
-                            {r.draft && <em className="badge">{r.published ? "Changes" : "Draft"}</em>}
-                          </strong>
-                          {!!r.screens && <small>{countLabel(t.id, r.screens)}</small>}
-                        </span>
+          ) : (
+            <>
+              <ul className="comp-list side-nav">
+                <li className={library && !library.filter.status && !library.filter.campaign ? "is-on" : ""}>
+                  <button className="comp" onClick={() => openLibrary({}, "All videos")}>
+                    <svg className="side-icon" viewBox="0 0 16 16" aria-hidden><rect x="2.5" y="2.5" width="4.5" height="4.5" rx="1" /><rect x="9" y="2.5" width="4.5" height="4.5" rx="1" /><rect x="2.5" y="9" width="4.5" height="4.5" rx="1" /><rect x="9" y="9" width="4.5" height="4.5" rx="1" /></svg>
+                    <span className="comp-title">All videos</span>
+                    <span className="side-count">{totalCount}</span>
+                  </button>
+                </li>
+                <li className={library?.filter.status === "review" ? "is-on" : ""}>
+                  <button className="comp" onClick={() => openLibrary({ status: "review" }, "Needs review")}>
+                    <svg className="side-icon" viewBox="0 0 16 16" aria-hidden><circle cx="8" cy="8" r="5.5" /><path d="M8 5v3.5l2 1.5" /></svg>
+                    <span className="comp-title">Needs review</span>
+                    {!!reviewCount && <span className="side-count badge">{reviewCount}</span>}
+                  </button>
+                </li>
+              </ul>
+
+              <div className="comp-group">
+                <h3 className="comp-group-title">Recent</h3>
+                <ul className="comp-list">{recentItems.map((x) => (x.kind === "reel" ? reelItem(x.row as ReelRow) : compItem(x.row as Row)))}</ul>
+              </div>
+
+              <div className="comp-group">
+                <h3 className="comp-group-title">Campaigns</h3>
+                <ul className="comp-list side-nav">
+                  {activeCampaigns.map((c) => (
+                    <li key={c._id} className={library?.filter.campaign === c._id ? "is-on" : ""}>
+                      <button className="comp" onClick={() => openLibrary({ campaign: c._id }, c.title)}>
+                        <span className="side-dot" aria-hidden />
+                        <span className="comp-title">{c.title}</span>
+                        <span className="side-count">{c.motion.length}</span>
                       </button>
-                      <details className="comp-menu">
-                        <summary aria-label="More">⋯</summary>
-                        <div>
-                          <button
-                            onClick={async (e) => {
-                              closeMenu(e.currentTarget);
-                              if (!(await saveNow())) return;
-                              const d = await client.getDocument<StoredDoc>(r._id)
-                                .catch((error) => (fail("Couldn’t duplicate the composition", error), undefined));
-                              if (d && templateById(d.template)) create(d.template, readComposition(d));
-                            }}
-                          >
-                            Duplicate
-                          </button>
-                          <button
-                            className="danger"
-                            onClick={(e) => {
-                              closeMenu(e.currentTarget);
-                              remove(r);
-                            }}
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </details>
                     </li>
                   ))}
+                  <li>
+                    <a className="comp side-link" href="/studio/structure/campaign" target="_top">
+                      <svg className="side-icon" viewBox="0 0 16 16" aria-hidden><path d="M3 4.5h10M3 8h10M3 11.5h6" /></svg>
+                      <span className="comp-title">{activeCampaigns.length ? "All campaigns" : "Make a campaign"}</span>
+                    </a>
+                  </li>
                 </ul>
               </div>
-            );
-          })}
+            </>
+          )}
         </div>
       </nav>
 
-      {!reelId && (
+      {!reelId && !library && (
       <main className="main">
         {doc && template ? (
           <Stage key={doc._id} playable={compositionSource(template, doc.data)(doc.data.format, doc.data.fps)} frameRef={frameRef} />
@@ -685,7 +830,7 @@ export function Studio({ client }: { client: SanityClient }) {
       </main>
       )}
 
-      {doc && template && (
+      {!library && doc && template && (
         <Controls
           template={template}
           data={doc.data}
@@ -790,4 +935,35 @@ const UNITS: Record<string, [string, string]> = {
 function countLabel(kind: string, n: number) {
   const [one, many] = UNITS[kind] ?? ["item", "items"];
   return `${n} ${n === 1 ? one : many}`;
+}
+
+/** "New reel", or "New reel 2" (3, 4…) if that name is taken. */
+function uniqueName(base: string, taken: string[]) {
+  const names = new Set(taken.map((t) => t.trim().toLowerCase()));
+  if (!names.has(base.toLowerCase())) return base;
+  let n = 2;
+  while (names.has(`${base} ${n}`.toLowerCase())) n++;
+  return `${base} ${n}`;
+}
+
+/** "just now", "5 min", "3 h", "2 d", then the date. */
+function ago(iso?: string) {
+  if (!iso) return "";
+  const s = (Date.now() - new Date(iso).getTime()) / 1000;
+  if (s < 60) return "just now";
+  if (s < 3600) return `${Math.floor(s / 60)} min ago`;
+  if (s < 86400) return `${Math.floor(s / 3600)} h ago`;
+  if (s < 7 * 86400) return `${Math.floor(s / 86400)} d ago`;
+  return new Date(iso).toLocaleDateString(undefined, { day: "numeric", month: "short" });
+}
+
+/** The second line of a library row: what it holds, its draft status, when it was last edited. */
+function RowMeta({ parts, status, updatedAt }: { parts: string[]; status: string | null; updatedAt?: string }) {
+  const when = ago(updatedAt);
+  return (
+    <small className="comp-meta">
+      {status && <em className="badge">{status}</em>}
+      {[...parts, when].filter(Boolean).join(" · ")}
+    </small>
+  );
 }

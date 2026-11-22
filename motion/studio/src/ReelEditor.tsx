@@ -37,6 +37,8 @@ export function ReelEditor({
   onChanged,
   autoExport,
   autoDownload,
+  focusName,
+  onNameFocused,
 }: {
   client: SanityClient;
   id: string;
@@ -46,6 +48,9 @@ export function ReelEditor({
   /** From an export link: render these formats once loaded. */
   autoExport?: FormatKey[];
   autoDownload?: boolean;
+  /** Just created: focus and select the name field so it gets a real name. */
+  focusName?: boolean;
+  onNameFocused?: () => void;
 }) {
   const toast = useToast();
   const fail = useCallback(
@@ -341,7 +346,19 @@ export function ReelEditor({
           <div className="brand-mark">
             <span>Motion</span>
           </div>
-          <input className="title-input" value={reel.title} onChange={(e) => update({ ...reel, title: e.target.value })} aria-label="Reel name" />
+          <input
+            className="title-input"
+            value={reel.title}
+            onChange={(e) => update({ ...reel, title: e.target.value })}
+            aria-label="Reel name"
+            ref={(el) => {
+              if (el && focusName) {
+                el.focus();
+                el.select();
+                onNameFocused?.();
+              }
+            }}
+          />
           <span className="save-slot" aria-live="polite">
             {save === "saving" || pending.current ? (
               <span className="save">Saving…</span>

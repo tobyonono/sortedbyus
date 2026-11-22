@@ -42,6 +42,8 @@ export function PlayablePreview({
       ctx.scale(scale, scale);
       p.draw(ctx, frame, { width: W, height: H, fps: p.fps, image: imageFor });
       ctx.restore();
+      // Fade in once there's something to show, instead of a blank canvas that pops.
+      canvas.style.opacity = "1";
     };
     const prep = framePreparer(() => active && paint(last));
     const draw = (frame: number) => {
@@ -69,5 +71,5 @@ export function PlayablePreview({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
 
-  return <canvas ref={ref} className={className} width={Math.round(width * dpr)} height={Math.round(height * dpr)} style={fluid ? { aspectRatio: `${W} / ${H}`, ...style } : { width, height, ...style }} />;
+  return <canvas ref={ref} className={className} width={Math.round(width * dpr)} height={Math.round(height * dpr)} style={{ ...(fluid ? { aspectRatio: `${W} / ${H}` } : { width, height }), opacity: 0, transition: "opacity 150ms cubic-bezier(0.23, 1, 0.32, 1)", ...style }} />;
 }

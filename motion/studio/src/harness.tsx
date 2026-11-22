@@ -200,8 +200,19 @@ function ReelFrames() {
   );
 }
 
-/** Compositions and a reel for the fake Sanity (studio + reel views). */
+/** Compositions and a reel for the fake Sanity (studio + reel views). ?many=1 adds 90 more, to see a big library. */
 function harnessSeed() {
+  const base = harnessSeedBase();
+  if (!q.get("many")) return base;
+  const words = ["Lagos", "Abuja", "Christmas", "Spring", "Gifts", "Dinners", "Getaways", "Errands", "Hosting", "Weddings"];
+  const extra = Array.from({ length: 90 }, (_, i) => {
+    const src = base.filter((d) => d._type === "motionComposition")[i % 6];
+    return { ...structuredClone(src), _id: `many${i}`, title: `${words[i % words.length]} ${["story", "post", "teaser", "cut"][i % 4]} ${Math.floor(i / 10) + 1}`, _updatedAt: new Date(Date.now() - i * 3_600_000).toISOString() };
+  });
+  return [...base, ...extra] as typeof base;
+}
+
+function harnessSeedBase() {
   return [
               { _id: "old1", _type: "motionComposition", title: "Launch flash (old format)", template: "sort-flash", data: { lead: "Sort", beats: [{ _key: "a", word: "flowers", image: "gifts" }, { _key: "b", word: "a boat trip", image: "boat" }], wordMotion: "rise" } },
               { _id: "t1", _type: "motionComposition", title: "Intro: Consider it sorted", template: "title-card", titleCard: {} },

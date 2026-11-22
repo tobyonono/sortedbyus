@@ -27,7 +27,8 @@ export function framePreparer(onReady: () => void) {
   return (p: Playable, frame: number, env: DrawEnv) => {
     if (!p.prepare || (done?.p === p && done.frame === frame)) return;
     want = { p, frame, env };
-    // Start after the current React update: capturing renders a component, which React can't do mid-render.
-    queueMicrotask(() => void run());
+    // Start after the next paint: capturing renders a component (React can't do that mid-render) and
+    // does synchronous work, so running it before the screen updates would freeze whatever just opened.
+    requestAnimationFrame(() => setTimeout(() => void run(), 0));
   };
 }

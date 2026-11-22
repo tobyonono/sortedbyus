@@ -19,6 +19,9 @@ export function fakeSanity(seed: Doc[]) {
       const docs = [...store.values()];
       const refs = (d: Doc) => (d.screens ?? []).map((x: any) => x.composition?._ref);
       // campaigns that reference a composition or reel
+      if (query.includes('_type == "campaign"') && !params.id) {
+        return docs.filter((d) => d._type === "campaign").map((d) => ({ _id: d._id, title: d.title, status: d.status, motion: (d.motion ?? []).map((m: any) => m._ref) }));
+      }
       if (query.includes('_type == "campaign"')) {
         const mentions = (d: Doc) => JSON.stringify(d).includes(`"${params.id}"`) || JSON.stringify(d).includes(`"${params.draft}"`);
         return docs.filter((d) => d._type === "campaign" && mentions(d)).map((d) => ({ _id: d._id, title: d.title, status: d.status }));
@@ -28,8 +31,9 @@ export function fakeSanity(seed: Doc[]) {
         return docs.filter((d) => d._type === "motionReel" && refs(d).some((r: string) => r === params.id || r === params.draft)).map((d) => ({ _id: d._id, title: d.title }));
       }
       // reel list
+      if (/motionReel"\] \| order\(_updatedAt desc\)$/.test(query)) return docs.filter((d) => d._type === "motionReel").map((d) => structuredClone(d));
       if (query.includes('_type == "motionReel"')) {
-        return docs.filter((d) => d._type === "motionReel").map((d) => ({ _id: d._id, title: d.title, screens: (d.screens ?? []).length }));
+        return docs.filter((d) => d._type === "motionReel").map((d) => ({ _id: d._id, title: d.title, _updatedAt: d._updatedAt, screens: (d.screens ?? []).length }));
       }
       // compositions by id (reel editor) or every composition (add a screen)
       if (query.includes("_id in $ids")) return docs.filter((d) => params.ids.includes(d._id)).map((d) => structuredClone(d));

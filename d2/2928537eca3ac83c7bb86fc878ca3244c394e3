@@ -1,0 +1,41 @@
+motion/studio/src/fakeSanity.ts
+  s_9de71a0a9e3b1f::t_3bf78b9f8e2364 22-24,34
+  s_9de71a0a9e3b1f::t_6f847f74425685 36
+motion/studio/src/recents.ts
+  s_9de71a0a9e3b1f::t_9d9256671e9ccc 1-25
+motion/studio/src/Studio.tsx
+  s_9de71a0a9e3b1f::t_5f7f7ab75d52e9 527-529,531-566,568-606,632-633,741-753,755,757-758,760-792,796-801,804-805
+  s_9de71a0a9e3b1f::t_6f847f74425685 26,45-47,102,106,271,275,449,457,652-653,672-686,939-969
+  s_9de71a0a9e3b1f::t_3bf78b9f8e2364 302-314
+  s_9de71a0a9e3b1f::t_aea5aef75d5946 15-16,48-53,113-118,175,195,242-243,607-621,623-625,628-631,637-650,809,833
+  s_9de71a0a9e3b1f::t_882654658da0da 530,567,622,626-627
+motion/studio/src/studio.css
+  s_9de71a0a9e3b1f::t_6f847f74425685 1832-1847
+  s_9de71a0a9e3b1f::t_3bf78b9f8e2364 1848-2068
+motion/studio/src/LibraryView.tsx
+  s_9de71a0a9e3b1f::t_aefaca1a7240b4 1-247
+motion/studio/src/ReelEditor.tsx
+  s_9de71a0a9e3b1f::t_6f847f74425685 40-41,51-53,349-361
+motion/studio/src/PlayablePreview.tsx
+  s_9de71a0a9e3b1f::t_30248b5db99a1c 45-46,74
+motion/studio/src/framePrep.ts
+  s_9de71a0a9e3b1f::t_a65fd16ad39320 30-32
+motion/studio/src/harness.tsx
+  s_9de71a0a9e3b1f::t_c5cb1fc74831ef 203,205-215
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d22928537eca3ac83c7bb86fc878ca3244c394e3",
+  "prompts": {},
+  "sessions": {
+    "s_9de71a0a9e3b1f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "81a5496d-dd93-4fc5-a87b-7c52b3d0882e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Toby Onono <ononop@tcd.ie>"
+    }
+  }
+}

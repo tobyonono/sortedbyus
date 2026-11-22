@@ -207,6 +207,7 @@ function harnessSeed() {
               { _id: "t1", _type: "motionComposition", title: "Intro: Consider it sorted", template: "title-card", titleCard: {} },
               { _id: "w1", _type: "motionComposition", title: "What we sort", template: "word-roll", wordRoll: { holdSeconds: 0.35 } },
               { _id: "p1", _type: "motionComposition", title: "Lunch for twelve", template: "photo-caption", photoCaption: {} },
+              { _id: "rc1", _type: "motionComposition", title: "Request: gifts in Abuja", template: "site-request-card", siteRequestCard: { endsOn: "sent" } },
               { _id: "m1", _type: "motionComposition", title: "Everything, sorted", template: "photo-mosaic", photoMosaic: { word: "Sorted.", holdSeconds: 1 } },
               { _id: "t2", _type: "motionComposition", title: "End line", template: "title-card", titleCard: { lines: [{ _key: "l1", text: "Sorted." }], typeSize: 16, align: "left", place: "bottom", colours: { background: "butter", text: "espresso" }, durationSeconds: 2.5 } },
               {

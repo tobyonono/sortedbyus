@@ -3,6 +3,20 @@ import { Button } from "@/components/ui/Button";
 import Select from "@/components/ui/Select";
 import styles from "./RequestCard.module.css";
 
+/** Options for "What do you need?" when the page doesn't pass the services from Sanity. */
+export const defaultServices = [
+  "Shopping & Sourcing",
+  "Travel & Holidays",
+  "Gifts & Celebrations",
+  "Home & Lifestyle",
+  "Errands & Admin",
+  "Events & Experiences",
+  "Corporate",
+  "Something else",
+];
+
+export const cities = ["Lagos", "Abuja", "Elsewhere in Nigeria", "From abroad"];
+
 export const shortFmt = new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short" });
 
 export type RequestStep = 1 | 2 | "sent";

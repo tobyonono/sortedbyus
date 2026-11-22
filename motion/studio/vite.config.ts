@@ -11,11 +11,11 @@ export default defineConfig(({ mode }) => ({
     // engine/, templates/, brand.json and the Studio home cards live outside this folder
     fs: { allow: ["../.."] },
   },
-  // site components (siteblock.html spike) import with "@/" and use next/link
+  // site blocks (templates that use the website's components) import with "@/" and use next/link
   resolve: {
     alias: {
       "@/": fileURLToPath(new URL("../../src/", import.meta.url)),
-      "next/link": fileURLToPath(new URL("./src/spike/nextLink.tsx", import.meta.url)),
+      "next/link": fileURLToPath(new URL("../templates/site/nextLink.tsx", import.meta.url)),
     },
   },
   define: {

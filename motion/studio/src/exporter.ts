@@ -78,6 +78,7 @@ export async function exportVideo(input: PlayableSource, o: ExportOptions): Prom
     await output.start();
     for (let i = 0; i < total; i++) {
       o.signal?.throwIfAborted();
+      await p.prepare?.(i % loop, env);
       p.draw(ctx, i % loop, env);
       await source.add(i / o.fps, 1 / o.fps);
       o.onProgress?.((i + 1) / total);
@@ -102,7 +103,9 @@ export async function exportStill(
   const canvas = document.createElement("canvas");
   canvas.width = W;
   canvas.height = H;
-  p.draw(canvas.getContext("2d")!, frame, { width: W, height: H, fps, image: imageFor });
+  const env = { width: W, height: H, fps, image: imageFor };
+  await p.prepare?.(frame, env);
+  p.draw(canvas.getContext("2d")!, frame, env);
   const blob = await new Promise<Blob>((resolve, reject) =>
     canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("PNG failed"))), "image/png"),
   );

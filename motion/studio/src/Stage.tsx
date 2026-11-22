@@ -1,5 +1,6 @@
-import { useEffect, useReducer, useRef, useState, type MutableRefObject } from "react";
+import { useEffect, useMemo, useReducer, useRef, useState, type MutableRefObject } from "react";
 import { aspectLabel, formatSize, type Playable } from "../../engine";
+import { framePreparer } from "./framePrep";
 import { imageFor, loadFonts, onImageLoad, preloadImages } from "./media";
 
 function clock(frames: number, fps: number) {
@@ -45,10 +46,14 @@ export function Stage({
     };
   }, [imageKey]);
 
+  // Site blocks capture frames from HTML: ask for the current one and redraw when it's ready.
+  const prep = useMemo(() => framePreparer(redraw), []);
   useEffect(() => {
     frameRef.current = f;
+    const env = { width: W, height: H, fps, image: imageFor };
+    prep(playable, f, env);
     const ctx = canvasRef.current?.getContext("2d");
-    if (ctx) playable.draw(ctx, f, { width: W, height: H, fps, image: imageFor });
+    if (ctx) playable.draw(ctx, f, env);
   });
 
   useEffect(() => {

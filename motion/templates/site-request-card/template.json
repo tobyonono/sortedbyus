@@ -1,0 +1,36 @@
+{
+  "id": "site-request-card",
+  "name": "Request card",
+  "description": "The website's request form filling itself in: a service, a day and a city, then a name. Made from the site's own component, so it always matches the site.",
+  "engine": "site",
+  "controls": [
+    { "key": "title", "type": "text", "label": "Heading", "group": "Request" },
+    { "key": "service", "type": "text", "label": "What they need", "group": "Request", "hint": "A service from the site, e.g. Gifts & Celebrations" },
+    { "key": "when", "type": "choice", "label": "When", "group": "Request", "options": [{ "value": "today", "label": "Today" }, { "value": "date", "label": "A date" }] },
+    { "key": "date", "type": "text", "label": "Date", "group": "Request", "hint": "YYYY-MM-DD, used when \"A date\" is chosen" },
+    { "key": "where", "type": "choice", "label": "Where", "group": "Request", "options": [{ "value": "Lagos", "label": "Lagos" }, { "value": "Abuja", "label": "Abuja" }, { "value": "Elsewhere in Nigeria", "label": "Elsewhere" }, { "value": "From abroad", "label": "Abroad" }] },
+    { "key": "name", "type": "text", "label": "Name typed in", "group": "Request" },
+    { "key": "endsOn", "type": "choice", "label": "Ends on", "group": "Motion", "options": [{ "value": "details", "label": "Step 1" }, { "value": "contact", "label": "Step 2" }, { "value": "sent", "label": "Sent" }] },
+    { "key": "pace", "type": "number", "label": "Between steps", "unit": "s", "min": 0.3, "max": 1.5, "step": 0.05, "group": "Motion" },
+    { "key": "cardEntrance", "type": "entrance", "label": "Card appears", "group": "Motion" },
+    { "key": "holdSeconds", "type": "number", "label": "Hold at the end", "unit": "s", "min": 0.3, "max": 5, "step": 0.1, "group": "Motion" },
+    { "key": "colours.background", "type": "colour", "label": "Background", "group": "Colour" },
+    { "key": "format", "type": "format", "label": "Format", "group": "Export" },
+    { "key": "fps", "type": "fps", "label": "Frame rate", "group": "Export" }
+  ],
+  "defaults": {
+    "title": "What can we sort?",
+    "service": "Gifts & Celebrations",
+    "when": "date",
+    "date": "2026-12-12",
+    "where": "Abuja",
+    "name": "Adaeze Okafor",
+    "endsOn": "contact",
+    "pace": 0.7,
+    "cardEntrance": { "kind": "rise", "spring": { "preset": "card", "stiffness": 388, "damping": 39.39, "mass": 1, "velocity": 0 } },
+    "holdSeconds": 1.2,
+    "colours": { "background": "espresso" },
+    "format": "portrait",
+    "fps": 25
+  }
+}

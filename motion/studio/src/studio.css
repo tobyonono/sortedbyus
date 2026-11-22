@@ -1253,6 +1253,8 @@
 
 .studio .template-card {
   display: grid;
+  /* keep preview, name and description at the top, so names line up across a row */
+  align-content: start;
   gap: 6px;
   padding: 0;
   border: 0;

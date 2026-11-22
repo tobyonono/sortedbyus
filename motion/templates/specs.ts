@@ -3,8 +3,9 @@
 import cardJourney from "./card-journey/template.json";
 import photoCaption from "./photo-caption/template.json";
 import photoMosaic from "./photo-mosaic/template.json";
+import siteRequestCard from "./site-request-card/template.json";
 import sortFlash from "./sort-flash/template.json";
 import titleCard from "./title-card/template.json";
 import wordRoll from "./word-roll/template.json";
 
-export const TEMPLATE_SPECS = [titleCard, sortFlash, wordRoll, photoCaption, photoMosaic, cardJourney];
+export const TEMPLATE_SPECS = [titleCard, sortFlash, wordRoll, photoCaption, photoMosaic, cardJourney, siteRequestCard];

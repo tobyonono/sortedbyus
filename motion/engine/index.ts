@@ -97,6 +97,11 @@ export interface Template<D extends BaseData = BaseData> {
   /** Timeline sections for the scrubber. */
   segments(data: D): Segment[];
   draw(ctx: Ctx2D, frame: number, data: D, env: DrawEnv): void;
+  /**
+   * Optional: get a frame ready to draw (templates that render something slow, like a website
+   * component captured from HTML). Exports wait for it; draw shows the nearest ready frame meanwhile.
+   */
+  prepare?(frame: number, data: D, env: DrawEnv): Promise<void>;
   /** Optional: the frame as named elements, so reels can smart animate into and out of it. */
   scene?(ctx: Ctx2D, frame: number, data: D, env: DrawEnv): SceneElement[];
   /** Optional: upgrade data saved by an older version of the template before it's checked. */

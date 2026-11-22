@@ -3,20 +3,9 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import Calendar from "@/components/ui/Calendar";
 import { whatsappHref } from "@/lib/site";
-import RequestCardView, { shortFmt, type RequestStep } from "./RequestCardView";
+import RequestCardView, { cities, defaultServices, shortFmt, type RequestStep } from "./RequestCardView";
 
-export const defaultServices = [
-  "Shopping & Sourcing",
-  "Travel & Holidays",
-  "Gifts & Celebrations",
-  "Home & Lifestyle",
-  "Errands & Admin",
-  "Events & Experiences",
-  "Corporate",
-  "Something else",
-];
-
-export const cities = ["Lagos", "Abuja", "Elsewhere in Nigeria", "From abroad"];
+export { cities, defaultServices };
 
 
 /**

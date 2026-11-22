@@ -28,7 +28,7 @@ export function NewComposition({ onPick, onPickReel, onClose }: { onPick: (templ
         )}
         {TEMPLATES.map((t) => (
           <button key={t.id} className="template-card" onClick={() => onPick(t.id)}>
-            <PlayablePreview className="template-preview" playable={compositionSource(t, t.defaults)("portrait", t.defaults.fps)} width={288} />
+            <PlayablePreview className="template-preview" playable={compositionSource(t, t.defaults)("portrait", t.defaults.fps)} width={288} fluid />
             <span className="template-name">{t.name}</span>
             <span className="template-desc">{t.description}</span>
           </button>

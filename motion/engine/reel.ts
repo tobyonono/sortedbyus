@@ -174,6 +174,14 @@ export function reelSource(reel: ReelData, resolve: ResolveScreen): PlayableSour
       fps,
       frames: () => total,
       images: () => [...new Set(slots.flatMap((s) => s.playable?.images() ?? []))],
+      // Screens that need preparing (site blocks) get the frames on screen at `frame`: both during a transition.
+      prepare: slots.some((s) => s.playable?.prepare)
+        ? async (rawFrame, env) => {
+            const frame = ((Math.floor(rawFrame) % total) + total) % total;
+            const on = slots.filter((s) => frame >= s.start && frame < s.start + s.length);
+            await Promise.all(on.map((s) => s.playable?.prepare?.(localFrame(s, frame), env)));
+          }
+        : undefined,
       segments: (): Segment[] =>
         slots.map((s, i) => ({ start: s.start, end: i < slots.length - 1 ? slots[i + 1].start : total, label: s.title })),
       draw(ctx, rawFrame, env) {

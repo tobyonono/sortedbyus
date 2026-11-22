@@ -14,6 +14,8 @@ export interface Playable {
   /** Timeline sections for the scrubber. */
   segments(): Segment[];
   draw(ctx: Ctx2D, frame: number, env: DrawEnv): void;
+  /** Get a frame ready to draw, if this playable needs to (exports await it for every frame). */
+  prepare?(frame: number, env: DrawEnv): Promise<void>;
   /** The frame as named elements, if the template can describe it (smart animate needs both sides). */
   scene?(ctx: Ctx2D, frame: number, env: DrawEnv): SceneElement[];
 }
@@ -32,6 +34,7 @@ export function compositionSource<D extends BaseData>(template: Template<D>, dat
       images: () => template.images(d),
       segments: () => template.segments(d),
       draw: (ctx, frame, env) => template.draw(ctx, frame, d, env),
+      prepare: template.prepare ? (frame, env) => template.prepare!(frame, d, env) : undefined,
       scene: template.scene ? (ctx, frame, env) => template.scene!(ctx, frame, d, env) : undefined,
     };
   };

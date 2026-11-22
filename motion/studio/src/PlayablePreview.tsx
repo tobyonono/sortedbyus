@@ -3,10 +3,11 @@
 // still frame when `still` is set.
 import { useEffect, useRef } from "react";
 import { formatSize, type Playable } from "../../engine";
+import { framePreparer } from "./framePrep";
 import { imageFor, loadFonts, preloadImages } from "./media";
 
 export function PlayablePreview({
-  playable, width, still, className, style,
+  playable, width, still, className, style, fluid,
 }: {
   playable: Playable;
   width: number;
@@ -14,6 +15,8 @@ export function PlayablePreview({
   className?: string;
   /** Display size overrides, e.g. a fixed box with object-fit: cover to crop. */
   style?: React.CSSProperties;
+  /** Let CSS size it (e.g. width: 100%); `width` is then only the drawing resolution. */
+  fluid?: boolean;
 }) {
   const ref = useRef<HTMLCanvasElement>(null);
   const [W, H] = formatSize(playable.format);
@@ -32,12 +35,19 @@ export function PlayablePreview({
     const scale = canvas.width / W;
     let raf = 0;
     let active = true;
-    const draw = (frame: number) => {
+    let last = 0;
+    const paint = (frame: number) => {
       const p = latest.current;
       ctx.save();
       ctx.scale(scale, scale);
       p.draw(ctx, frame, { width: W, height: H, fps: p.fps, image: imageFor });
       ctx.restore();
+    };
+    const prep = framePreparer(() => active && paint(last));
+    const draw = (frame: number) => {
+      last = frame;
+      prep(latest.current, frame, { width: W, height: H, fps: latest.current.fps, image: imageFor });
+      paint(frame);
     };
     Promise.all([loadFonts(), preloadImages(latest.current.images())])
       .then(() => {
@@ -59,5 +69,5 @@ export function PlayablePreview({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
 
-  return <canvas ref={ref} className={className} width={Math.round(width * dpr)} height={Math.round(height * dpr)} style={{ width, height, ...style }} />;
+  return <canvas ref={ref} className={className} width={Math.round(width * dpr)} height={Math.round(height * dpr)} style={fluid ? { aspectRatio: `${W} / ${H}`, ...style } : { width, height, ...style }} />;
 }

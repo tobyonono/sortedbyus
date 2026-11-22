@@ -1,7 +1,7 @@
 import { defineConfig } from "sanity";
 import { structureTool } from "sanity/structure";
 import { projectId, dataset, apiVersion } from "./src/lib/sanity/env";
-import { schemaTypes, singletons } from "./src/lib/sanity/schemaTypes";
+import { schemaTypes, singletonDefinitions } from "./src/lib/sanity/schemaTypes";
 import { structure } from "./src/lib/sanity/structure";
 import { homeTool } from "./src/lib/sanity/tools/home";
 import { StudioIcon } from "./src/lib/sanity/StudioIcon";
@@ -16,14 +16,16 @@ export default defineConfig({
   dataset,
   schema: {
     types: schemaTypes,
-    // singletons can't be created from the "+" menu
-    // motion compositions and reels are made in the Motion tool (/studio/motion), not from the "+" menu
-    templates: (templates) => templates.filter(({ schemaType }) => !singletons.includes(schemaType) && schemaType !== "request" && schemaType !== "motionComposition" && schemaType !== "motionReel"),
+    // Requests come from the website; motion compositions and reels are made in the Motion tool
+    // (/studio/motion). Singletons are kept out of "create" menus by document.singletons below.
+    templates: (templates) => templates.filter(({ schemaType }) => schemaType !== "request" && schemaType !== "motionComposition" && schemaType !== "motionReel"),
   },
   document: {
-    // singletons: no duplicate/delete; requests: no duplicate
-    actions: (input, { schemaType }) =>
-      singletons.includes(schemaType)
+    // Singletons (Homepage, pages, site settings): one document each, with the Studio's singletons API.
+    singletons: singletonDefinitions,
+    // Singletons can be published, reverted and restored, never deleted or unpublished; requests can't be duplicated.
+    actions: (input, { schemaType, singleton }) =>
+      singleton
         ? input.filter(({ action }) => action && ["publish", "discardChanges", "restore"].includes(action))
         : schemaType === "request"
           ? input.filter(({ action }) => action !== "duplicate")

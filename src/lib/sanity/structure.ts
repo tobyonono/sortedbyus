@@ -4,9 +4,7 @@ import { DocumentTextIcon } from "@sanity/icons/DocumentText";
 import { InboxIcon } from "@sanity/icons/Inbox";
 import { TagIcon } from "@sanity/icons/Tag";
 import { DocumentsIcon } from "@sanity/icons/Documents";
-
-const single = (S: Parameters<StructureResolver>[0], id: string, title: string) =>
-  S.listItem().title(title).id(id).child(S.document().schemaType(id).documentId(id).title(title));
+import { RocketIcon } from "@sanity/icons/Rocket";
 
 /** The Studio sidebar, in the order a marketer thinks about the site. */
 export const structure: StructureResolver = (S) =>
@@ -28,7 +26,12 @@ export const structure: StructureResolver = (S) =>
             ]),
         ),
       S.divider(),
-      single(S, "homePage", "Homepage"),
+      S.listItem()
+        .title("Campaigns")
+        .icon(RocketIcon)
+        .child(S.documentTypeList("campaign").title("Campaigns").defaultOrdering([{ field: "startDate", direction: "desc" }])),
+      S.divider(),
+      S.listItem().singleton("homePage"),
       S.listItem()
         .title("Services")
         .icon(TagIcon)
@@ -40,10 +43,10 @@ export const structure: StructureResolver = (S) =>
           S.list()
             .title("Pages")
             .items([
-              single(S, "howItWorksPage", "How it works"),
-              single(S, "corporatePage", "Corporate"),
-              single(S, "aboutPage", "About"),
-              single(S, "contactPage", "Contact"),
+              S.listItem().singleton("howItWorksPage"),
+              S.listItem().singleton("corporatePage"),
+              S.listItem().singleton("aboutPage"),
+              S.listItem().singleton("contactPage"),
             ]),
         ),
       S.listItem()
@@ -51,5 +54,5 @@ export const structure: StructureResolver = (S) =>
         .icon(DocumentTextIcon)
         .child(S.documentTypeList("legalPage").title("Legal")),
       S.divider(),
-      single(S, "siteSettings", "Site settings").icon(CogIcon),
+      S.listItem().singleton("siteSettings").icon(CogIcon),
     ]);

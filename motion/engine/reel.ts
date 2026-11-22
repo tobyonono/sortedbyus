@@ -37,11 +37,17 @@ export interface ReelData {
   screens: ReelScreen[];
 }
 
+/** A brand spring by preset name, numbers only (no display label, which isn't part of the saved data). */
+function springFromPreset(preset: string | undefined): (Spring & { preset: string }) | null {
+  const p = preset ? (brand.springs as Record<string, Spring & { label: string }>)[preset] : undefined;
+  return p ? { preset: preset!, stiffness: p.stiffness, damping: p.damping, mass: p.mass, velocity: p.velocity } : null;
+}
+
 export const DEFAULT_TRANSITION: ReelTransition = {
   type: "crossfade",
   direction: "left",
   seconds: 0.5,
-  spring: { preset: "gentle", ...brand.springs.gentle },
+  spring: springFromPreset("gentle")!,
 };
 
 /** Fill gaps and replace anything invalid, so any stored reel can play. */
@@ -53,7 +59,7 @@ export function normaliseReel(raw: unknown): ReelData {
     const t = (s?.transition ?? {}) as Partial<ReelTransition>;
     const sp = t.spring as Partial<Spring & { preset?: string }> | undefined;
     const springOk = sp && [sp.stiffness, sp.damping, sp.mass].every((x) => typeof x === "number" && Number.isFinite(x) && x > 0);
-    const presetSpring = sp?.preset && sp.preset in brand.springs ? { preset: sp.preset, ...(brand.springs as Record<string, Spring>)[sp.preset] } : null;
+    const presetSpring = springFromPreset(sp?.preset);
     return {
       _key: typeof s?._key === "string" && s._key ? s._key : `screen${i}`,
       composition: s?.composition?._ref ? { _type: "reference", _ref: s.composition._ref, _weak: true } : null,
@@ -63,7 +69,9 @@ export function normaliseReel(raw: unknown): ReelData {
         type: (TRANSITION_TYPES as readonly string[]).includes(t.type as string) ? (t.type as TransitionType) : DEFAULT_TRANSITION.type,
         direction: (DIRECTIONS as readonly string[]).includes(t.direction as string) ? (t.direction as Direction) : "left",
         seconds: Math.min(3, Math.max(0.1, Number(t.seconds) || DEFAULT_TRANSITION.seconds)),
-        spring: springOk ? { ...(sp as Spring), velocity: Number.isFinite(sp!.velocity) ? sp!.velocity! : 0 } : presetSpring ?? DEFAULT_TRANSITION.spring,
+        spring: springOk
+          ? { ...(sp?.preset ? { preset: sp.preset } : {}), stiffness: sp!.stiffness!, damping: sp!.damping!, mass: sp!.mass!, velocity: Number.isFinite(sp!.velocity) ? sp!.velocity! : 0 }
+          : presetSpring ?? DEFAULT_TRANSITION.spring,
       },
     };
   });

@@ -144,5 +144,27 @@
       "weight": 500,
       "fallback": "'Helvetica Neue', Arial, sans-serif"
     }
-  }
+  },
+  "channels": [
+    {
+      "value": "instagram",
+      "label": "Instagram"
+    },
+    {
+      "value": "tiktok",
+      "label": "TikTok"
+    },
+    {
+      "value": "website",
+      "label": "Website"
+    },
+    {
+      "value": "email",
+      "label": "Email"
+    },
+    {
+      "value": "whatsapp",
+      "label": "WhatsApp"
+    }
+  ]
 }

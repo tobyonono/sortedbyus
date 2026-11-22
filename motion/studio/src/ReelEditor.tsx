@@ -6,9 +6,12 @@ import type { SanityClient } from "@sanity/client";
 import { useToast } from "@sanity/ui/toast";
 import {
   templateField, aspectLabel, DIRECTIONS, FORMAT_KEYS, FPS_OPTIONS, formatSize, normaliseReel, reelSource, reelTimeline,
-  TRANSITION_LABELS, TRANSITION_TYPES, type FormatKey, type ReelData, type ReelScreen, type ResolveScreen,
+  TRANSITION_LABELS, TRANSITION_TYPES, type BaseData, type FormatKey, type ReelData, type ReelScreen, type ResolveScreen,
 } from "../../engine";
-import { SpringField } from "./Controls";
+import { applyPhoto, ControlSections, SpringField, type PhotoTarget } from "./Controls";
+import { MediaPicker } from "./MediaPicker";
+import { Campaigns } from "./Campaigns";
+import { compositionLinks } from "./links";
 import { baseId, isDraft, preferDrafts, readComposition, slugify, sourceOf, type Doc, type StoredDoc } from "./compositions";
 import { download, exportVideo } from "./exporter";
 import { ExportDialog, type ExportMeta } from "./ExportDialog";
@@ -86,7 +89,7 @@ export function ReelEditor({
   const loadExports = useCallback(async () => {
     try {
       const r = await client.fetch<{ exports?: SavedExport[] } | null>(
-        `*[_id == $id][0]{"exports": exports[]{_key, format, fps, seconds, createdAt, filename, "url": file.asset->url, "size": file.asset->size}}`,
+        `*[_id == $id][0]{"exports": exports[]{_key, format, fps, seconds, createdAt, filename, approvedFor, "url": file.asset->url, "size": file.asset->size}}`,
         { id },
       );
       setExports(r?.exports ?? []);
@@ -142,6 +145,43 @@ export function ReelEditor({
     pending.current = next;
     setReel(next);
   };
+
+  // ---- editing a screen's composition from the reel (debounced save to that composition) ----
+  const compPending = useRef(new Map<string, Doc>());
+  const compTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const flushCompositions = useCallback(async () => {
+    if (compTimer.current) clearTimeout(compTimer.current);
+    compTimer.current = null;
+    const docs = [...compPending.current.values()];
+    compPending.current.clear();
+    if (!docs.length) return true;
+    setSave("saving");
+    try {
+      for (const d of docs) {
+        await client.patch(d._id).set({ [templateField(d.template)]: d.data, ...compositionLinks(d.template, d.data) }).unset(["data"]).commit();
+      }
+      setSave("saved");
+      setSavedTick((n) => n + 1);
+      onChanged();
+      return true;
+    } catch (e) {
+      // keep them for the next try, unless newer edits arrived meanwhile
+      for (const d of docs) if (!compPending.current.has(d._id)) compPending.current.set(d._id, d);
+      setSave("error");
+      fail("Couldn’t save the composition", e);
+      return false;
+    }
+  }, [client, fail, onChanged]);
+  useEffect(() => () => void flushCompositions(), [flushCompositions]);
+
+  const editComposition = (doc: Doc, data: BaseData) => {
+    const next = { ...doc, data };
+    setComps((m) => new Map(m).set(baseId(doc._id), next));
+    compPending.current.set(doc._id, next);
+    if (compTimer.current) clearTimeout(compTimer.current);
+    compTimer.current = setTimeout(() => void flushCompositions(), 700);
+  };
+  const [photoFor, setPhotoFor] = useState<{ id: string; target: PhotoTarget } | null>(null);
   const updateScreen = (key: string, patch: Partial<ReelScreen>) =>
     reel && update({ ...reel, screens: reel.screens.map((s) => (s._key === key ? { ...s, ...patch } : s)) });
 
@@ -244,7 +284,7 @@ export function ReelEditor({
     const c = screen.composition?._ref ? comps.get(baseId(screen.composition._ref)) : null;
     if (!c || !reel) return;
     try {
-      const created = await client.create({ _type: "motionComposition", title: `${c.title} (${reel.title})`, template: c.template, [templateFieldOf(c)]: c.data });
+      const created = await client.create({ _type: "motionComposition", title: `${c.title} (${reel.title})`, template: c.template, [templateFieldOf(c)]: c.data, ...compositionLinks(c.template, c.data) });
       const copy = { ...c, _id: created._id, title: created.title as string };
       setComps((m) => new Map(m).set(baseId(created._id), copy));
       updateScreen(screen._key, { composition: { _type: "reference", _ref: created._id, _weak: true } });
@@ -409,51 +449,83 @@ export function ReelEditor({
           </p>
         </div>
 
-        {selected && selection?.kind === "screen" && (
-          <section className="section">
-            <div className="section-head static">
-              <span>
-                Screen {selectedIndex + 1}: {timeline.slots[selectedIndex]?.title}
-              </span>
-            </div>
-            <div className="section-body">
-              {selected.composition?._ref && (
-                <div className="screen-actions">
-                  <button className="btn full" onClick={() => onOpenComposition(comps.get(baseId(selected.composition!._ref))?._id ?? selected.composition!._ref)}>
-                    Edit composition
-                  </button>
-                  <button className="btn ghost full" onClick={() => void separateCopy(selected)}>
-                    Make a separate copy
-                  </button>
-                  <p className="hint">Edits change every reel using this composition. A copy only changes this reel.</p>
+        {selected && selection?.kind === "screen" && (() => {
+          const comp = selected.composition?._ref ? comps.get(baseId(selected.composition._ref)) : null;
+          const tpl = comp ? templateById(comp.template) : null;
+          return (
+            <>
+              <section className="section">
+                <div className="section-head static">
+                  <span>
+                    Screen {selectedIndex + 1}: {timeline.slots[selectedIndex]?.title}
+                  </span>
                 </div>
+                <div className="section-body">
+                  {comp && tpl ? (
+                    <div className="screen-actions">
+                      <p className="hint">
+                        {tpl.name}. Changes here update this composition in every reel that uses it.
+                      </p>
+                      <button className="btn ghost small" onClick={() => void separateCopy(selected)}>
+                        Make a separate copy for this reel
+                      </button>
+                    </div>
+                  ) : (
+                    <p className="hint">This composition is missing. Remove the screen, or add another one.</p>
+                  )}
+                </div>
+              </section>
+
+              {comp && tpl && (
+                <ControlSections
+                  template={tpl}
+                  data={comp.data}
+                  onChange={(data) => editComposition(comp, data)}
+                  onPickImage={(target) => setPhotoFor({ id: comp._id, target })}
+                />
               )}
-              <Range
-                label="Trim start"
-                value={selected.trimStart}
-                max={Math.max(0, naturalSeconds(selected) - selected.trimEnd - 0.2)}
-                onChange={(v) => updateScreen(selected._key, { trimStart: v })}
-              />
-              <Range
-                label="Trim end"
-                value={selected.trimEnd}
-                max={Math.max(0, naturalSeconds(selected) - selected.trimStart - 0.2)}
-                onChange={(v) => updateScreen(selected._key, { trimEnd: v })}
-              />
-              <div className="section-foot">
-                <button
-                  className="btn text danger"
-                  onClick={() => {
-                    update({ ...reel, screens: reel.screens.filter((s) => s._key !== selected._key) });
-                    setSelection(null);
-                  }}
-                >
-                  Remove from reel
-                </button>
-              </div>
-            </div>
-          </section>
-        )}
+
+              <section className="section">
+                <div className="section-head static">
+                  <span>In this reel</span>
+                </div>
+                <div className="section-body">
+                  <Range
+                    label="Trim start"
+                    value={selected.trimStart}
+                    max={Math.max(0, naturalSeconds(selected) - selected.trimEnd - 0.2)}
+                    onChange={(v) => updateScreen(selected._key, { trimStart: v })}
+                  />
+                  <Range
+                    label="Trim end"
+                    value={selected.trimEnd}
+                    max={Math.max(0, naturalSeconds(selected) - selected.trimStart - 0.2)}
+                    onChange={(v) => updateScreen(selected._key, { trimEnd: v })}
+                  />
+                  <div className="section-foot split">
+                    {comp && (
+                      <button
+                        className="btn text"
+                        onClick={() => void flushCompositions().then((ok) => ok && onOpenComposition(comp._id))}
+                      >
+                        Open in the composition editor
+                      </button>
+                    )}
+                    <button
+                      className="btn text danger"
+                      onClick={() => {
+                        update({ ...reel, screens: reel.screens.filter((s) => s._key !== selected._key) });
+                        setSelection(null);
+                      }}
+                    >
+                      Remove from reel
+                    </button>
+                  </div>
+                </div>
+              </section>
+            </>
+          );
+        })()}
 
         {selected && selection?.kind === "transition" && (
           <section className="section">
@@ -548,7 +620,18 @@ export function ReelEditor({
           </div>
         </section>
 
-        <Exports items={exports ?? undefined} />
+        <Campaigns client={client} id={reel._id} kind="reel" />
+        <Exports
+          items={exports ?? undefined}
+          onApprove={(key, channels) => {
+            setExports((x) => x?.map((e) => (e._key === key ? { ...e, approvedFor: channels } : e)) ?? x);
+            client
+              .patch(reel._id)
+              .set({ [`exports[_key=="${key}"].approvedFor`]: channels })
+              .commit()
+              .catch((e) => fail("Couldn’t save the approval", e));
+          }}
+        />
       </aside>
 
       {adding && (
@@ -565,7 +648,7 @@ export function ReelEditor({
             const t = templateById(templateId);
             if (!t) return;
             try {
-              const created = await client.create({ _type: "motionComposition", title: t.name, template: t.id, [templateField(t.id)]: t.defaults });
+              const created = await client.create({ _type: "motionComposition", title: t.name, template: t.id, [templateField(t.id)]: t.defaults, ...compositionLinks(t.id, t.defaults) });
               setAdding(false);
               addScreen(readComposition(created as unknown as StoredDoc));
               onChanged();
@@ -573,6 +656,19 @@ export function ReelEditor({
             } catch (e) {
               fail("Couldn’t create the composition", e);
             }
+          }}
+        />
+      )}
+      {photoFor && (
+        <MediaPicker
+          client={client}
+          onClose={() => setPhotoFor(null)}
+          onPick={(v) => {
+            const doc = comps.get(baseId(photoFor.id));
+            setPhotoFor(null);
+            if (!doc) return;
+            const data = applyPhoto(doc.data, photoFor.target, v);
+            if (data !== doc.data) editComposition(doc, data);
           }}
         />
       )}

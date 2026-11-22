@@ -14,8 +14,15 @@ export function fakeSanity(seed: Doc[]) {
         return d ? { exports: (d.exports ?? []).map((e: any) => ({ ...e, url: e.file?.asset?._ref, size: 1_000_000 })) } : null;
       }
       if (query.includes("sanity.imageAsset")) return [];
+      // the site's services (request form list)
+      if (query.includes('_type == "service"')) return ["Shopping & Sourcing", "Travel & Holidays", "Gifts & Celebrations", "Home & Lifestyle", "Errands & Admin", "Events & Experiences"].map((title) => ({ _id: `service-${title.toLowerCase().replace(/[^a-z]+/g, "-")}`, title }));
       const docs = [...store.values()];
       const refs = (d: Doc) => (d.screens ?? []).map((x: any) => x.composition?._ref);
+      // campaigns that reference a composition or reel
+      if (query.includes('_type == "campaign"')) {
+        const mentions = (d: Doc) => JSON.stringify(d).includes(`"${params.id}"`) || JSON.stringify(d).includes(`"${params.draft}"`);
+        return docs.filter((d) => d._type === "campaign" && mentions(d)).map((d) => ({ _id: d._id, title: d.title, status: d.status }));
+      }
       // which reels use a composition
       if (query.includes("references(")) {
         return docs.filter((d) => d._type === "motionReel" && refs(d).some((r: string) => r === params.id || r === params.draft)).map((d) => ({ _id: d._id, title: d.title }));
@@ -45,7 +52,18 @@ export function fakeSanity(seed: Doc[]) {
     patch(id: string) {
       const ops: ((d: Doc) => void)[] = [];
       const p = {
-        set: (o: object) => (ops.push((d) => Object.assign(d, o)), p),
+        set: (o: Record<string, any>) =>
+          (ops.push((d) => {
+            for (const [k, v] of Object.entries(o)) {
+              // exports[_key=="abc"].approvedFor
+              const m = /^(\w+)\[_key=="([^"]+)"\]\.(\w+)$/.exec(k);
+              if (m) {
+                const item = (d[m[1]] ?? []).find((x: any) => x._key === m[2]);
+                if (item) item[m[3]] = v;
+              } else d[k] = v;
+            }
+          }),
+          p),
         unset: (keys: string[]) => (ops.push((d) => keys.forEach((k) => delete d[k])), p),
         setIfMissing: (o: Record<string, any>) => (ops.push((d) => Object.keys(o).forEach((k) => (d[k] ??= o[k]))), p),
         append: (k: string, items: any[]) => (ops.push((d) => (d[k] = [...(d[k] ?? []), ...items])), p),

@@ -40,6 +40,10 @@ function accepts(c: Ctl): string {
       return brand.fps.join(", ");
     case "image":
       return "photo (starter name or Sanity image URL), or empty";
+    case "date":
+      return "a date, YYYY-MM-DD";
+    case "service":
+      return `the title of a service on the site, as in the request form (a "service" document's title), or "Corporate" or "Something else"`;
     case "typeStyle":
       return `a type style: ${Object.keys(brand.type).map((t) => `"${t}"`).join(", ")}`;
     case "entrance":
@@ -71,7 +75,7 @@ export function motionGuide() {
   const palette = Object.entries(brand.palette).map(([name, hex]) => ({ name, hex }));
   const formats = Object.entries(brand.formats).map(([key, f]) => ({ key, label: f.label, size: f.video.join("×") }));
   const studio = `${site.url}/studio/motion`;
-  return { templates, springs, palette, formats, fps: brand.fps, studio, mcp: "https://mcp.sanity.io", site };
+  return { templates, springs, palette, formats, fps: brand.fps, channels: brand.channels.map((c) => c.value), studio, mcp: "https://mcp.sanity.io", site };
 }
 
 /** Plain markdown for agents. */
@@ -119,6 +123,11 @@ A reel puts compositions in order, with a transition between each. Make or find 
 - \`screens\`: a list, each \`{ _key, composition: { _type: "reference", _ref: "<composition id without drafts.>", _weak: true }, trimStart, trimEnd, transition: { type, direction, seconds, spring: { preset } } }\`
 - \`transition.type\`: "cut", "crossfade", "push", "slide" or "smart" (the same photo, or a line with the same words, glides between the two screens and the rest fades; works between title-card, photo-caption and photo-mosaic, other templates crossfade); \`direction\` (push/slide): "left", "right", "up", "down"; \`seconds\`: 0.1–3. The last screen's transition is ignored.
 Screens point at compositions, so changing a composition changes every reel that uses it. To change one reel only, copy the composition and point that screen at the copy.
+
+## Campaigns and links
+- A \`campaign\` document links what ships together: \`services\` (references to service documents), \`pages\` (website pages), \`motion\` (weak references to reels and compositions), \`finalVideos\` (file fields pointing at exported files), \`emails\` (subject, status, sendDate, link) and \`channels\` (${g.channels.map((c) => `"${c}"`).join(", ")}). To see what a campaign has and lacks, follow its references.
+- Compositions carry \`photoAssets\` (the Sanity images they use) and \`services\` (the services they're about). The studio fills both on every save; don't set them yourself. Find the motion for a service with \`*[_type == "motionComposition" && references($serviceId)]\`.
+- Each export can carry \`approvedFor\`: the channels it's approved for, set by a person in the studio. Only hand over exports approved for the channel you're working on.
 
 ## 3. Render
 Open this in a browser, signed in to Sanity:

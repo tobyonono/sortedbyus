@@ -46,15 +46,24 @@ export function aspectLabel(key: FormatKey): string {
   return `${w / d}:${h / d}`;
 }
 
-/** A field the studio shows in its controls panel. `key` is a dotted path into the data. */
-export type Control =
+/**
+ * A field the studio shows in its controls panel. `key` is a dotted path into the data.
+ * `showWhen` hides it unless another field has a given value (e.g. a date only when "A date" is chosen).
+ */
+export type Control = ControlKind & { showWhen?: { key: string; equals: string } };
+
+type ControlKind =
   | { key: string; type: "text"; label: string; group: string }
+  /** A calendar date, stored as YYYY-MM-DD. */
+  | { key: string; type: "date"; label: string; group: string; hint?: string }
   | { key: string; type: "number"; label: string; group: string; unit?: string; min: number; max: number; step: number }
   | { key: string; type: "colour"; label: string; group: string }
   | { key: string; type: "format" | "fps"; label: string; group: string }
   | { key: string; type: "spring"; label: string; group: string; hint?: string }
   | { key: string; type: "choice"; label: string; group: string; options: { value: string; label: string }[] }
   | { key: string; type: "typeStyle"; label: string; group: string }
+  /** One of the website's services, as in the request form (the studio lists them from Sanity). */
+  | { key: string; type: "service"; label: string; group: string; hint?: string }
   | { key: string; type: "image"; label: string; group: string; hint?: string }
   | { key: string; type: "entrance"; label: string; group: string; hint?: string }
   | { key: string; type: "list"; label: string; group: string; max: number; item: { key: string; type: "text" | "image" | "colour"; label: string }[] };
@@ -184,6 +193,12 @@ export function normalise<D extends BaseData>(t: Template<D>, raw: unknown): D {
         break;
       case "typeStyle":
         if (typeof v !== "string" || !(v in brand.type)) put(def);
+        break;
+      case "service":
+        if (typeof v !== "string" || !v.trim()) put(def);
+        break;
+      case "date":
+        if (typeof v !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(v)) put(def);
         break;
       case "entrance": {
         const e = v as Partial<EntranceValue> | undefined;

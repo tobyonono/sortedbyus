@@ -2,6 +2,7 @@ import { useState, type ReactNode } from "react";
 import { brand, ENTRANCE_KINDS, ENTRANCE_LABELS, get, set, springPreset, springSettling, type BaseData, type Control, type EntranceValue, type SpringValue, type Template } from "../../engine";
 import { SpringEditor } from "./SpringEditor";
 import { resolveImage } from "./media";
+import { useSiteServicesList } from "./siteServices";
 
 type ListItem = Record<string, string> & { _key: string };
 /** Where a picked photo goes: a list item's photo, or (no itemKey) a single photo field at `listKey`. */
@@ -33,16 +34,37 @@ export function Controls({
   /** Extra sections after the controls (the exports list). */
   children?: ReactNode;
 }) {
-  const controls = template.controls.filter((c) => c.type !== "format" && c.type !== "fps");
-  const groups = [...new Set(controls.map((c) => c.group))];
-  const update = (key: string, value: unknown) => onChange(set(data, key, value));
-
   return (
     <aside className="panel" inert={inert}>
       <div className="panel-head">
         <p className="panel-kind">{template.name}</p>
         <p className="panel-desc">{template.description}</p>
       </div>
+      <ControlSections template={template} data={data} onChange={onChange} onPickImage={onPickImage} />
+      {children}
+    </aside>
+  );
+}
+
+/** A template's settings, grouped into collapsible sections (the composition panel and reel screens). */
+export function ControlSections({
+  template,
+  data,
+  onChange,
+  onPickImage,
+}: {
+  template: Template<BaseData>;
+  data: BaseData;
+  onChange: (next: BaseData) => void;
+  onPickImage: (target: PhotoTarget) => void;
+}) {
+  const controls = template.controls.filter(
+    (c) => c.type !== "format" && c.type !== "fps" && (!c.showWhen || get(data, c.showWhen.key) === c.showWhen.equals),
+  );
+  const groups = [...new Set(controls.map((c) => c.group))];
+  const update = (key: string, value: unknown) => onChange(set(data, key, value));
+  return (
+    <>
       {groups.map((g) => (
         <Section key={g} title={g}>
           {controls
@@ -52,8 +74,7 @@ export function Controls({
             ))}
         </Section>
       ))}
-      {children}
-    </aside>
+    </>
   );
 }
 
@@ -182,6 +203,15 @@ function Field({
         </div>
       );
     }
+    case "date":
+      return (
+        <label className="field">
+          <span className="field-label">{c.label}</span>
+          <input className="input" type="date" value={(value as string) ?? ""} onChange={(e) => e.target.value && onChange(e.target.value)} />
+        </label>
+      );
+    case "service":
+      return <ServiceField label={c.label} value={(value as string) ?? ""} onChange={onChange} />;
     case "typeStyle":
       return (
         <label className="field">
@@ -383,5 +413,26 @@ export function SpringField({ control: c, value, onChange }: { control: Extract<
         />
       )}
     </div>
+  );
+}
+
+/** A service from the site, chosen from the same list as the request form. */
+function ServiceField({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+  const services = useSiteServicesList();
+  const options = services ?? (value ? [value] : []);
+  const missing = !!services && !!value && !services.includes(value);
+  return (
+    <label className="field">
+      <span className="field-label">{label}</span>
+      <select className="input" value={value} disabled={!services} onChange={(e) => onChange(e.target.value)}>
+        {missing && <option value={value}>{value} (not on the site)</option>}
+        {options.map((o) => (
+          <option key={o} value={o}>
+            {o}
+          </option>
+        ))}
+      </select>
+      {missing && <span className="hint">This service isn’t on the site any more. Choose one that is.</span>}
+    </label>
   );
 }

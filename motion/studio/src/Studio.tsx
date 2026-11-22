@@ -11,6 +11,9 @@ import { MediaPicker } from "./MediaPicker";
 import { Stage } from "./Stage";
 import { templateById, TEMPLATES } from "./templates";
 import { baseId, isDraft, readComposition, slugify, type Doc, type StoredDoc } from "./compositions";
+import { Campaigns } from "./Campaigns";
+import { compositionLinks } from "./links";
+import { SiteServices, useLoadSiteServices } from "./siteServices";
 import { ReelEditor } from "./ReelEditor";
 import { uploadAsset } from "./uploadAsset";
 
@@ -33,6 +36,7 @@ type PhotoSelection = PhotoTarget & { documentId: string };
 
 /** The whole motion studio. `client` is the signed-in user's Sanity client from the host (the Studio tool). */
 export function Studio({ client }: { client: SanityClient }) {
+  const siteServices = useLoadSiteServices(client);
   const [rows, setRows] = useState<Row[] | null>(null);
   // Reels: a separate document type that sequences compositions.
   const [reelRows, setReelRows] = useState<{ _id: string; title: string; screens: number; draft: boolean }[] | null>(null);
@@ -114,7 +118,7 @@ export function Studio({ client }: { client: SanityClient }) {
           const d = pending.current;
           await client
             .patch(d._id)
-            .set({ title: d.title, [templateField(d.template)]: d.data })
+            .set({ title: d.title, [templateField(d.template)]: d.data, ...compositionLinks(d.template, d.data) })
             .unset(["data"])
             .commit();
           if (pending.current === d) pending.current = null;
@@ -138,7 +142,7 @@ export function Studio({ client }: { client: SanityClient }) {
     const request = ++exportRequest.current;
     try {
       const r = await client.fetch<{ exports?: SavedExport[] } | null>(
-        `*[_id == $id][0]{"exports": exports[]{_key, format, fps, seconds, createdAt, filename, "url": file.asset->url, "size": file.asset->size}}`,
+        `*[_id == $id][0]{"exports": exports[]{_key, format, fps, seconds, createdAt, filename, approvedFor, "url": file.asset->url, "size": file.asset->size}}`,
         { id },
       );
       if (latest.current?._id === id && request === exportRequest.current) setExports({ id, items: r?.exports ?? [] });
@@ -410,6 +414,7 @@ export function Studio({ client }: { client: SanityClient }) {
         title: from ? `${from.title} copy` : t.name,
         template: t.id,
         [templateField(t.id)]: from ? from.data : t.defaults,
+        ...compositionLinks(t.id, from ? from.data : t.defaults),
       })
       .catch((e) => (fail("Couldn’t create the composition", e), null));
     if (!created) return;
@@ -484,6 +489,7 @@ export function Studio({ client }: { client: SanityClient }) {
   const template = doc ? templateById(doc.template) : null;
 
   return (
+    <SiteServices.Provider value={siteServices}>
     <div className="studio">
       {reelId ? (
         <ReelEditor
@@ -705,7 +711,19 @@ export function Studio({ client }: { client: SanityClient }) {
               </div>
             </section>
           )}
-          <Exports items={exports?.id === doc._id ? exports.items : undefined} />
+          <Campaigns client={client} id={doc._id} kind="composition" />
+          <Exports
+            items={exports?.id === doc._id ? exports.items : undefined}
+            onApprove={(key, channels) => {
+              const id = doc._id;
+              setExports((x) => (x?.id === id && x.items ? { id, items: x.items.map((e) => (e._key === key ? { ...e, approvedFor: channels } : e)) } : x));
+              client
+                .patch(id)
+                .set({ [`exports[_key=="${key}"].approvedFor`]: channels })
+                .commit()
+                .catch((e) => fail("Couldn’t save the approval", e));
+            }}
+          />
         </Controls>
       )}
       {choosing && (
@@ -750,6 +768,7 @@ export function Studio({ client }: { client: SanityClient }) {
         />
       )}
     </div>
+    </SiteServices.Provider>
   );
 }
 

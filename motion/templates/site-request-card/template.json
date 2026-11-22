@@ -5,9 +5,9 @@
   "engine": "site",
   "controls": [
     { "key": "title", "type": "text", "label": "Heading", "group": "Request" },
-    { "key": "service", "type": "text", "label": "What they need", "group": "Request", "hint": "A service from the site, e.g. Gifts & Celebrations" },
+    { "key": "service", "type": "service", "label": "What they need", "group": "Request" },
     { "key": "when", "type": "choice", "label": "When", "group": "Request", "options": [{ "value": "today", "label": "Today" }, { "value": "date", "label": "A date" }] },
-    { "key": "date", "type": "text", "label": "Date", "group": "Request", "hint": "YYYY-MM-DD, used when \"A date\" is chosen" },
+    { "key": "date", "type": "date", "label": "Date", "group": "Request", "showWhen": { "key": "when", "equals": "date" } },
     { "key": "where", "type": "choice", "label": "Where", "group": "Request", "options": [{ "value": "Lagos", "label": "Lagos" }, { "value": "Abuja", "label": "Abuja" }, { "value": "Elsewhere in Nigeria", "label": "Elsewhere" }, { "value": "From abroad", "label": "Abroad" }] },
     { "key": "name", "type": "text", "label": "Name typed in", "group": "Request" },
     { "key": "endsOn", "type": "choice", "label": "Ends on", "group": "Motion", "options": [{ "value": "details", "label": "Step 1" }, { "value": "contact", "label": "Step 2" }, { "value": "sent", "label": "Sent" }] },

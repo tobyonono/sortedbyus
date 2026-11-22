@@ -1307,11 +1307,10 @@
   list-style: none;
 }
 
+/* details on top, actions on their own row underneath, so neither gets squeezed */
 .studio .export-list li {
-  display: flex;
+  display: grid;
   gap: 8px;
-  align-items: center;
-  justify-content: space-between;
   padding: 8px 10px;
   border-radius: var(--radius);
   background: var(--field);
@@ -1583,10 +1582,21 @@
   margin: 2px 0 0;
 }
 
+.studio .screen-actions .btn {
+  justify-self: start;
+}
+
 .studio .section-foot {
   margin-top: 10px;
   padding-top: 8px;
   border-top: 1px solid var(--line);
+}
+
+.studio .section-foot.split {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 12px;
 }
 
 /* add a screen */
@@ -1730,4 +1740,92 @@
       transform: none;
     }
   }
+}
+
+/* ---------- export approvals ---------- */
+
+.studio .export-approved {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.studio .badge.approved {
+  margin-left: 0;
+  background: #e6f1e4;
+  color: #2f5b29;
+}
+
+.studio .approve-menu summary.btn {
+  opacity: 1;
+  padding: 0 10px;
+}
+
+.studio .approve-menu > div {
+  min-width: 160px;
+}
+
+.studio .approve-head {
+  padding: 4px 8px 2px;
+  color: var(--muted);
+  font-size: 11.5px;
+}
+
+.studio .approve-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.studio .approve-option:hover {
+  background: var(--field);
+}
+
+/* ---------- campaigns ---------- */
+
+.studio .campaign-list {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.studio .campaign-list li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.studio .campaign-list a {
+  overflow: hidden;
+  color: var(--text);
+  font-weight: 500;
+  text-decoration: underline 1px;
+  text-decoration-color: var(--soft);
+  text-underline-offset: 3px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.studio .campaign-list a:hover {
+  text-decoration-color: currentColor;
+}
+
+.studio .campaign-list small {
+  flex: none;
+  color: var(--muted);
+  font-size: 11.5px;
+}
+
+.studio .export-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
 }

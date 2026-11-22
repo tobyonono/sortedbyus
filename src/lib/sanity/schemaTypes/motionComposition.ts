@@ -52,6 +52,15 @@ function field(c: Ctl, name: string): FieldDefinition {
       return defineField({ name, title: c.label, type: "number", description: "Frames per second.", options: { list: brand.fps } });
     case "image":
       return defineField({ name, title: c.label, type: "string", description: `${description}. ${IMAGE_HELP} Leave empty for none.` });
+    case "date":
+      return defineField({ name, title: c.label, type: "date", description: `${description}. YYYY-MM-DD.` });
+    case "service":
+      return defineField({
+        name,
+        title: c.label,
+        type: "string",
+        description: `${description}. The title of a service on the site, exactly as in the request form (a "service" document's title), or "Corporate" or "Something else".`,
+      });
     case "typeStyle":
       return defineField({ name, title: c.label, type: "string", description: `${description}. A brand type style: ${Object.keys(brand.type).join(", ")}.`, options: { list: TYPE_STYLES } });
     case "entrance":
@@ -144,6 +153,24 @@ export const motionComposition = defineType({
       }),
     ),
     defineField({
+      name: "photoAssets",
+      title: "Photos used",
+      type: "array",
+      readOnly: true,
+      description:
+        "The Sanity images this composition uses. Kept by the studio on every save, so Sanity shows them as in use (and won't delete them) and tools can follow them. Starter photos aren't listed.",
+      // image fields, not bare references: each holds a reference to its sanity.imageAsset
+      of: [defineArrayMember({ type: "image" })],
+    }),
+    defineField({
+      name: "services",
+      title: "Services",
+      type: "array",
+      readOnly: true,
+      description: "The site services this composition is about (from its service fields). Kept by the studio on every save.",
+      of: [defineArrayMember({ type: "reference", weak: true, to: [{ type: "service" }] })],
+    }),
+    defineField({
       name: "exports",
       type: "array",
       readOnly: true,
@@ -159,6 +186,14 @@ export const motionComposition = defineType({
             defineField({ name: "filename", type: "string" }),
             defineField({ name: "createdAt", type: "datetime" }),
             defineField({ name: "file", type: "file" }),
+            defineField({
+              name: "approvedFor",
+              type: "array",
+              title: "Approved for",
+              description: "Channels this video is approved for. Set in the studio's Exports list.",
+              of: [{ type: "string" }],
+              options: { list: brand.channels.map((c) => ({ value: c.value, title: c.label })) },
+            }),
           ],
         }),
       ],

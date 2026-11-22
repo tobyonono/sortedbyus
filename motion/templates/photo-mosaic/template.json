@@ -1,0 +1,46 @@
+{
+  "id": "photo-mosaic",
+  "name": "Photo mosaic",
+  "description": "A grid of photos that builds in tile by tile, with an optional word over the top.",
+  "engine": "code",
+  "controls": [
+    { "key": "tiles", "type": "list", "label": "Photos", "group": "Photos", "max": 9,
+      "item": [{ "key": "image", "type": "image", "label": "Photo" }] },
+    { "key": "grid", "type": "choice", "label": "Grid", "group": "Photos", "options": [{ "value": "auto", "label": "Auto" }, { "value": "2x2", "label": "2×2" }, { "value": "2x3", "label": "2×3" }, { "value": "3x3", "label": "3×3" }] },
+    { "key": "gap", "type": "number", "label": "Gap", "unit": "%", "min": 0, "max": 5, "step": 0.1, "group": "Photos" },
+    { "key": "radius", "type": "number", "label": "Corners", "unit": "%", "min": 0, "max": 5, "step": 0.1, "group": "Photos" },
+    { "key": "word", "type": "text", "label": "Word over the top", "group": "Copy" },
+    { "key": "typeStyle", "type": "typeStyle", "label": "Typeface", "group": "Copy" },
+    { "key": "typeSize", "type": "number", "label": "Type size", "unit": "%", "min": 4, "max": 18, "step": 0.1, "group": "Copy" },
+    { "key": "tileEntrance", "type": "entrance", "label": "Tiles appear", "group": "Motion" },
+    { "key": "order", "type": "choice", "label": "Order", "group": "Motion", "options": [{ "value": "inOrder", "label": "In order" }, { "value": "shuffled", "label": "Shuffled" }] },
+    { "key": "stagger", "type": "number", "label": "Between tiles", "unit": "s", "min": 0.02, "max": 0.5, "step": 0.01, "group": "Motion" },
+    { "key": "wordEntrance", "type": "entrance", "label": "Word appears", "group": "Motion" },
+    { "key": "holdSeconds", "type": "number", "label": "Hold at the end", "unit": "s", "min": 0.5, "max": 6, "step": 0.1, "group": "Motion" },
+    { "key": "colours.background", "type": "colour", "label": "Background", "group": "Colour" },
+    { "key": "colours.text", "type": "colour", "label": "Word", "group": "Colour" },
+    { "key": "format", "type": "format", "label": "Format", "group": "Export" },
+    { "key": "fps", "type": "fps", "label": "Frame rate", "group": "Export" }
+  ],
+  "defaults": {
+    "tiles": [
+      { "image": "gifts" }, { "image": "dinners" }, { "image": "getaways" },
+      { "image": "celebrations" }, { "image": "boat" }, { "image": "suya" },
+      { "image": "events" }, { "image": "family-home" }, { "image": "sourcing" }
+    ],
+    "grid": "auto",
+    "gap": 1.2,
+    "radius": 1,
+    "word": "",
+    "typeStyle": "display",
+    "typeSize": 11,
+    "tileEntrance": { "kind": "scale", "spring": { "preset": "snappy", "stiffness": 520, "damping": 46, "mass": 1, "velocity": 0 } },
+    "order": "shuffled",
+    "stagger": 0.09,
+    "wordEntrance": { "kind": "rise", "spring": { "preset": "gentle", "stiffness": 170, "damping": 26, "mass": 1, "velocity": 0 } },
+    "holdSeconds": 2.5,
+    "colours": { "background": "espresso", "text": "cream" },
+    "format": "portrait",
+    "fps": 25
+  }
+}

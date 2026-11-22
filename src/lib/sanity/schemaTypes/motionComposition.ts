@@ -1,7 +1,6 @@
 import { defineArrayMember, defineField, defineType, type FieldDefinition } from "sanity";
 import brand from "../../../../motion/brand.json";
-import cardJourney from "../../../../motion/templates/card-journey/template.json";
-import sortFlash from "../../../../motion/templates/sort-flash/template.json";
+import { TEMPLATE_SPECS } from "../../../../motion/templates/specs";
 
 /**
  * A motion studio composition (made in /studio/motion, or by an agent through Sanity's MCP server).
@@ -10,13 +9,22 @@ import sortFlash from "../../../../motion/templates/sort-flash/template.json";
  * which values are allowed. Brand rules: colours are palette names, springs come from motion/brand.json.
  */
 
-type Spec = typeof sortFlash | typeof cardJourney;
+type Spec = { id: string; name: string; description: string; controls: unknown[] };
 type Ctl = { key: string; type: string; label: string; unit?: string; min?: number; max?: number; step?: number; hint?: string; options?: { value: string; label: string }[]; item?: { key: string; type: string; label: string }[] };
 
-const TEMPLATES: Spec[] = [sortFlash, cardJourney];
+const TEMPLATES: Spec[] = TEMPLATE_SPECS;
 const PALETTE = Object.keys(brand.palette);
 const FORMATS = Object.entries(brand.formats).map(([value, f]) => ({ value, title: `${f.label} (${f.video.join("×")})` }));
 const SPRINGS = Object.entries(brand.springs).map(([value, s]) => ({ value, title: s.label }));
+const TYPE_STYLES = Object.entries(brand.type).map(([value, t]) => ({ value, title: t.label }));
+const ENTRANCES = ["cut", "fade", "rise", "scale", "mask"];
+const springFields = () => [
+  defineField({ name: "preset", type: "string", options: { list: SPRINGS } }),
+  defineField({ name: "stiffness", type: "number" }),
+  defineField({ name: "damping", type: "number" }),
+  defineField({ name: "mass", type: "number" }),
+  defineField({ name: "velocity", type: "number" }),
+];
 const IMAGE_HELP =
   'A photo: a starter photo name (e.g. "boat", "gifts", "celebrations") or the URL of an image in this project\'s Sanity media library (cdn.sanity.io/images/…).';
 const COLOUR_HELP = `A brand colour name: ${PALETTE.join(", ")}.`;
@@ -42,19 +50,28 @@ function field(c: Ctl, name: string): FieldDefinition {
       return defineField({ name, title: c.label, type: "string", description: "Which shape of video to show in the studio. Export can make any of them.", options: { list: FORMATS } });
     case "fps":
       return defineField({ name, title: c.label, type: "number", description: "Frames per second.", options: { list: brand.fps } });
+    case "image":
+      return defineField({ name, title: c.label, type: "string", description: `${description}. ${IMAGE_HELP} Leave empty for none.` });
+    case "typeStyle":
+      return defineField({ name, title: c.label, type: "string", description: `${description}. A brand type style: ${Object.keys(brand.type).join(", ")}.`, options: { list: TYPE_STYLES } });
+    case "entrance":
+      return defineField({
+        name,
+        title: c.label,
+        type: "object",
+        description: `${description}. "kind" is one of ${ENTRANCES.join(", ")}; "spring" is { "preset": ${Object.keys(brand.springs).join(" | ")} } (ignored for cut).`,
+        fields: [
+          defineField({ name: "kind", type: "string", options: { list: ENTRANCES } }),
+          defineField({ name: "spring", type: "object", fields: springFields() }),
+        ],
+      });
     case "spring":
       return defineField({
         name,
         title: c.label,
         type: "object",
         description: `${description}. Set "preset" to one of: ${Object.keys(brand.springs).join(", ")}. The numbers are filled in from the preset when the studio opens it; set them yourself only for a custom spring.`,
-        fields: [
-          defineField({ name: "preset", type: "string", options: { list: SPRINGS } }),
-          defineField({ name: "stiffness", type: "number" }),
-          defineField({ name: "damping", type: "number" }),
-          defineField({ name: "mass", type: "number" }),
-          defineField({ name: "velocity", type: "number" }),
-        ],
+        fields: springFields(),
       });
     case "list":
       return defineField({

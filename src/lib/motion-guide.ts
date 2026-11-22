@@ -1,8 +1,7 @@
 // Content for the motion studio guide (/motion/guide for people, /motion/guide.md for agents).
 // Built from the template files and brand tokens, so it always matches what the studio can make.
 import brand from "../../motion/brand.json";
-import cardJourney from "../../motion/templates/card-journey/template.json";
-import sortFlash from "../../motion/templates/sort-flash/template.json";
+import { TEMPLATE_SPECS } from "../../motion/templates/specs";
 import { settleTime } from "../../motion/engine/spring";
 import { site } from "./site";
 
@@ -39,6 +38,12 @@ function accepts(c: Ctl): string {
       return Object.keys(brand.formats).map((f) => `"${f}"`).join(", ");
     case "fps":
       return brand.fps.join(", ");
+    case "image":
+      return "photo (starter name or Sanity image URL), or empty";
+    case "typeStyle":
+      return `a type style: ${Object.keys(brand.type).map((t) => `"${t}"`).join(", ")}`;
+    case "entrance":
+      return `{ "kind": one of "cut", "fade", "rise", "scale", "mask", "spring": { "preset": … } }`;
     case "spring":
       return `{ "preset": one of ${Object.keys(brand.springs).map((s) => `"${s}"`).join(", ")} }`;
     case "list":
@@ -49,7 +54,7 @@ function accepts(c: Ctl): string {
 }
 
 export function motionGuide() {
-  const templates: GuideTemplate[] = [sortFlash, cardJourney].map((t) => {
+  const templates: GuideTemplate[] = (TEMPLATE_SPECS as { id: string; name: string; description: string; controls: unknown[]; defaults: unknown }[]).map((t) => {
     const defaults = t.defaults as Record<string, unknown>;
     const photos = new Set<string>();
     JSON.stringify(defaults, (k, v) => (k === "image" && typeof v === "string" && v ? (photos.add(v.replace(/\.[a-z]+$/, "")), v) : v));
@@ -66,7 +71,7 @@ export function motionGuide() {
   const palette = Object.entries(brand.palette).map(([name, hex]) => ({ name, hex }));
   const formats = Object.entries(brand.formats).map(([key, f]) => ({ key, label: f.label, size: f.video.join("×") }));
   const studio = `${site.url}/studio/motion`;
-  return { templates, springs, palette, formats, studio, mcp: "https://mcp.sanity.io", site };
+  return { templates, springs, palette, formats, fps: brand.fps, studio, mcp: "https://mcp.sanity.io", site };
 }
 
 /** Plain markdown for agents. */
@@ -108,13 +113,21 @@ ${t.fields.map((f) => `| \`${t.field}.${f.path}\` | ${f.label} | ${f.accepts} |`
 - Photos: a starter name (${starter.join(", ")}) or an image URL from the Sanity media library, found with \`*[_type == "sanity.imageAsset"]{url, originalFilename}\`.
 - Requests read as short asks in sentence case, without quote marks (the template adds them).
 
+## Reels (longer videos)
+A reel puts compositions in order, with a transition between each. Make or find the compositions first, then create a \`motionReel\` (also a draft):
+- \`title\`, \`format\` (${g.formats.map((f) => `"${f.key}"`).join(", ")}), \`fps\` (${g.fps.join(", ")})
+- \`screens\`: a list, each \`{ _key, composition: { _type: "reference", _ref: "<composition id without drafts.>", _weak: true }, trimStart, trimEnd, transition: { type, direction, seconds, spring: { preset } } }\`
+- \`transition.type\`: "cut", "crossfade", "push", "slide" or "smart" (the same photo, or a line with the same words, glides between the two screens and the rest fades; works between title-card, photo-caption and photo-mosaic, other templates crossfade); \`direction\` (push/slide): "left", "right", "up", "down"; \`seconds\`: 0.1–3. The last screen's transition is ignored.
+Screens point at compositions, so changing a composition changes every reel that uses it. To change one reel only, copy the composition and point that screen at the copy.
+
 ## 3. Render
 Open this in a browser, signed in to Sanity:
-${g.studio}?c=<document id without "drafts.">&export=<formats, comma-separated>
+${g.studio}?c=<composition id without "drafts.">&export=<formats, comma-separated>
+or for a reel: ${g.studio}?r=<reel id without "drafts.">&export=<formats>
 e.g. ${g.studio}?c=abc123&export=story,portrait
-The studio renders each format and saves the MP4s to Sanity under the composition's \`exports\`. The page title changes to "Export done: …" when finished. Read the files with \`*[_id in [$id, "drafts." + $id]][0].exports[]{format, seconds, "url": file.asset->url}\`.
+The studio renders each format and saves the MP4s to Sanity under the composition's (or reel's) \`exports\`. The page title changes to "Export done: …" when finished. Read the files with \`*[_id in [$id, "drafts." + $id]][0].exports[]{format, seconds, "url": file.asset->url}\`.
 
 ## 4. Hand over
-Reply with the studio link (${g.studio}?c=<id>) and the video links. A person reviews it in the studio and publishes the draft.
+Reply with the studio link (${g.studio}?c=<id> or ?r=<id>) and the video links. A person reviews it in the studio and publishes the draft.
 `;
 }

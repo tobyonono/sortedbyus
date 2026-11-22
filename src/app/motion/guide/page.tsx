@@ -93,6 +93,15 @@ export default function Page() {
         </section>
 
         <section className={g.section}>
+          <h2 className={g.h2}>Reels</h2>
+          <p className={g.muted}>
+            A reel puts compositions in order for a longer video. Each screen points at a composition, so a fix to the composition shows up in
+            every reel that uses it. Between screens you choose a cut, crossfade, push, slide or smart animate, each on a brand spring, and you can
+            trim any screen. Smart animate glides the same photo, or a line with the same words, from one screen to the next.
+          </p>
+        </section>
+
+        <section className={g.section}>
           <h2 className={g.h2}>Brand rules</h2>
           <p className={g.muted}>Assistants can only use these. Anything else is swapped for the template’s default when the studio opens it.</p>
           <h3 className={g.h3}>Colours</h3>

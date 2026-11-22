@@ -2,7 +2,7 @@
 // a staggered wall of request cards; a camera holds on each featured photo
 // card, pulls back, glides to the next and pushes in. The last stop returns to
 // the first, so it loops. Layout and camera numbers are the Cavalry ones.
-import { colour, drawCover, formatSize, settleTime, springAt, type BaseData, type Control, type Ctx2D, type SpringValue, type Template } from "../../engine";
+import { colour, drawCover, entrance, fontCss, formatSize, springAt, springSettling, withEntrance, type BaseData, type Control, type Ctx2D, type EntranceValue, type SpringValue, type Template } from "../../engine";
 import spec from "./template.json";
 
 export interface Stop {
@@ -27,6 +27,10 @@ export interface CardJourneyData extends BaseData {
   holdSeconds: number;
   /** The camera's glide between cards; it also sets how long the travel takes. */
   spring: SpringValue;
+  /** Brand type style for the requests and labels. */
+  typeStyle: string;
+  /** How the featured card's request pill comes in when the camera arrives. */
+  pillEntrance: EntranceValue;
   zoomIn: number;
   zoomOut: number;
   colours: { background: string };
@@ -64,24 +68,30 @@ const LEAD = 0.57;
 
 function timing(d: CardJourneyData) {
   const hold = frames(d.holdSeconds, d.fps);
-  const move = frames(LEAD + settleTime(d.spring), d.fps);
-  return { hold, move, seg: hold + move };
+  const settling = springSettling(d.spring);
+  const move = frames(LEAD + settling.seconds, d.fps);
+  return { hold, move, seg: hold + move, capped: settling.capped };
 }
 
 /** Camera at a frame: centre in wall units, and zoom. Fitted to the Cavalry film. */
 function camera(frame: number, d: CardJourneyData) {
-  const { hold, seg } = timing(d);
+  const { hold, move, seg, capped } = timing(d);
   const n = Math.max(1, Math.min(d.stops.length, STOP_SLOTS.length));
   const i = Math.floor(frame / seg) % n;
   const from = SLOTS[STOP_SLOTS[i]];
   const to = SLOTS[STOP_SLOTS[(i + 1) % n]];
-  const t = Math.max(0, (frame % seg) - hold) / d.fps;
-  const pan = t <= LEAD ? 0 : springAt(d.spring, t - LEAD);
-  const out = easeSine(t / (LEAD * 1.3)) - easeSine((Math.min(pan, 1) - 0.35) / 0.65);
+  const travelFrame = Math.max(0, (frame % seg) - hold);
+  const t = travelFrame / d.fps;
+  const travel = t <= LEAD ? 0 : springAt(d.spring, t - LEAD);
+  const out = easeSine(t / (LEAD * 1.3)) - easeSine((Math.min(travel, 1) - 0.35) / 0.65);
+  // A slow spring can be far from its target at the cap. Ease the remaining
+  // distance and zoom over the last second, and always land on the final travel frame.
+  const finish = easeSine(1 - (move - 1 - travelFrame) / (capped ? d.fps : 2));
+  const pan = travel + (1 - travel) * finish;
   return {
     x: from.x + (to.x - from.x) * pan,
     y: from.y + (to.y - from.y) * pan,
-    zoom: d.zoomIn - (d.zoomIn - d.zoomOut) * out,
+    zoom: d.zoomIn - (d.zoomIn - d.zoomOut) * out * (1 - finish),
   };
 }
 
@@ -110,8 +120,8 @@ function wrap(ctx: Ctx2D, text: string, max: number) {
   return lines;
 }
 
-function textBlock(ctx: Ctx2D, text: string, cx: number, cy: number, max: number, size: number, leading: number) {
-  ctx.font = `${size}px Herbik, Georgia, serif`;
+function textBlock(ctx: Ctx2D, text: string, cx: number, cy: number, max: number, size: number, leading: number, style = "display") {
+  ctx.font = fontCss(style, size);
   const lines = wrap(ctx, text, max);
   const top = cy - ((lines.length - 1) * size * leading) / 2;
   lines.forEach((l, i) => ctx.fillText(l, cx, top + i * size * leading));
@@ -162,6 +172,12 @@ export const cardJourney: Template<CardJourneyData> = {
     const halfW = W / 2 / s + CARD_W;
     const halfH = H / 2 / s + CARD_H;
 
+    // The stop the camera is on, and how long since it arrived (for the pill's entrance).
+    const { seg } = timing(d);
+    const nStops = Math.max(1, Math.min(d.stops.length, STOP_SLOTS.length));
+    const currentSlot = STOP_SLOTS[Math.floor(frame / seg) % nStops];
+    const sinceArrival = (frame % seg) / d.fps;
+
     const stopAt = new Map<number, Stop>();
     d.stops.slice(0, STOP_SLOTS.length).forEach((st, i) => stopAt.set(STOP_SLOTS[i], st));
     let fillIndex = 0;
@@ -186,25 +202,29 @@ export const cardJourney: Template<CardJourneyData> = {
         ctx.fillStyle = colour("espresso");
         ctx.fillRect(x, y, CARD_W, CARD_H);
         ctx.restore();
-        // request pill
-        roundRect(ctx, slot.x - 228, slot.y - 58, 456, 116, RADIUS);
-        ctx.fillStyle = colour("cream");
-        ctx.fill();
-        ctx.fillStyle = colour("espresso");
-        textBlock(ctx, quote(photoCard.request), slot.x, slot.y, 432, 31, 1.25);
+        // request pill (the current stop's pill plays its entrance as the camera arrives)
+        const pill = () => {
+          roundRect(ctx, slot.x - 228, slot.y - 58, 456, 116, RADIUS);
+          ctx.fillStyle = colour("cream");
+          ctx.fill();
+          ctx.fillStyle = colour("espresso");
+          textBlock(ctx, quote(photoCard.request), slot.x, slot.y, 432, 31, 1.25, d.typeStyle);
+        };
+        if (stop && si === currentSlot) withEntrance(ctx, entrance(d.pillEntrance, sinceArrival), { x: slot.x, y: slot.y, w: 456, h: 116 }, pill);
+        else pill();
       } else if (fill) {
         const bg = colour(fill.colour);
         roundRect(ctx, x, y, CARD_W, CARD_H, RADIUS);
         ctx.fillStyle = bg;
         ctx.fill();
         ctx.fillStyle = luminance(bg) < 0.35 ? colour("cream") : colour("espresso");
-        textBlock(ctx, quote(fill.request), slot.x, slot.y, 410, 48, 1.2);
+        textBlock(ctx, quote(fill.request), slot.x, slot.y, 410, 48, 1.2, d.typeStyle);
       }
       // category label above the card
       const label = (stop ?? fill)?.label;
       if (label) {
         ctx.fillStyle = colour("cream");
-        ctx.font = "26px Herbik, Georgia, serif";
+        ctx.font = fontCss(d.typeStyle, 26);
         ctx.fillText(label, slot.x, y - 34);
       }
     });

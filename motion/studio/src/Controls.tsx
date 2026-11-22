@@ -1,21 +1,35 @@
 import { useState, type ReactNode } from "react";
-import { brand, get, set, settleTime, springPreset, type BaseData, type Control, type SpringValue, type Template } from "../../engine";
+import { brand, ENTRANCE_KINDS, ENTRANCE_LABELS, get, set, springPreset, springSettling, type BaseData, type Control, type EntranceValue, type SpringValue, type Template } from "../../engine";
 import { SpringEditor } from "./SpringEditor";
 import { resolveImage } from "./media";
 
 type ListItem = Record<string, string> & { _key: string };
+/** Where a picked photo goes: a list item's photo, or (no itemKey) a single photo field at `listKey`. */
+export type PhotoTarget = { listKey: string; itemKey?: string; imageKey?: string };
+
+export function applyPhoto(data: BaseData, target: PhotoTarget, value: string): BaseData {
+  if (!target.itemKey || !target.imageKey) return get(data, target.listKey) === value ? data : set(data, target.listKey, value);
+  const items = get(data, target.listKey) as ListItem[];
+  const index = items.findIndex((item) => item._key === target.itemKey);
+  if (index < 0 || items[index][target.imageKey] === value) return data;
+  const next = [...items];
+  next[index] = { ...items[index], [target.imageKey]: value };
+  return set(data, target.listKey, next);
+}
 
 export function Controls({
   template,
   data,
   onChange,
   onPickImage,
+  inert,
   children,
 }: {
   template: Template<BaseData>;
   data: BaseData;
   onChange: (next: BaseData) => void;
-  onPickImage: (apply: (value: string) => void) => void;
+  onPickImage: (target: PhotoTarget) => void;
+  inert?: boolean;
   /** Extra sections after the controls (the exports list). */
   children?: ReactNode;
 }) {
@@ -24,9 +38,9 @@ export function Controls({
   const update = (key: string, value: unknown) => onChange(set(data, key, value));
 
   return (
-    <aside className="panel">
+    <aside className="panel" inert={inert}>
       <div className="panel-head">
-        <p className="panel-kind">{template.kind}</p>
+        <p className="panel-kind">{template.name}</p>
         <p className="panel-desc">{template.description}</p>
       </div>
       {groups.map((g) => (
@@ -65,7 +79,7 @@ function Field({
   control: Control;
   value: unknown;
   onChange: (v: unknown) => void;
-  onPickImage: (apply: (value: string) => void) => void;
+  onPickImage: (target: PhotoTarget) => void;
 }) {
   switch (c.type) {
     case "text":
@@ -108,11 +122,10 @@ function Field({
           <span className="field-label">
             {c.label}
             <span className="field-value">
-              <i className="chip" style={{ background: hex }} />
               {name} <code>{hex}</code>
             </span>
           </span>
-          <div className="swatches" role="radiogroup" aria-label={c.label}>
+          <div className="swatches" role="radiogroup" aria-label={c.label} style={{ gridTemplateColumns: `repeat(${Object.keys(brand.palette).length}, 1fr)` }}>
             {Object.entries(brand.palette).map(([k, v]) => (
               <button
                 key={k}
@@ -142,6 +155,69 @@ function Field({
           </div>
         </div>
       );
+    case "image": {
+      const url = resolveImage(value as string);
+      return (
+        <div className="field">
+          <span className="field-label">{c.label}</span>
+          <div className="photo-field">
+            <button
+              className="thumb large"
+              aria-label={`Choose ${c.label.toLowerCase()}`}
+              style={{ backgroundImage: url ? `url("${url}")` : undefined }}
+              onClick={() => onPickImage({ listKey: c.key })}
+            />
+            <span className="photo-field-actions">
+              <button className="btn ghost small" onClick={() => onPickImage({ listKey: c.key })}>
+                {url ? "Change" : "Choose photo"}
+              </button>
+              {url && (
+                <button className="btn ghost small" onClick={() => onChange("")}>
+                  Remove
+                </button>
+              )}
+            </span>
+          </div>
+          {c.hint && <p className="hint">{c.hint}</p>}
+        </div>
+      );
+    }
+    case "typeStyle":
+      return (
+        <label className="field">
+          <span className="field-label">{c.label}</span>
+          <select className="input" value={(value as string) ?? "display"} onChange={(e) => onChange(e.target.value)}>
+            {Object.entries(brand.type).map(([k, t]) => (
+              <option key={k} value={k}>
+                {t.label}
+              </option>
+            ))}
+          </select>
+        </label>
+      );
+    case "entrance": {
+      const e = (value as EntranceValue) ?? { kind: "cut", spring: springPreset("card") };
+      return (
+        <div className="field">
+          <span className="field-label">{c.label}</span>
+          <div className="seg full" role="radiogroup" aria-label={c.label}>
+            {ENTRANCE_KINDS.map((k) => (
+              <button key={k} role="radio" aria-checked={e.kind === k} className={e.kind === k ? "is-on" : ""} onClick={() => onChange({ ...e, kind: k })}>
+                {ENTRANCE_LABELS[k]}
+              </button>
+            ))}
+          </div>
+          {e.kind !== "cut" && (
+            <SpringField
+              control={{ key: `${c.key}.spring`, type: "spring", label: "Spring", group: c.group }}
+              value={e.spring}
+              onChange={(spring) => onChange({ ...e, spring })}
+            />
+          )}
+          {c.hint && <p className="hint">{c.hint}</p>}
+        </div>
+      );
+    }
     case "spring":
       return <SpringField control={c} value={value as SpringValue} onChange={onChange} />;
     case "list":
@@ -160,7 +236,7 @@ function ListField({
   control: Extract<Control, { type: "list" }>;
   items: ListItem[];
   onChange: (v: unknown) => void;
-  onPickImage: (apply: (value: string) => void) => void;
+  onPickImage: (target: PhotoTarget) => void;
 }) {
   const [drag, setDrag] = useState<number | null>(null);
   // Rows only become draggable while the grip is held, so dragging inside a text field selects text.
@@ -220,7 +296,7 @@ function ListField({
                 className="thumb"
                 aria-label={`Change photo for ${name(it, i)}`}
                 style={{ backgroundImage: resolveImage(it[imageKey]) ? `url("${resolveImage(it[imageKey])}")` : undefined }}
-                onClick={() => onPickImage((v) => patch(i, imageKey, v))}
+                onClick={() => onPickImage({ listKey: c.key, itemKey: it._key, imageKey })}
               />
             )}
             {colourKey && (
@@ -265,14 +341,15 @@ function ListField({
   );
 }
 
-function SpringField({ control: c, value, onChange }: { control: Extract<Control, { type: "spring" }>; value: SpringValue; onChange: (v: unknown) => void }) {
+export function SpringField({ control: c, value, onChange }: { control: Extract<Control, { type: "spring" }>; value: SpringValue; onChange: (v: unknown) => void }) {
   const [editing, setEditing] = useState(false);
   const spring = value ?? springPreset("card");
+  const { seconds, capped } = springSettling(spring);
   return (
     <div className="field">
       <span className="field-label">
         {c.label}
-        <span className="field-value">settles in {settleTime(spring).toFixed(2)} s</span>
+        <span className="field-value">{capped ? `settles after ${seconds} s` : `settles in ${seconds.toFixed(2)} s`}</span>
       </span>
       <div className="spring-row">
         <select

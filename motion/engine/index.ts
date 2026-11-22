@@ -3,8 +3,15 @@
 // the live preview and the MP4 export. No framework code in here.
 import brandJson from "../brand.json";
 import type { Spring } from "./spring";
+import { ENTRANCE_KINDS, type EntranceValue } from "./entrance";
+import type { SceneElement } from "./scene";
 
 export * from "./spring";
+export * from "./entrance";
+export * from "./text";
+export * from "./reel";
+export * from "./playable";
+export * from "./scene";
 
 export const brand = brandJson;
 export type ColourName = keyof typeof brand.palette;
@@ -16,6 +23,15 @@ export function colour(name: string): string {
   const hex = (brand.palette as Record<string, string>)[name];
   if (!hex) throw new Error(`Not a brand colour: ${name}`);
   return hex;
+}
+
+export type TypeStyleKey = keyof typeof brand.type;
+export const TYPE_STYLE_KEYS = Object.keys(brand.type) as TypeStyleKey[];
+
+/** Canvas `font` string for a brand type style, e.g. fontCss("display", 120). */
+export function fontCss(style: string, px: number): string {
+  const t = (brand.type as Record<string, { family: string; weight: number; fallback: string }>)[style] ?? brand.type.display;
+  return `${t.weight} ${px}px "${t.family}", ${t.fallback}`;
 }
 
 export function formatSize(key: FormatKey): [number, number] {
@@ -38,6 +54,9 @@ export type Control =
   | { key: string; type: "format" | "fps"; label: string; group: string }
   | { key: string; type: "spring"; label: string; group: string; hint?: string }
   | { key: string; type: "choice"; label: string; group: string; options: { value: string; label: string }[] }
+  | { key: string; type: "typeStyle"; label: string; group: string }
+  | { key: string; type: "image"; label: string; group: string; hint?: string }
+  | { key: string; type: "entrance"; label: string; group: string; hint?: string }
   | { key: string; type: "list"; label: string; group: string; max: number; item: { key: string; type: "text" | "image" | "colour"; label: string }[] };
 
 export type Ctx2D = CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
@@ -48,6 +67,8 @@ export interface DrawEnv {
   fps: number;
   /** Loaded image for a template image value, or null while it loads. */
   image: (src: string) => CanvasImageSource | null;
+  /** Scene keys that arrived by smart animate: drawn settled, without their entrance. */
+  arrived?: ReadonlySet<string>;
 }
 
 export interface Segment {
@@ -76,6 +97,10 @@ export interface Template<D extends BaseData = BaseData> {
   /** Timeline sections for the scrubber. */
   segments(data: D): Segment[];
   draw(ctx: Ctx2D, frame: number, data: D, env: DrawEnv): void;
+  /** Optional: the frame as named elements, so reels can smart animate into and out of it. */
+  scene?(ctx: Ctx2D, frame: number, data: D, env: DrawEnv): SceneElement[];
+  /** Optional: upgrade data saved by an older version of the template before it's checked. */
+  migrate?(raw: Record<string, unknown>): Record<string, unknown>;
 }
 
 /** Draw an image to fill a box, cropping the overflow (CSS object-fit: cover). */
@@ -120,7 +145,9 @@ export function templateField(id: string) {
  * Agents write compositions through Sanity's API, so the studio never trusts them.
  */
 export function normalise<D extends BaseData>(t: Template<D>, raw: unknown): D {
-  let d = { ...t.defaults, ...((raw && typeof raw === "object" ? raw : {}) as object) } as D;
+  let source = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
+  if (t.migrate) source = t.migrate({ ...source });
+  let d = { ...t.defaults, ...source } as D;
   const palette = brand.palette as Record<string, string>;
   for (const c of t.controls) {
     const v = get(d, c.key) as unknown;
@@ -147,9 +174,29 @@ export function normalise<D extends BaseData>(t: Template<D>, raw: unknown): D {
       case "fps":
         if (!brand.fps.includes(v as number)) put(def);
         break;
+      case "image":
+        if (typeof v !== "string") put(def ?? "");
+        break;
+      case "typeStyle":
+        if (typeof v !== "string" || !(v in brand.type)) put(def);
+        break;
+      case "entrance": {
+        const e = v as Partial<EntranceValue> | undefined;
+        const fallback = def as EntranceValue;
+        const kind = e && (ENTRANCE_KINDS as readonly string[]).includes(e.kind as string) ? e.kind! : fallback.kind;
+        const sp = e?.spring as Partial<SpringValue> | undefined;
+        const springOk = sp && [sp.stiffness, sp.damping, sp.mass].every((x) => typeof x === "number" && Number.isFinite(x) && x > 0);
+        const spring = springOk
+          ? { ...sp, velocity: Number.isFinite(sp!.velocity) ? sp!.velocity : 0 }
+          : sp?.preset && sp.preset in brand.springs
+            ? springPreset(sp.preset)
+            : fallback.spring;
+        put({ kind, spring });
+        break;
+      }
       case "spring": {
         const s = v as Partial<SpringValue> | undefined;
-        const ok = s && [s.stiffness, s.damping, s.mass].every((x) => typeof x === "number" && x > 0);
+        const ok = s && [s.stiffness, s.damping, s.mass].every((x) => typeof x === "number" && Number.isFinite(x) && x > 0);
         if (!ok) put(s?.preset && s.preset in brand.springs ? springPreset(s.preset) : def);
         else put({ ...s, velocity: Number.isFinite(s.velocity) ? s.velocity : 0 });
         break;

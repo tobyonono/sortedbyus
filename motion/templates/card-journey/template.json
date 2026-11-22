@@ -59,6 +59,12 @@
       ]
     },
     {
+      "key": "typeStyle",
+      "type": "typeStyle",
+      "label": "Typeface",
+      "group": "Type"
+    },
+    {
       "key": "holdSeconds",
       "type": "number",
       "label": "Hold on each card",
@@ -74,6 +80,13 @@
       "label": "Camera glide",
       "group": "Camera",
       "hint": "Travel time is set by the spring"
+    },
+    {
+      "key": "pillEntrance",
+      "type": "entrance",
+      "label": "Request appears",
+      "group": "Camera",
+      "hint": "The featured card's request, each time the camera arrives"
     },
     {
       "key": "zoomIn",
@@ -374,6 +387,17 @@
       "damping": 9.4,
       "mass": 1,
       "velocity": 0
+    },
+    "typeStyle": "display",
+    "pillEntrance": {
+      "kind": "cut",
+      "spring": {
+        "preset": "card",
+        "stiffness": 388,
+        "damping": 39.39,
+        "mass": 1,
+        "velocity": 0
+      }
     }
   }
 }

@@ -3,6 +3,8 @@
 // a starter photo name ("boat", "boat.png", "starter/boat") or an https URL
 // from the Sanity media library.
 import herbikUrl from "./fonts/Herbik-Regular.woff2?url";
+import turneryUrl from "./fonts/Turnery-Regular.woff2?url";
+import turneryMediumUrl from "./fonts/Turnery-Medium.woff2?url";
 
 const starterUrls = import.meta.glob("./starter/*.jpg", { eager: true, query: "?url", import: "default" }) as Record<string, string>;
 
@@ -32,7 +34,7 @@ export function sanityImageValue(url: string) {
 // makes the photo land after the word that goes with it.
 const MAX_EDGE = 2160;
 
-type Entry = { bitmap: CanvasImageSource | null; promise: Promise<void> };
+type Entry = { bitmap?: CanvasImageSource | null; promise: Promise<void> };
 const cache = new Map<string, Entry>();
 const listeners = new Set<() => void>();
 
@@ -63,12 +65,12 @@ async function decode(url: string): Promise<CanvasImageSource | null> {
   }
 }
 
-function load(value: string): Entry | null {
+function load(value: string, retryFailed = false): Entry | null {
   const url = resolveImage(value);
   if (!url) return null;
   let e = cache.get(url);
-  if (!e) {
-    const entry: Entry = { bitmap: null, promise: Promise.resolve() };
+  if (!e || (retryFailed && e.bitmap === null)) {
+    const entry: Entry = { promise: Promise.resolve() };
     entry.promise = decode(url).then((bitmap) => {
       entry.bitmap = bitmap;
       listeners.forEach((l) => l());
@@ -83,16 +85,26 @@ export function imageFor(value: string): CanvasImageSource | null {
   return load(value)?.bitmap ?? null;
 }
 
-/** Resolves when every photo is decoded and ready to draw (failed ones are skipped). */
-export async function preloadImages(values: string[]) {
-  await Promise.all(values.map((v) => load(v)?.promise));
+/** Wait for the requested photos and return the non-empty values that could not be decoded. */
+export async function preloadImages(values: string[], retryFailed = false) {
+  const results = await Promise.all([...new Set(values.filter(Boolean))].map(async (value) => {
+    const entry = load(value, retryFailed);
+    await entry?.promise;
+    return entry?.bitmap ? null : value;
+  }));
+  return results.filter((value): value is string => value !== null);
 }
 
 let fontsReady: Promise<void> | null = null;
+/** Loads every brand type style (motion/brand.json `type`) for canvas drawing. */
 export function loadFonts() {
   fontsReady ??= (async () => {
-    const face = new FontFace("Herbik", `url(${herbikUrl}) format("woff2")`);
-    document.fonts.add(await face.load());
+    const faces = [
+      new FontFace("Herbik", `url(${herbikUrl}) format("woff2")`, { weight: "400" }),
+      new FontFace("Turnery", `url(${turneryUrl}) format("woff2")`, { weight: "400" }),
+      new FontFace("Turnery", `url(${turneryMediumUrl}) format("woff2")`, { weight: "500" }),
+    ];
+    for (const face of await Promise.all(faces.map((f) => f.load()))) document.fonts.add(face);
   })();
   return fontsReady;
 }

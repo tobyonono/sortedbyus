@@ -14,9 +14,24 @@ export function fakeSanity(seed: Doc[]) {
         return d ? { exports: (d.exports ?? []).map((e: any) => ({ ...e, url: e.file?.asset?._ref, size: 1_000_000 })) } : null;
       }
       if (query.includes("sanity.imageAsset")) return [];
-      return [...store.values()]
+      const docs = [...store.values()];
+      const refs = (d: Doc) => (d.screens ?? []).map((x: any) => x.composition?._ref);
+      // which reels use a composition
+      if (query.includes("references(")) {
+        return docs.filter((d) => d._type === "motionReel" && refs(d).some((r: string) => r === params.id || r === params.draft)).map((d) => ({ _id: d._id, title: d.title }));
+      }
+      // reel list
+      if (query.includes('_type == "motionReel"')) {
+        return docs.filter((d) => d._type === "motionReel").map((d) => ({ _id: d._id, title: d.title, screens: (d.screens ?? []).length }));
+      }
+      // compositions by id (reel editor) or every composition (add a screen)
+      if (query.includes("_id in $ids")) return docs.filter((d) => params.ids.includes(d._id)).map((d) => structuredClone(d));
+      if (query.includes('_type == "motionComposition"] | order(_updatedAt desc)`') || /motionComposition"\] \| order\(_updatedAt desc\)$/.test(query)) {
+        return docs.filter((d) => d._type === "motionComposition").map((d) => structuredClone(d));
+      }
+      return docs
         .filter((d) => d._type === "motionComposition")
-        .map((d) => ({ _id: d._id, title: d.title, template: d.template, _updatedAt: d._updatedAt, screens: (d.sortFlash?.beats ?? d.cardJourney?.stops ?? d.data?.beats ?? []).length }));
+        .map((d) => ({ _id: d._id, title: d.title, template: d.template, _updatedAt: d._updatedAt, screens: (d.sortFlash?.beats ?? d.cardJourney?.stops ?? d.titleCard?.lines ?? d.photoMosaic?.tiles ?? d.wordRoll?.words ?? d.data?.beats ?? []).length || null }));
     },
     async getDocument(id: string) {
       const d = store.get(id);
@@ -54,6 +69,30 @@ export function fakeSanity(seed: Doc[]) {
     assets: {
       async upload(_type: string, blob: Blob, opts: { filename?: string }) {
         return { _id: `file-${opts.filename}`, url: URL.createObjectURL(blob), size: blob.size };
+      },
+    },
+    observable: {
+      assets: {
+        upload(type: string, blob: Blob, options: { filename?: string }) {
+          return {
+            subscribe(observer: { next: (event: unknown) => void; error: (error: unknown) => void; complete: () => void }) {
+              let closed = false;
+              const cleanups: (() => void)[] = [];
+              const unsubscribe = () => {
+                closed = true;
+                cleanups.splice(0).forEach((cleanup) => cleanup());
+              };
+              void client.assets.upload(type, blob, options).then((document) => {
+                if (closed) return;
+                observer.next({ type: "response", body: { document } });
+                observer.complete();
+              }, (error) => {
+                if (!closed) observer.error(error);
+              }).finally(unsubscribe);
+              return { unsubscribe, add: (cleanup: () => void) => cleanups.push(cleanup) };
+            },
+          };
+        },
       },
     },
   };

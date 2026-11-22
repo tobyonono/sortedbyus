@@ -1,7 +1,7 @@
 // "Sort flash" in code. Mirrors the Cavalry film (Sorted-by-Us-Film.cv):
 // "Sort" holds while requests cut past on photos, then "ed" joins it and
 // "by Us" lands. Positions are the Cavalry ones, scaled with the type size.
-import { brand, colour, drawCover, formatSize, springAt, type BaseData, type Control, type SpringValue, type Template } from "../../engine";
+import { colour, drawCover, entrance, fontCss, formatSize, withEntrance, type BaseData, type Control, type EntranceValue, type Template } from "../../engine";
 import spec from "./template.json";
 
 export interface Beat {
@@ -20,9 +20,10 @@ export interface SortFlashData extends BaseData {
   typeSize: number;
   colours: { background: string; text: string; overlay: string };
   overlayOpacity: number;
-  /** "cut" = hard cuts like the film; "rise" = each word rises in on the spring. */
-  wordMotion: "cut" | "rise";
-  wordSpring: SpringValue;
+  /** Brand type style for all the words (motion/brand.json `type`). */
+  typeStyle: string;
+  /** How each request and the ending come in: cut (like the film), fade, rise, scale or mask. */
+  wordEntrance: EntranceValue;
 }
 
 const defaults = {
@@ -32,9 +33,6 @@ const defaults = {
 
 // Cavalry layout at 120px type in a 1080-wide comp (y up there, down here).
 const CAV = { size: 120, lead: [-2.1, -70], word: [0.9, 70.5], suffix: [167.4, -70], closer: [2.5, 60.8] };
-
-// How far a rising word travels, as a share of the type size (the site's --rise is 16px on ~56px headings).
-const RISE = brand.rise / 56;
 
 function beatFrames(d: SortFlashData) {
   return Math.max(1, Math.round(d.beatSeconds * d.fps));
@@ -47,6 +45,12 @@ export const sortFlash: Template<SortFlashData> = {
   kind: "Flash · text + photos",
   defaults,
   controls: spec.controls as Control[],
+
+  // Before entrances, Sort flash had `wordMotion: "cut" | "rise"` + `wordSpring`.
+  migrate(raw) {
+    if (raw.wordEntrance || !raw.wordMotion) return raw;
+    return { ...raw, wordEntrance: { kind: raw.wordMotion === "rise" ? "rise" : "cut", spring: raw.wordSpring } };
+  },
 
   frames(d) {
     return d.beats.length * beatFrames(d) + Math.max(1, Math.round(d.endSeconds * d.fps));
@@ -93,17 +97,15 @@ export const sortFlash: Template<SortFlashData> = {
     }
 
     ctx.fillStyle = colour(d.colours.text);
-    ctx.font = `${px}px Herbik, Georgia, serif`;
+    ctx.font = fontCss(d.typeStyle, px);
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     const text = (s: string, [x, y]: number[], since = -1) => {
       // since = frames since this text appeared; -1 = always there (no motion)
-      if (d.wordMotion !== "rise" || since < 0) return ctx.fillText(s, cx + x * k, cy + y * k);
-      const p = springAt(d.wordSpring, since / d.fps);
-      ctx.save();
-      ctx.globalAlpha = Math.min(1, Math.max(0, p * 1.4));
-      ctx.fillText(s, cx + x * k, cy + y * k + (1 - p) * RISE * px);
-      ctx.restore();
+      const at = { x: cx + x * k, y: cy + y * k };
+      if (since < 0) return ctx.fillText(s, at.x, at.y);
+      const box = { ...at, w: ctx.measureText(s).width + px * 0.2, h: px * 1.25 };
+      withEntrance(ctx, entrance(d.wordEntrance, since / d.fps), box, () => ctx.fillText(s, at.x, at.y));
     };
 
     text(d.lead, CAV.lead);

@@ -1,0 +1,38 @@
+{
+  "id": "title-card",
+  "name": "Title card",
+  "description": "One to three lines of type on a brand colour or a photo: an intro, a chapter or an end line.",
+  "engine": "code",
+  "controls": [
+    { "key": "lines", "type": "list", "label": "Lines", "group": "Copy", "max": 3,
+      "item": [{ "key": "text", "type": "text", "label": "Line" }] },
+    { "key": "typeStyle", "type": "typeStyle", "label": "Typeface", "group": "Type" },
+    { "key": "typeSize", "type": "number", "label": "Type size", "unit": "%", "min": 4, "max": 16, "step": 0.1, "group": "Type" },
+    { "key": "align", "type": "choice", "label": "Align", "group": "Type", "options": [{ "value": "left", "label": "Left" }, { "value": "centre", "label": "Centre" }] },
+    { "key": "place", "type": "choice", "label": "Position", "group": "Type", "options": [{ "value": "top", "label": "Top" }, { "value": "middle", "label": "Middle" }, { "value": "bottom", "label": "Bottom" }] },
+    { "key": "lineEntrance", "type": "entrance", "label": "Lines appear", "group": "Motion" },
+    { "key": "stagger", "type": "number", "label": "Between lines", "unit": "s", "min": 0, "max": 0.8, "step": 0.01, "group": "Motion" },
+    { "key": "durationSeconds", "type": "number", "label": "Length", "unit": "s", "min": 1.5, "max": 8, "step": 0.1, "group": "Motion" },
+    { "key": "colours.background", "type": "colour", "label": "Background", "group": "Colour" },
+    { "key": "colours.text", "type": "colour", "label": "Text", "group": "Colour" },
+    { "key": "photo", "type": "image", "label": "Photo", "group": "Colour", "hint": "Optional. Sits behind the type, darkened" },
+    { "key": "overlayOpacity", "type": "number", "label": "Photo darken", "unit": "%", "min": 0, "max": 80, "step": 1, "group": "Colour" },
+    { "key": "format", "type": "format", "label": "Format", "group": "Export" },
+    { "key": "fps", "type": "fps", "label": "Frame rate", "group": "Export" }
+  ],
+  "defaults": {
+    "lines": [{ "text": "Consider it" }, { "text": "sorted." }],
+    "typeStyle": "display",
+    "typeSize": 10,
+    "align": "centre",
+    "place": "middle",
+    "lineEntrance": { "kind": "rise", "spring": { "preset": "gentle", "stiffness": 170, "damping": 26, "mass": 1, "velocity": 0 } },
+    "stagger": 0.15,
+    "durationSeconds": 3.5,
+    "colours": { "background": "espresso", "text": "cream" },
+    "photo": "",
+    "overlayOpacity": 45,
+    "format": "portrait",
+    "fps": 25
+  }
+}

@@ -124,5 +124,25 @@
     "base": 300,
     "enter": 900
   },
-  "rise": 16
+  "rise": 16,
+  "type": {
+    "display": {
+      "label": "Herbik",
+      "family": "Herbik",
+      "weight": 400,
+      "fallback": "Georgia, serif"
+    },
+    "body": {
+      "label": "Turnery",
+      "family": "Turnery",
+      "weight": 400,
+      "fallback": "'Helvetica Neue', Arial, sans-serif"
+    },
+    "bodyMedium": {
+      "label": "Turnery Medium",
+      "family": "Turnery",
+      "weight": 500,
+      "fallback": "'Helvetica Neue', Arial, sans-serif"
+    }
+  }
 }

@@ -1,0 +1,42 @@
+{
+  "id": "word-roll",
+  "name": "Word roll",
+  "description": "A list of words rolls past one line at a time, next to a fixed lead word. Loops.",
+  "engine": "code",
+  "controls": [
+    { "key": "lead", "type": "text", "label": "Lead word", "group": "Copy" },
+    { "key": "words", "type": "list", "label": "Words", "group": "Copy", "max": 16,
+      "item": [{ "key": "text", "type": "text", "label": "Word" }] },
+    { "key": "typeStyle", "type": "typeStyle", "label": "Typeface", "group": "Type" },
+    { "key": "typeSize", "type": "number", "label": "Type size", "unit": "%", "min": 3, "max": 12, "step": 0.1, "group": "Type" },
+    { "key": "lineHeight", "type": "number", "label": "Line height", "min": 1, "max": 1.8, "step": 0.01, "group": "Type" },
+    { "key": "linesAround", "type": "number", "label": "Lines above & below", "min": 1, "max": 8, "step": 1, "group": "Layout" },
+    { "key": "fadeEdges", "type": "choice", "label": "Fade towards edges", "group": "Layout", "options": [{ "value": "on", "label": "On" }, { "value": "off", "label": "Off" }] },
+    { "key": "holdSeconds", "type": "number", "label": "Hold", "unit": "s", "min": 0.1, "max": 3, "step": 0.05, "group": "Timing" },
+    { "key": "spring", "type": "spring", "label": "Roll", "group": "Timing", "hint": "Roll time is set by the spring" },
+    { "key": "direction", "type": "choice", "label": "Direction", "group": "Timing", "options": [{ "value": "up", "label": "Up" }, { "value": "down", "label": "Down" }] },
+    { "key": "colours.background", "type": "colour", "label": "Background", "group": "Colour" },
+    { "key": "colours.active", "type": "colour", "label": "Active word", "group": "Colour" },
+    { "key": "colours.other", "type": "colour", "label": "Other words", "group": "Colour" },
+    { "key": "format", "type": "format", "label": "Format", "group": "Export" },
+    { "key": "fps", "type": "fps", "label": "Frame rate", "group": "Export" }
+  ],
+  "defaults": {
+    "lead": "Sort",
+    "words": [
+      { "text": "gifts" }, { "text": "dinners" }, { "text": "weekends away" }, { "text": "errands" },
+      { "text": "events" }, { "text": "home repairs" }, { "text": "groceries" }, { "text": "airport pickups" }
+    ],
+    "typeStyle": "display",
+    "typeSize": 6,
+    "lineHeight": 1.22,
+    "linesAround": 5,
+    "fadeEdges": "on",
+    "holdSeconds": 0.6,
+    "spring": { "preset": "card", "stiffness": 388, "damping": 39.39, "mass": 1, "velocity": 0 },
+    "direction": "up",
+    "colours": { "background": "espresso", "active": "cream", "other": "tan" },
+    "format": "portrait",
+    "fps": 25
+  }
+}

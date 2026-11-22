@@ -44,6 +44,12 @@
       ]
     },
     {
+      "key": "typeStyle",
+      "type": "typeStyle",
+      "label": "Typeface",
+      "group": "Type"
+    },
+    {
       "key": "typeSize",
       "type": "number",
       "label": "Type size",
@@ -74,27 +80,11 @@
       "group": "Timing"
     },
     {
-      "key": "wordMotion",
-      "type": "choice",
-      "label": "Words",
+      "key": "wordEntrance",
+      "type": "entrance",
+      "label": "Words appear",
       "group": "Timing",
-      "options": [
-        {
-          "value": "cut",
-          "label": "Cut"
-        },
-        {
-          "value": "rise",
-          "label": "Rise"
-        }
-      ]
-    },
-    {
-      "key": "wordSpring",
-      "type": "spring",
-      "label": "Rise spring",
-      "group": "Timing",
-      "hint": "Used when words rise"
+      "hint": "How each request and the ending come in"
     },
     {
       "key": "colours.background",
@@ -190,13 +180,16 @@
     "overlayOpacity": 36,
     "format": "portrait",
     "fps": 25,
-    "wordMotion": "cut",
-    "wordSpring": {
-      "preset": "card",
-      "stiffness": 388,
-      "damping": 39.39,
-      "mass": 1,
-      "velocity": 0
+    "typeStyle": "display",
+    "wordEntrance": {
+      "kind": "cut",
+      "spring": {
+        "preset": "card",
+        "stiffness": 388,
+        "damping": 39.39,
+        "mass": 1,
+        "velocity": 0
+      }
     }
   }
 }

@@ -1,0 +1,41 @@
+{
+  "id": "photo-caption",
+  "name": "Photo + caption",
+  "description": "One full-frame photo with a slow push-in, and a caption that comes in over it.",
+  "engine": "code",
+  "controls": [
+    { "key": "photo", "type": "image", "label": "Photo", "group": "Photo" },
+    { "key": "push", "type": "number", "label": "Push in", "unit": "%", "min": 0, "max": 25, "step": 0.5, "group": "Photo" },
+    { "key": "drift", "type": "choice", "label": "Drift", "group": "Photo", "options": [{ "value": "none", "label": "None" }, { "value": "left", "label": "Left" }, { "value": "right", "label": "Right" }, { "value": "up", "label": "Up" }] },
+    { "key": "overlayOpacity", "type": "number", "label": "Photo darken", "unit": "%", "min": 0, "max": 80, "step": 1, "group": "Photo" },
+    { "key": "caption", "type": "text", "label": "Caption", "group": "Copy" },
+    { "key": "label", "type": "text", "label": "Small label", "group": "Copy" },
+    { "key": "typeStyle", "type": "typeStyle", "label": "Typeface", "group": "Type" },
+    { "key": "captionSize", "type": "number", "label": "Caption size", "unit": "%", "min": 3, "max": 12, "step": 0.1, "group": "Type" },
+    { "key": "place", "type": "choice", "label": "Position", "group": "Type", "options": [{ "value": "top", "label": "Top" }, { "value": "bottom", "label": "Bottom" }] },
+    { "key": "captionEntrance", "type": "entrance", "label": "Caption appears", "group": "Motion" },
+    { "key": "captionDelay", "type": "number", "label": "Caption after", "unit": "s", "min": 0, "max": 3, "step": 0.05, "group": "Motion" },
+    { "key": "durationSeconds", "type": "number", "label": "Length", "unit": "s", "min": 2, "max": 10, "step": 0.1, "group": "Motion" },
+    { "key": "colours.overlay", "type": "colour", "label": "Photo tint", "group": "Colour" },
+    { "key": "colours.text", "type": "colour", "label": "Text", "group": "Colour" },
+    { "key": "format", "type": "format", "label": "Format", "group": "Export" },
+    { "key": "fps", "type": "fps", "label": "Frame rate", "group": "Export" }
+  ],
+  "defaults": {
+    "photo": "dinners",
+    "push": 8,
+    "drift": "none",
+    "overlayOpacity": 30,
+    "caption": "Lunch for twelve, sorted",
+    "label": "Dinners",
+    "typeStyle": "display",
+    "captionSize": 6.5,
+    "place": "bottom",
+    "captionEntrance": { "kind": "mask", "spring": { "preset": "card", "stiffness": 388, "damping": 39.39, "mass": 1, "velocity": 0 } },
+    "captionDelay": 0.4,
+    "durationSeconds": 4,
+    "colours": { "overlay": "espresso", "text": "cream" },
+    "format": "portrait",
+    "fps": 25
+  }
+}

@@ -10,13 +10,15 @@ import { StrictMode, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import type { BaseData, FormatKey } from "../../engine";
 import { createClient } from "@sanity/client";
-import { Controls } from "./Controls";
+import { applyPhoto, Controls } from "./Controls";
 import { MediaPicker } from "./MediaPicker";
 import { Studio } from "./Studio";
 import { fakeSanity } from "./fakeSanity";
 import { NewComposition } from "./NewComposition";
 import { SpringEditor } from "./SpringEditor";
-import { springPreset } from "../../engine";
+import { compositionSource, normaliseReel, reelSource, springPreset } from "../../engine";
+import { PlayablePreview } from "./PlayablePreview";
+import { preferDrafts, readComposition, sourceOf, type StoredDoc } from "./compositions";
 import { exportVideo } from "./exporter";
 import { Stage } from "./Stage";
 import { HomeCards } from "../../../src/lib/sanity/tools/home-cards";
@@ -41,7 +43,7 @@ function Harness() {
   useEffect(() => {
     if (!q.get("export")) return;
     const t0 = performance.now();
-    exportVideo(template, data, {
+    exportVideo(compositionSource(template, data), {
       format: data.format,
       fps: data.fps,
       quality: "high",
@@ -117,14 +119,15 @@ function Harness() {
       </nav>
       <main className="main">
         <Stage
-          template={template}
-          data={data}
+          playable={compositionSource(template, data)(data.format, data.fps)}
           frameRef={frameRef}
           initialFrame={Number(q.get("frame") ?? 0)}
           autoplay={!q.has("frame")}
         />
       </main>
-      <Controls template={template} data={data} onChange={setData} onPickImage={(apply) => setPicker(() => apply)} />
+      <Controls template={template} data={data} onChange={setData} onPickImage={(target) => setPicker(() => (value: string) => {
+        setData((current) => applyPhoto(current, target, value));
+      })} />
       {q.get("view") === "new" && <NewComposition onPick={(id) => (document.title = `NEW ${id}`)} onClose={() => {}} />}
       {q.get("spring") && <SpringEditor value={springPreset("card")} onUse={() => {}} onClose={() => {}} />}
       {picker && (
@@ -148,28 +151,12 @@ createRoot(document.getElementById("root")!).render(
     <LayerProvider>
     <ToastProvider>
     <div style={{ display: "flex", height: "100vh" }}>
-      {q.get("view") === "studio" ? (
+      {q.get("view") === "reelframes" ? (
+        <ReelFrames />
+      ) : q.get("view") === "studio" ? (
         <Studio
           client={
-            (window.__fake ??= fakeSanity([
-              { _id: "old1", _type: "motionComposition", title: "Launch flash (old format)", template: "sort-flash", data: { lead: "Sort", beats: [{ _key: "a", word: "flowers", image: "gifts" }] } },
-              {
-                _id: "drafts.agent1",
-                _type: "motionComposition",
-                title: "Agent: services wall",
-                template: "card-journey",
-                cardJourney: {
-                  stops: [
-                    { _key: "s1", label: "Gifts", request: "Flowers for Mum on Sunday", image: "gifts" },
-                    { _key: "s2", label: "Travel", request: "A weekend away for two", image: "getaways" },
-                  ],
-                  fill: [{ _key: "f1", request: "Hang curtains in the new flat", colour: "red" }],
-                  zoomIn: 9,
-                  spring: { preset: "bouncy" },
-                  colours: { background: "hotpink" },
-                },
-              },
-            ])) as never
+            (window.__fake ??= fakeSanity(harnessSeed())) as never
           }
         />
       ) : q.get("view") === "home" ? (
@@ -187,3 +174,82 @@ createRoot(document.getElementById("root")!).render(
     </ThemeProvider>
   </StrictMode>,
 );
+
+/** ?view=reelframes&r=reel1&frames=60,70,80: stills of a seeded reel at given frames (open ?view=studio first to seed). */
+function ReelFrames() {
+  const fake = (window.__fake ??= fakeSanity(harnessSeed()));
+  const docs = [...fake.store.values()];
+  const comps = preferDrafts(docs.filter((d) => d._type === "motionComposition") as StoredDoc[]);
+  const reel = normaliseReel(fake.store.get(q.get("r") ?? "reel1"));
+  const source = reelSource(reel, (ref) => {
+    const c = comps.get(ref);
+    const doc = c && readComposition(c);
+    const src = doc && sourceOf(doc);
+    return doc && src ? { source: src, title: doc.title } : null;
+  });
+  const frames = (q.get("frames") ?? "0").split(",").map(Number);
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", gap: 8, padding: 12, background: "#222" }}>
+      {frames.map((f) => (
+        <div key={f} style={{ color: "#fff", font: "12px sans-serif" }}>
+          <PlayablePreview playable={source(reel.format, reel.fps)} width={200} still={f} />
+          <div>frame {f}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** Compositions and a reel for the fake Sanity (studio + reel views). */
+function harnessSeed() {
+  return [
+              { _id: "old1", _type: "motionComposition", title: "Launch flash (old format)", template: "sort-flash", data: { lead: "Sort", beats: [{ _key: "a", word: "flowers", image: "gifts" }, { _key: "b", word: "a boat trip", image: "boat" }], wordMotion: "rise" } },
+              { _id: "t1", _type: "motionComposition", title: "Intro: Consider it sorted", template: "title-card", titleCard: {} },
+              { _id: "w1", _type: "motionComposition", title: "What we sort", template: "word-roll", wordRoll: { holdSeconds: 0.35 } },
+              { _id: "p1", _type: "motionComposition", title: "Lunch for twelve", template: "photo-caption", photoCaption: {} },
+              { _id: "m1", _type: "motionComposition", title: "Everything, sorted", template: "photo-mosaic", photoMosaic: { word: "Sorted.", holdSeconds: 1 } },
+              { _id: "t2", _type: "motionComposition", title: "End line", template: "title-card", titleCard: { lines: [{ _key: "l1", text: "Sorted." }], typeSize: 16, align: "left", place: "bottom", colours: { background: "butter", text: "espresso" }, durationSeconds: 2.5 } },
+              {
+                _id: "reel2",
+                _type: "motionReel",
+                title: "Smart reel",
+                format: "story",
+                fps: 25,
+                screens: [
+                  { _key: "a", composition: { _type: "reference", _ref: "p1", _weak: true }, trimStart: 0, trimEnd: 0, transition: { type: "smart", seconds: 0.8, spring: { preset: "card" } } },
+                  { _key: "b", composition: { _type: "reference", _ref: "m1", _weak: true }, trimStart: 0, trimEnd: 0, transition: { type: "smart", seconds: 0.8, spring: { preset: "card" } } },
+                  { _key: "c", composition: { _type: "reference", _ref: "t2", _weak: true }, trimStart: 0, trimEnd: 0, transition: { type: "cut" } },
+                ],
+              },
+              {
+                _id: "reel1",
+                _type: "motionReel",
+                title: "Launch reel",
+                format: "story",
+                fps: 25,
+                screens: [
+                  { _key: "a", composition: { _type: "reference", _ref: "t1", _weak: true }, trimStart: 0, trimEnd: 0.5, transition: { type: "crossfade", seconds: 0.5, spring: { preset: "gentle" } } },
+                  { _key: "b", composition: { _type: "reference", _ref: "old1", _weak: true }, trimStart: 0, trimEnd: 0, transition: { type: "push", direction: "left", seconds: 0.6, spring: { preset: "card" } } },
+                  { _key: "c", composition: { _type: "reference", _ref: "w1", _weak: true }, trimStart: 0, trimEnd: 2, transition: { type: "slide", direction: "up", seconds: 0.6, spring: { preset: "snappy" } } },
+                  { _key: "d", composition: { _type: "reference", _ref: "p1", _weak: true }, trimStart: 0, trimEnd: 0, transition: { type: "cut" } },
+                  { _key: "e", composition: { _type: "reference", _ref: "gone", _weak: true }, trimStart: 0, trimEnd: 0, transition: { type: "cut" } },
+                ],
+              },
+              {
+                _id: "drafts.agent1",
+                _type: "motionComposition",
+                title: "Agent: services wall — little plans, sorted for the spring campaign",
+                template: "card-journey",
+                cardJourney: {
+                  stops: [
+                    { _key: "s1", label: "Gifts", request: "Flowers for Mum on Sunday", image: "gifts" },
+                    { _key: "s2", label: "Travel", request: "A weekend away for two", image: "getaways" },
+                  ],
+                  fill: [{ _key: "f1", request: "Hang curtains in the new flat", colour: "red" }],
+                  zoomIn: 9,
+                  spring: { preset: "bouncy" },
+                  colours: { background: "hotpink" },
+                },
+              },
+            ] as Parameters<typeof fakeSanity>[0];
+}

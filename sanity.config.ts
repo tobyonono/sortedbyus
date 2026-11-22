@@ -17,8 +17,8 @@ export default defineConfig({
   schema: {
     types: schemaTypes,
     // singletons can't be created from the "+" menu
-    // motion compositions are made in the Motion tool (/studio/motion), not from the "+" menu
-    templates: (templates) => templates.filter(({ schemaType }) => !singletons.includes(schemaType) && schemaType !== "request" && schemaType !== "motionComposition"),
+    // motion compositions and reels are made in the Motion tool (/studio/motion), not from the "+" menu
+    templates: (templates) => templates.filter(({ schemaType }) => !singletons.includes(schemaType) && schemaType !== "request" && schemaType !== "motionComposition" && schemaType !== "motionReel"),
   },
   document: {
     // singletons: no duplicate/delete; requests: no duplicate

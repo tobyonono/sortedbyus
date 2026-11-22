@@ -1,5 +1,5 @@
 import { useEffect, useReducer, useRef, useState, type MutableRefObject } from "react";
-import { aspectLabel, formatSize, type BaseData, type Template } from "../../engine";
+import { aspectLabel, formatSize, type Playable } from "../../engine";
 import { imageFor, loadFonts, onImageLoad, preloadImages } from "./media";
 
 function clock(frames: number, fps: number) {
@@ -9,14 +9,12 @@ function clock(frames: number, fps: number) {
 }
 
 export function Stage({
-  template,
-  data,
+  playable,
   frameRef,
   initialFrame = 0,
   autoplay = true,
 }: {
-  template: Template<BaseData>;
-  data: BaseData;
+  playable: Playable;
   frameRef: MutableRefObject<number>;
   initialFrame?: number;
   autoplay?: boolean;
@@ -25,10 +23,10 @@ export function Stage({
   const [frame, setFrame] = useState(initialFrame);
   const [playing, setPlaying] = useState(autoplay);
   const [, redraw] = useReducer((x: number) => x + 1, 0);
-  const total = template.frames(data);
-  const [W, H] = formatSize(data.format);
+  const total = Math.max(1, playable.frames());
+  const fps = playable.fps;
+  const [W, H] = formatSize(playable.format);
   const f = Math.min(frame, total - 1);
-  frameRef.current = f;
 
   useEffect(() => {
     loadFonts().then(redraw);
@@ -37,7 +35,7 @@ export function Stage({
 
   // Don't play until the font and every photo are decoded, so the first pass
   // is in sync. Photos added later load in the background.
-  const imageKey = template.images(data).join("|");
+  const imageKey = playable.images().join("|");
   const [ready, setReady] = useState(false);
   useEffect(() => {
     let live = true;
@@ -48,28 +46,29 @@ export function Stage({
   }, [imageKey]);
 
   useEffect(() => {
+    frameRef.current = f;
     const ctx = canvasRef.current?.getContext("2d");
-    if (ctx) template.draw(ctx, f, data, { width: W, height: H, fps: data.fps, image: imageFor });
+    if (ctx) playable.draw(ctx, f, { width: W, height: H, fps, image: imageFor });
   });
 
   useEffect(() => {
     if (!playing || !ready) return;
-    const start = performance.now() - (frameRef.current / data.fps) * 1000;
+    const start = performance.now() - (frameRef.current / fps) * 1000;
     let raf = 0;
     const tick = (now: number) => {
       // rAF timestamps can be slightly earlier than `start`; never go below frame 0
-      setFrame(Math.max(0, Math.floor(((now - start) / 1000) * data.fps)) % total);
+      setFrame(Math.max(0, Math.floor(((now - start) / 1000) * fps)) % total);
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [playing, ready, data.fps, total, frameRef]);
+  }, [playing, ready, fps, total, frameRef]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const el = e.target instanceof Element ? e.target : null;
       if (e.code !== "Space" || el?.closest("input, textarea, select, button, a, summary, [contenteditable]")) return;
-      if (document.querySelector(".studio .modal-scrim")) return;
+      if (document.querySelector(".studio .modal-scrim[open]")) return;
       e.preventDefault();
       setPlaying((p) => !p);
     };
@@ -77,7 +76,7 @@ export function Stage({
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  const segments = template.segments(data);
+  const segments = playable.segments();
   const barRef = useRef<HTMLDivElement>(null);
   const scrubTo = (clientX: number) => {
     const r = barRef.current!.getBoundingClientRect();
@@ -115,7 +114,7 @@ export function Stage({
           </button>
         </div>
         <span className="timecode">
-          {clock(f, data.fps)} / {clock(total, data.fps)}
+          {clock(f, fps)} / {clock(total, fps)}
         </span>
         <div
           className="track"
@@ -141,7 +140,7 @@ export function Stage({
           <div className="playhead" style={{ left: `${(f / total) * 100}%` }} />
         </div>
         <span className="stage-meta">
-          {aspectLabel(data.format)} · {W}×{H} · {data.fps} fps · loops
+          {aspectLabel(playable.format)} · {W}×{H} · {fps} fps · loops
         </span>
       </div>
     </section>

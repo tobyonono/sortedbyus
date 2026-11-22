@@ -252,7 +252,18 @@
 }
 
 .studio .comp-text strong {
+  display: flex;
+  align-items: center;
   font-weight: 500;
+}
+
+.studio .comp-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.studio .comp-text strong .badge {
+  flex: none;
 }
 
 .studio .comp-text small,
@@ -624,24 +635,39 @@
   outline-offset: 2px;
 }
 
+/* Every brand colour on one row, sharing the width; the chosen one gets a ring with a gap around it. */
 .studio .swatches {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
+  display: grid;
+  gap: 6px;
+  padding: 4px 4px 2px;
 }
 
 .studio .swatch {
-  width: 22px;
-  height: 22px;
+  aspect-ratio: 1;
+  width: 100%;
   padding: 0;
   border: 0;
   border-radius: 4px;
   box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.1);
+  transition: box-shadow 120ms ease, transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.studio .swatch.is-on {
-  outline: 2px solid var(--ink);
-  outline-offset: 2px;
+.studio .swatch:hover {
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.1), 0 0 0 2px var(--bg), 0 0 0 3px var(--soft);
+}
+
+.studio .swatch.is-on,
+.studio .swatch.is-on:hover {
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.1), 0 0 0 2px var(--bg), 0 0 0 4px var(--ink);
+}
+
+.studio .swatch:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.1), 0 0 0 2px var(--bg), 0 0 0 4px var(--ink);
+}
+
+.studio .swatch:active {
+  transform: scale(0.94);
 }
 
 .studio .list {
@@ -799,12 +825,25 @@
 
 .studio .modal-scrim {
   position: fixed;
-  z-index: 20;
   inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  border: 0;
+  padding: 24px;
+  color: inherit;
+  background: transparent;
+}
+
+.studio .modal-scrim[open] {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+}
+
+.studio .modal-scrim::backdrop {
   background: rgb(20 20 20 / 0.32);
 }
 
@@ -844,6 +883,11 @@
 .studio .modal-body {
   overflow: auto;
   padding: 0 18px 18px;
+}
+
+.studio .missing-photos {
+  margin-top: 12px;
+  overflow-wrap: anywhere;
 }
 
 .studio .formats {
@@ -1353,4 +1397,335 @@
 
 .studio .tabs .upload {
   margin-left: 0;
+}
+
+/* ---------- single photo field ---------- */
+
+.studio .photo-field {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.studio .thumb.large {
+  width: 56px;
+  height: 56px;
+}
+
+.studio .photo-field-actions {
+  display: flex;
+  gap: 6px;
+}
+
+/* ---------- reels ---------- */
+
+.studio .reel-main {
+  flex-direction: column;
+}
+
+.studio .reel-main .stage {
+  min-height: 0;
+}
+
+.studio .reel-strip {
+  display: flex;
+  flex: none;
+  gap: 10px;
+  align-items: center;
+  overflow-x: auto;
+  padding: 12px 16px 14px;
+  border-top: 1px solid var(--line);
+  background: var(--bg);
+}
+
+.studio .reel-screen {
+  display: grid;
+  flex: none;
+  align-content: start;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: grab;
+}
+
+.studio .reel-screen.is-dragging {
+  opacity: 0.45;
+}
+
+/* The thumbnail is the card: it fills the width, and selection is a ring around it. */
+.studio .reel-thumb {
+  display: block;
+  margin-bottom: 4px;
+  border-radius: 6px;
+  background: var(--field);
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  transition: outline-color 120ms ease;
+}
+
+.studio .reel-screen:hover .reel-thumb {
+  outline-color: var(--soft);
+}
+
+.studio .reel-screen.is-on .reel-thumb {
+  outline-color: var(--ink);
+}
+
+.studio .reel-screen:focus-visible {
+  outline: none;
+}
+
+.studio .reel-screen:focus-visible .reel-thumb {
+  outline-color: var(--ink);
+}
+
+.studio .reel-thumb.missing {
+  display: grid;
+  place-items: center;
+  background: repeating-linear-gradient(-45deg, var(--field), var(--field) 6px, var(--field-hover) 6px, var(--field-hover) 12px);
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.studio .reel-screen-title {
+  /* as wide as the thumbnail, never wider */
+  width: 0;
+  min-width: 100%;
+  overflow: hidden;
+  font-size: 11.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.studio .reel-screen-len {
+  width: 0;
+  min-width: 100%;
+  color: var(--muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.studio .reel-transition {
+  flex: none;
+  align-self: flex-start;
+  /* centred on the thumbnails, not the whole card */
+  margin-top: 54px;
+  padding: 4px 8px;
+  border: 1px dashed var(--soft);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.studio .reel-transition:hover,
+.studio .reel-transition.is-on {
+  border-style: solid;
+  border-color: var(--ink);
+  color: var(--text);
+}
+
+.studio .reel-add {
+  display: grid;
+  flex: none;
+  place-items: center;
+  align-self: flex-start;
+  margin-top: 0;
+  padding: 0 18px;
+  border: 1px dashed var(--soft);
+  border-radius: 6px;
+  background: none;
+  color: var(--muted);
+}
+
+.studio .reel-add:hover {
+  border-color: var(--ink);
+  color: var(--text);
+}
+
+.studio .btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.studio .btn.danger {
+  color: var(--danger);
+}
+
+/* a quiet text button: destructive or tertiary actions that shouldn't compete with the main ones */
+.studio .btn.text {
+  height: auto;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+}
+
+.studio .btn.text:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* the selected screen's actions: the main one first, the copy explained under it */
+.studio .screen-actions {
+  display: grid;
+  gap: 6px;
+  margin: 4px 0 10px;
+}
+
+.studio .screen-actions .hint {
+  margin: 2px 0 0;
+}
+
+.studio .section-foot {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+
+/* add a screen */
+.studio .modal.add-screen {
+  width: min(880px, 100%);
+}
+
+.studio .add-group h3 {
+  margin: 14px 0 8px;
+}
+
+.studio .add-heading {
+  margin: 4px 0 10px;
+  font-weight: 600;
+}
+
+.studio .add-new {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 22px;
+}
+
+.studio .add-grid {
+  display: grid;
+  gap: 20px 16px;
+}
+
+.studio .add-tile {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+}
+
+.studio .add-thumb {
+  display: block;
+  margin-bottom: 4px;
+  border-radius: 6px;
+  background: var(--field);
+}
+
+.studio .add-tile:hover .add-thumb {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.studio .add-title {
+  /* two lines, then an ellipsis: long names stay inside their column */
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1.3;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.studio .add-meta {
+  color: var(--muted);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* "Reel" card in the New picker: three stacked frames */
+.studio .reel-card {
+  position: relative;
+  display: block;
+  background: var(--field);
+}
+
+.studio .reel-card i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 38%;
+  aspect-ratio: 4 / 5;
+  border-radius: 6px;
+  background: var(--accent);
+  transform: translate(-50%, -50%);
+}
+
+.studio .reel-card i:nth-child(1) {
+  opacity: 0.35;
+  transform: translate(-95%, -50%) rotate(-6deg);
+}
+
+.studio .reel-card i:nth-child(2) {
+  opacity: 0.6;
+  transform: translate(-5%, -50%) rotate(6deg);
+}
+
+/* ---------- press feedback and modal entrance ---------- */
+
+/* Pressable things answer the press: a small squish, released quickly. */
+.studio :is(.btn, .icon-btn, .play-btn, .seg button, .reel-transition, .reel-add, .add-tile, .template-card, .tile, .thumb) {
+  transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.studio :is(.btn, .icon-btn, .play-btn, .seg button, .reel-transition, .reel-add, .add-tile, .template-card, .tile, .thumb):active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+/* The row menu grows out of its ⋯ trigger (top right), quickly: it's opened often. */
+.studio .comp-menu[open] > div {
+  transform-origin: top right;
+  transition: opacity 150ms cubic-bezier(0.23, 1, 0.32, 1), transform 150ms cubic-bezier(0.23, 1, 0.32, 1);
+
+  @starting-style {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+/* Modals fade and settle in from 97 %, centred (they aren't tied to a trigger). */
+.studio .modal-scrim[open] .modal {
+  transition: opacity 200ms cubic-bezier(0.23, 1, 0.32, 1), transform 200ms cubic-bezier(0.23, 1, 0.32, 1);
+
+  @starting-style {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
+.studio .modal-scrim[open]::backdrop {
+  transition: background-color 200ms ease;
+
+  @starting-style {
+    background: rgb(20 20 20 / 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .studio .modal-scrim[open] .modal {
+    transition: opacity 200ms ease;
+    @starting-style {
+      transform: none;
+    }
+  }
 }

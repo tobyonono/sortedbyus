@@ -34,10 +34,16 @@ export function springAt(s: Spring, t: number): number {
   return 1 + x;
 }
 
-const settleCache = new Map<string, number>();
+const SETTLE_LIMIT = 12;
+const settleCache = new Map<string, { seconds: number; capped: boolean }>();
 
-/** Seconds until the spring stays within `epsilon` of its target. Cached: templates ask every frame. */
+/** Seconds until the spring stays within `epsilon` of its target, up to the timing limit. */
 export function settleTime(s: Spring, epsilon = 0.002): number {
+  return springSettling(s, epsilon).seconds;
+}
+
+/** Include whether the spring still needs time beyond the timing limit. */
+export function springSettling(s: Spring, epsilon = 0.002): { seconds: number; capped: boolean } {
   const key = `${s.stiffness}|${s.damping}|${s.mass}|${s.velocity}|${epsilon}`;
   const hit = settleCache.get(key);
   if (hit !== undefined) return hit;
@@ -47,11 +53,17 @@ export function settleTime(s: Spring, epsilon = 0.002): number {
   return value;
 }
 
-function computeSettle(s: Spring, epsilon: number): number {
-  const step = 1 / 240;
+function computeSettle(s: Spring, epsilon: number) {
+  const sampleRate = 240;
+  const limit = SETTLE_LIMIT * sampleRate;
   let last = 0;
-  for (let t = step; t < 12; t += step) if (Math.abs(1 - springAt(s, t)) > epsilon) last = t;
-  return Math.round((last + step) * 100) / 100;
+  // Look past the limit so crossing the target near the cutoff does not count as settling.
+  for (let i = 1; i <= limit + sampleRate; i++) {
+    if (Math.abs(1 - springAt(s, i / sampleRate)) <= epsilon) continue;
+    if (i >= limit) return { seconds: SETTLE_LIMIT, capped: true };
+    last = i;
+  }
+  return { seconds: Math.round(((last + 1) / sampleRate) * 100) / 100, capped: false };
 }
 
 /** Build a spring from a duration (seconds) and bounce (0 = none, 0.9 = lots). */

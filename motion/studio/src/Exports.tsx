@@ -16,15 +16,19 @@ export interface SavedExport {
 const when = (iso: string) =>
   new Date(iso).toLocaleString(undefined, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 
-export function Exports({ items }: { items: SavedExport[] }) {
+export function Exports({ items }: { items: SavedExport[] | null | undefined }) {
   return (
     <section className="section exports">
       <div className="section-head static">
         <span>Exports</span>
-        <span className="field-value">{items.length}</span>
+        {items && <span className="field-value">{items.length}</span>}
       </div>
       <div className="section-body">
-        {items.length ? (
+        {items === undefined ? (
+          <p className="hint">Loading exports…</p>
+        ) : items === null ? (
+          <p className="hint">Couldn’t load exports.</p>
+        ) : items.length ? (
           <ul className="export-list">
             {[...items].reverse().map((e) => (
               <li key={e._key}>

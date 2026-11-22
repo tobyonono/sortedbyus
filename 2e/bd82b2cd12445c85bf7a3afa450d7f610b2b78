@@ -1,0 +1,65 @@
+motion/studio/tsconfig.json
+  s_9de71a0a9e3b1f::t_d5bc86a2bafbdd 35
+motion/studio/src/NewComposition.tsx
+  s_9de71a0a9e3b1f::t_972f8afec534b7 31
+motion/engine/index.ts
+  s_9de71a0a9e3b1f::t_e50413d2729feb 100-104
+motion/studio/src/templates.ts
+  s_9de71a0a9e3b1f::t_d5bc86a2bafbdd 5,11
+motion/engine/reel.ts
+  s_9de71a0a9e3b1f::t_e50413d2729feb 177-184
+src/components/sections/RequestCardView.tsx
+  s_9de71a0a9e3b1f::t_4b379c5a29173e 6-17,19
+  s_9de71a0a9e3b1f::t_caf00ec5ebcbfc 18
+motion/templates/site-request-card/template.json
+  s_9de71a0a9e3b1f::t_37841d7593bdb8 1-36
+motion/studio/src/framePrep.ts
+  s_9de71a0a9e3b1f::t_a5d25042733a32 1-33
+motion/templates/site-request-card/index.tsx
+  s_9de71a0a9e3b1f::t_b13b98346d6374 1-144
+motion/studio/vite.config.ts
+  s_9de71a0a9e3b1f::t_d5bc86a2bafbdd 14,18
+motion/engine/playable.ts
+  s_9de71a0a9e3b1f::t_e50413d2729feb 17-18,37
+sanity.cli.ts
+  s_9de71a0a9e3b1f::t_4a0ab2749b0617 1,4-10,16-22
+motion/studio/src/exporter.ts
+  s_9de71a0a9e3b1f::t_040035a923c38f 81,106-108
+motion/templates/site/domFrames.tsx
+  s_9de71a0a9e3b1f::t_158815f18c2dcc 1-11,21,24,29-35,38-60,62,64,68-71,73-75,79-80,82-116,118,122-141
+  s_9de71a0a9e3b1f::t_a457aca41e6a54 72,76-78,120-121
+motion/templates/site/README.md
+  s_9de71a0a9e3b1f::t_f5630da98aecca 1-46
+motion/studio/src/Stage.tsx
+  s_9de71a0a9e3b1f::t_a5d25042733a32 1,3,49-50,53-54,56
+motion/studio/src/PlayablePreview.tsx
+  s_9de71a0a9e3b1f::t_972f8afec534b7 10,18-19,72
+  s_9de71a0a9e3b1f::t_a5d25042733a32 6,38-39,46-50
+  s_9de71a0a9e3b1f::t_e8dd6124635798 51
+motion/templates/specs.ts
+  s_9de71a0a9e3b1f::t_d5bc86a2bafbdd 6,11
+motion/templates/site/nextLink.tsx
+  s_9de71a0a9e3b1f::t_d5bc86a2bafbdd 1-7
+src/components/sections/RequestCard.tsx
+  s_9de71a0a9e3b1f::t_4b379c5a29173e 6,8
+motion/studio/src/harness.tsx
+  s_9de71a0a9e3b1f::t_56772e706c87b7 210
+motion/studio/src/studio.css
+  s_9de71a0a9e3b1f::t_81582ea96711a0 1256-1257
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2ebd82b2cd12445c85bf7a3afa450d7f610b2b78",
+  "prompts": {},
+  "sessions": {
+    "s_9de71a0a9e3b1f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "81a5496d-dd93-4fc5-a87b-7c52b3d0882e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Toby Onono <ononop@tcd.ie>"
+    }
+  }
+}

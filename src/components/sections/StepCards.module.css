@@ -1,0 +1,112 @@
+/* Asymmetric checkerboard on a four-column grid (Primer "approach"): one step per row, its card and photo
+   placed in different columns each time, with empty cells left around them:
+     row 1   [01][ph] .   .
+     row 2   [x]  .  [02][ph]     ([x] = an extra photo, desktop only)
+     row 3    .  [03][ph] .
+     row 4   [x]  .  [ph][04]
+   Each step is a full-width row with the same four columns, so its two tiles can sit anywhere along it. */
+.grid {
+  --gap: 16px;
+  display: grid;
+  gap: var(--gap);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.step {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--gap);
+}
+.step:nth-child(1) .card { grid-column: 1; }
+.step:nth-child(1) .photo { grid-column: 2; }
+.step:nth-child(2) .photo { grid-column: 4; }
+.step:nth-child(2) .card { grid-column: 3; }
+.step:nth-child(2) .extra { grid-column: 1; }
+.step:nth-child(3) .card { grid-column: 2; }
+.step:nth-child(3) .photo { grid-column: 3; }
+.step:nth-child(4) .photo { grid-column: 3; }
+.step:nth-child(4) .card { grid-column: 4; }
+.step:nth-child(4) .extra { grid-column: 1; }
+.step > * {
+  grid-row: 1;
+}
+.card,
+.photo {
+  min-height: 460px;
+  border-radius: 6px;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: 28px;
+  background: var(--tone);
+  color: var(--espresso);
+}
+.photo {
+  position: relative;
+  overflow: hidden;
+  background: var(--apricot);
+}
+.photo img {
+  object-fit: cover;
+}
+.num {
+  font-size: var(--fs-ui);
+}
+.title {
+  margin-top: auto;
+  padding-top: 32px;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: var(--fs-h4);
+  line-height: 1.15;
+  letter-spacing: var(--tracking-tight);
+}
+.body {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: var(--fs-ui);
+  line-height: var(--lh-body);
+}
+
+/* Tablets: one step per row, card and photo side by side, swapping sides each row */
+@media (max-width: 1180px) {
+  .extra {
+    display: none;
+  }
+  .step {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .step:nth-child(n) > * {
+    grid-column: auto;
+  }
+  .step:nth-child(even) .photo {
+    order: -1;
+  }
+}
+/* Phones: card over photo for every step */
+@media (max-width: 700px) {
+  .step {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .step > * {
+    grid-row: auto;
+  }
+  .step:nth-child(even) .photo {
+    order: 0;
+  }
+  .card {
+    min-height: 0;
+  }
+  .photo {
+    min-height: 0;
+    aspect-ratio: 4 / 3;
+  }
+  .body {
+    font-size: var(--fs-compact);
+  }
+}

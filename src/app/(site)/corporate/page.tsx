@@ -6,7 +6,7 @@ import PageHero from "@/components/sections/PageHero";
 import SectionIntro from "@/components/sections/SectionIntro";
 import Closing from "@/components/sections/Closing";
 import Footer from "@/components/layout/Footer";
-import FeatureTabs from "@/components/sections/FeatureTabs";
+import Principles from "@/components/sections/Principles";
 import Timeline from "@/components/sections/Timeline";
 import h from "@/styles/home.module.css";
 import d from "@/styles/pages.module.css";
@@ -39,7 +39,10 @@ export default async function CorporatePage() {
       <main>
         <section className={d.section} aria-labelledby="corp-offer">
           <SectionIntro id="corp-offer" label={c.offersLabel} title={c.offersHeading} intro={c.offersIntro} />
-          <FeatureTabs items={(c.offers ?? []).map((o) => ({ title: o.title, body: o.body, items: o.items, img: must(o.image, o.title), cta: { label: "Discuss this with us", href: corpCta } }))} />
+          <Principles items={(c.offers ?? []).map((o) => ({ title: o.title, body: o.body }))} />
+          <div style={{ display: "flex", justifyContent: "center", marginTop: 48 }}>
+            <ButtonLink href={corpCta} variant="primary" arrow>{c.ctaLabel}</ButtonLink>
+          </div>
         </section>
 
         <section className={`${d.section} ${d.dark}`} aria-labelledby="extras-heading">

@@ -6,12 +6,13 @@ import PageHero from "@/components/sections/PageHero";
 import SectionIntro from "@/components/sections/SectionIntro";
 import Closing from "@/components/sections/Closing";
 import Footer from "@/components/layout/Footer";
-import FeatureTabs from "@/components/sections/FeatureTabs";
+import StepCards from "@/components/sections/StepCards";
 import MapBanner from "@/components/sections/MapBanner";
 import h from "@/styles/home.module.css";
 import d from "@/styles/pages.module.css";
 
 import { getHowItWorks } from "@/lib/sanity/queries";
+import { getSite } from "@/lib/sanity/site";
 import { must } from "@/lib/sanity/image";
 import { Lines } from "@/lib/text";
 
@@ -26,12 +27,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
 
 export default async function HowItWorksPage() {
-  const c = await getHowItWorks();
-  const steps = (c.steps ?? []).map((st) => ({
-    title: st.title,
-    body: st.body,
-    img: must(st.image, st.title),
-  }));
+  const [c, { services }] = await Promise.all([getHowItWorks(), getSite()]);
+  // STAND-IN until the owner supplies a photo: the Gifts hero (flower-laid table) beside step 4
+  const sortedExtra = services.find((x) => x.slug === "gifts-celebrations")?.heroImage;
+  // extra photos fill the empty cells beside steps 2 and 4; the break photo has no slot of its own on this page
+  const steps = (c.steps ?? []).map((st, i) => ({ title: st.title, body: st.body, img: must(st.image, st.title), ...(i === 1 && c.breakImage?.asset ? { extra: must(c.breakImage) } : {}),
+    ...(i === 3 && sortedExtra?.asset ? { extra: must(sortedExtra) } : {}) }));
   return (
     <>
       {/* 1. The promise */}
@@ -48,7 +49,7 @@ export default async function HowItWorksPage() {
       <main>
         <section className={d.section} aria-labelledby="steps-heading">
           <SectionIntro id="steps-heading" label={c.stepsLabel} title={c.stepsHeading} intro={c.stepsIntro} />
-          <FeatureTabs items={steps} />
+          <StepCards items={steps} />
         </section>
 
         <section aria-labelledby="network-heading">

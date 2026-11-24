@@ -40,7 +40,7 @@ export const howItWorksPage = defineType({
               title: "Text",
               type: "text",
               rows: 6,
-              description: "One or two short paragraphs: what the client does, what we do and how long it takes. Leave a blank line between paragraphs.",
+              description: "One short line, about 20 words: it fades in on the step’s colour tile on hover, and shows under the name on phones. Longer text gets cut off.",
               validation: (r) => r.required(),
             }),
             photo("image", "Photo"),

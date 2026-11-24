@@ -1,138 +1,177 @@
 "use client";
 
 import { prefersReducedMotion } from "@/lib/motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import m from "./NetworkMap.module.css";
 
-/* A map of how a request gets sorted (after fragment.ai's living map). "Your request" comes in from the
-   left as one line to Sorted by Us in the middle; from us, lines run out to the people we work with.
-   They sit in loose groups around the six things we sort (the groups aren't labelled). The people are
-   the destinations: florist, baker, plumber, painter, caterer and so on.
-   Your request's line is dotted and meets nothing but Sorted by Us. Each story closes the loop: the request
-   travels in (butter), the routes go out to one or more people, the answer travels back to you (olive)
+/* A map of how a request gets sorted, drawn as a ring. "Your request" comes in from the side as one dotted
+   line to Sorted by Us in the middle. Around us sit the six things we sort as balls on a ring, each joined
+   to us by a main branch that curves gently and slowly sways; from each ball, thinner straight offshoots run
+   out to the people we use for it (florist, baker, plumber and so on). Each ball links to its service page.
+   Every few seconds one story plays, all in butter: the request travels in, its route draws out through the
+   category to one or more people (each lighting as the route reaches it), the answer travels back to you
    and the tag reads Sorted.
-   Only labelled points are drawn: every line runs to a named person.
-   Drawn the way the logo is drawn: straight runs joined by rounded turns, round ends. Every few seconds
-   one request lights up in butter, from you, through us, to one person, and the caption says what was
-   asked for. With reduced motion it holds still on the first story. */
+   With reduced motion it holds still on the first story. */
 
 type P = { x: number; y: number };
+type Side = "left" | "right" | "above" | "below";
+type Supplier = P & { label: string; side: Side };
+type Group = P & { label: string; title: string; slug: string; suppliers: Supplier[] };
+type Layout = { W: number; H: number; request: P; hub: P; vertical: boolean; ring: { rx: number; ry: number }; ballR: number; groups: Group[] };
 
 const f = (n: number) => n.toFixed(1);
-const sg = (n: number) => (n < 0 ? -1 : 1);
+const line = (...pts: P[]) => pts.map((p, i) => `${i ? "L" : "M"}${f(p.x)} ${f(p.y)}`).join("");
 
-/** Like the logo's S: run along one axis, turn on a rounded corner, cross, turn, run on. */
-function sRoute(a: P, b: P, vertical = false, radius = 22) {
-  const dx = b.x - a.x, dy = b.y - a.y;
-  if (Math.abs(vertical ? dx : dy) < 2) return `M${f(a.x)} ${f(a.y)}L${f(b.x)} ${f(b.y)}`;
-  if (!vertical) {
-    const mx = a.x + dx / 2, sx = sg(dx), sy = sg(dy);
-    const r = Math.min(radius, Math.abs(dx) / 2, Math.abs(dy) / 2);
-    return `M${f(a.x)} ${f(a.y)}H${f(mx - sx * r)}Q${f(mx)} ${f(a.y)} ${f(mx)} ${f(a.y + sy * r)}V${f(b.y - sy * r)}Q${f(mx)} ${f(b.y)} ${f(mx + sx * r)} ${f(b.y)}H${f(b.x)}`;
-  }
-  const my = a.y + dy / 2, sx = sg(dx), sy = sg(dy);
-  const r = Math.min(radius, Math.abs(dx) / 2, Math.abs(dy) / 2);
-  return `M${f(a.x)} ${f(a.y)}V${f(my - sy * r)}Q${f(a.x)} ${f(my)} ${f(a.x + sx * r)} ${f(my)}H${f(b.x - sx * r)}Q${f(b.x)} ${f(my)} ${f(b.x)} ${f(my + sy * r)}V${f(b.y)}`;
+/* The six services, with the short name shown in the ball and who we use for each. Order = order round the ring. */
+const CATEGORIES: { label: string; title: string; slug: string; trades: string[] }[] = [
+  { label: "Gifts", title: "Gifts & Celebrations", slug: "gifts-celebrations", trades: ["Florist", "Baker", "Hamper maker"] },
+  { label: "Shopping", title: "Shopping & Sourcing", slug: "shopping-sourcing", trades: ["Tailor", "Market trader", "Furniture maker", "Phone repairer"] },
+  { label: "Travel", title: "Travel & Holidays", slug: "travel-holidays", trades: ["Hotel", "Driver", "Travel agent"] },
+  { label: "Home", title: "Home & Lifestyle", slug: "home-lifestyle", trades: ["Plumber", "Painter", "Electrician", "Cleaner"] },
+  { label: "Events", title: "Events & Experiences", slug: "events-experiences", trades: ["Caterer", "Chef", "Decorator", "DJ"] },
+  { label: "Errands", title: "Errands & Admin", slug: "errands-admin", trades: ["Courier", "Pharmacist", "Licensing agent"] },
+];
+
+const deg = Math.PI / 180;
+/* rounded, so the server-rendered numbers match the browser's exactly */
+const r1 = (n: number) => Math.round(n * 10) / 10;
+/** Labels sit on the outside of each person's dot, whichever way the offshoot points. */
+const sideOf = (a: number): Side => {
+  const c = Math.cos(a), s = Math.sin(a);
+  if (c < -0.35) return "left";
+  if (c > 0.35) return "right";
+  return s > 0 ? "below" : "above";
+};
+
+/**
+ * Six balls round the hub, spaced 54° apart, leaving a 90° gap where your request comes in (`gap`, in degrees:
+ * 180 = from the left, -90 = from the top). Each ball's people fan out beyond it, alternating near and far.
+ */
+function radial(o: { W: number; H: number; hub: P; request: P; vertical: boolean; gap: number; ring: { rx: number; ry: number }; reach: { rx: number; ry: number }; ballR: number; fan: number }): Layout {
+  const groups = CATEGORIES.map((cat, k) => {
+    const a = (o.gap + 45 + k * 54) * deg;
+    const g = { label: cat.label, title: cat.title, slug: cat.slug, x: r1(o.hub.x + o.ring.rx * Math.cos(a)), y: r1(o.hub.y + o.ring.ry * Math.sin(a)) };
+    const n = cat.trades.length;
+    const suppliers = cat.trades.map((label, i) => {
+      const b = a + (i - (n - 1) / 2) * o.fan * deg;
+      // near and far alternate, starting the other way round on every other ball, so neighbours' ends don't meet
+      const k2 = (i + k) % 2 ? 1.1 : 1;
+      return { label, x: r1(o.hub.x + o.reach.rx * k2 * Math.cos(b)), y: r1(o.hub.y + o.reach.ry * k2 * Math.sin(b)), side: sideOf(b) };
+    });
+    return { ...g, suppliers };
+  });
+  return { W: o.W, H: o.H, request: o.request, hub: o.hub, vertical: o.vertical, ring: o.ring, ballR: o.ballR, groups };
 }
 
-type Supplier = { label: string; x: number; y: number };
-type Group = { label: string; x: number; y: number; suppliers: Supplier[] };
-type Layout = { W: number; H: number; request: P; hub: P; vertical: boolean; groups: Group[] };
-
-/* Who we use for each kind of request. The first few of each are placed on the map. */
-const TRADES: Record<string, string[]> = {
-  "Shopping & Sourcing": ["Tailor", "Market trader", "Furniture maker", "Phone repairer"],
-  "Gifts & Celebrations": ["Florist", "Baker", "Hamper maker"],
-  "Travel & Holidays": ["Hotel", "Driver", "Travel agent"],
-  "Errands & Admin": ["Courier", "Pharmacist", "Licensing agent"],
-  "Home & Lifestyle": ["Plumber", "Painter", "Electrician", "Cleaner"],
-  "Events & Experiences": ["Caterer", "Chef", "Decorator", "DJ"],
-};
-
-/** Stretch a layout to a new height, spacing everything out evenly (for a more open, portrait map). */
-const tallen = (L: Layout, H: number): Layout => {
-  const k = H / L.H;
-  const y = <T extends P>(p: T): T => ({ ...p, y: p.y * k });
-  return { ...L, H, request: y(L.request), hub: y(L.hub), groups: L.groups.map((g) => ({ ...y(g), suppliers: g.suppliers.map(y) })) };
-};
-
-/* Wide: a full-width band. Request on the left, us in the middle, groups above, below and to the right.
-   Drawn at 1600 x 820, then stretched to 1000 tall so it feels more open. */
-const WIDE: Layout = tallen({
-  W: 1600, H: 820, request: { x: 210, y: 410 }, hub: { x: 700, y: 410 }, vertical: false,
-  groups: [
-    { label: "Gifts & Celebrations", x: 300, y: 120, suppliers: [{ label: "Florist", x: 190, y: 220 }, { label: "Baker", x: 330, y: 260 }, { label: "Hamper maker", x: 450, y: 190 }] },
-    { label: "Shopping & Sourcing", x: 760, y: 90, suppliers: [{ label: "Tailor", x: 600, y: 200 }, { label: "Market trader", x: 760, y: 240 }, { label: "Furniture maker", x: 900, y: 170 }, { label: "Phone repairer", x: 640, y: 120 }] },
-    { label: "Travel & Holidays", x: 1300, y: 120, suppliers: [{ label: "Hotel", x: 1140, y: 230 }, { label: "Driver", x: 1300, y: 270 }, { label: "Travel agent", x: 1420, y: 200 }] },
-    { label: "Errands & Admin", x: 300, y: 720, suppliers: [{ label: "Courier", x: 190, y: 600 }, { label: "Pharmacist", x: 340, y: 560 }, { label: "Licensing agent", x: 450, y: 630 }] },
-    { label: "Events & Experiences", x: 780, y: 750, suppliers: [{ label: "Caterer", x: 620, y: 600 }, { label: "Chef", x: 780, y: 630 }, { label: "Decorator", x: 900, y: 570 }, { label: "DJ", x: 940, y: 690 }] },
-    { label: "Home & Lifestyle", x: 1300, y: 720, suppliers: [{ label: "Plumber", x: 1130, y: 560 }, { label: "Painter", x: 1290, y: 590 }, { label: "Electrician", x: 1420, y: 540 }, { label: "Cleaner", x: 1160, y: 660 }] },
-  ],
-}, 1000);
-
-/* Tall: a column or a phone. Request at the top, us below it, the groups in two columns underneath. */
-const tallGroup = (label: string, x: number, y: number): Group => ({
-  label, x, y,
-  suppliers: TRADES[label].slice(0, 3).map((t, i) => ({ label: t, x: x - 150 + i * 140, y: y + (i === 1 ? 110 : 70) })),
+/* Wide: a full-width band, your request coming in from the left. */
+const WIDE = radial({
+  W: 1600, H: 1000, hub: { x: 820, y: 500 }, request: { x: 150, y: 500 }, vertical: false, gap: 180,
+  ring: { rx: 330, ry: 270 }, reach: { rx: 540, ry: 390 }, ballR: 62, fan: 15,
 });
-const TALL: Layout = {
-  W: 1000, H: 1150, request: { x: 500, y: 90 }, hub: { x: 500, y: 270 }, vertical: true,
-  groups: [
-    tallGroup("Shopping & Sourcing", 260, 420), tallGroup("Gifts & Celebrations", 740, 420),
-    tallGroup("Travel & Holidays", 260, 680), tallGroup("Errands & Admin", 740, 680),
-    tallGroup("Home & Lifestyle", 260, 940), tallGroup("Events & Experiences", 740, 940),
-  ],
-};
 
-/* One story per group: what was asked, and who sorted it. */
+/* Tall: a phone. Your request comes in from the top. */
+const TALL = radial({
+  W: 1000, H: 1250, hub: { x: 500, y: 680 }, request: { x: 500, y: 70 }, vertical: true, gap: -90,
+  ring: { rx: 270, ry: 290 }, reach: { rx: 380, ry: 470 }, ballR: 92, fan: 17,
+});
+
+/* One story at a time: what was asked, and who sorted it. Real places, and people asking from home and from
+   abroad. No two stories in a row use the same ball. */
 const STORIES = [
-  { who: ["Florist"], ask: "Flowers for my mum on Sunday" },
-  { who: ["Tailor"], ask: "Six yards of lace for a wedding" },
+  { who: ["Florist"], ask: "Flowers for Mum in Lekki on Sunday. I’m in London" },
+  { who: ["Tailor", "Market trader"], ask: "Aso-ebi for twelve before the wedding" },
+  { who: ["Driver"], ask: "A driver at the airport when I land" },
   /* some requests need more than one person */
   { who: ["Baker", "Decorator", "Chef"], ask: "My daughter’s fifth birthday party" },
+  { who: ["Pharmacist", "Courier"], ask: "Mum’s prescription to Surulere. I’m in Houston" },
+  { who: ["Painter", "Electrician", "Cleaner"], ask: "The new flat ready before I fly in" },
+  { who: ["Caterer"], ask: "Small chops for forty on Saturday" },
   { who: ["Hotel"], ask: "Three quiet nights in Abuja" },
-  { who: ["Courier"], ask: "Signed documents to my lawyer today" },
-  { who: ["Painter", "Electrician", "Furniture maker"], ask: "Getting the new flat ready to move in" },
-  { who: ["Caterer"], ask: "Dinner for twelve on Saturday" },
-  { who: ["Plumber"], ask: "A leak fixed before the weekend" },
+  { who: ["Plumber"], ask: "A leak fixed at the family house" },
 ];
+
+/* A main branch: a gentle S-curve from us to the ball (control points pushed either side of the straight
+   line, like the turns in the logo). It sways between a fuller and a flatter curve; the story's packets ride
+   the in-between shape, so they never sit more than a few pixels off the line. */
+type Branch = { d1: string; d2: string; mid: string; dur: string };
+function curve(a: P, b: P, bend: number) {
+  const dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy);
+  const nx = -dy / len, ny = dx / len, A = len * 0.16 * bend;
+  const c1 = { x: a.x + dx / 3 + nx * A, y: a.y + dy / 3 + ny * A };
+  const c2 = { x: a.x + (2 * dx) / 3 - nx * A, y: a.y + (2 * dy) / 3 - ny * A };
+  return `M${f(a.x)} ${f(a.y)}C${f(c1.x)} ${f(c1.y)} ${f(c2.x)} ${f(c2.y)} ${f(b.x)} ${f(b.y)}`;
+}
+const branchTo = (hub: P, g: P, k: number): Branch => {
+  const s = k % 2 ? 1 : -1;
+  return { d1: curve(hub, g, s), d2: curve(hub, g, s * 0.4), mid: curve(hub, g, s * 0.7), dur: `${7 + (k % 3) * 1.4}s` };
+};
+const SWAY = "0.45 0 0.55 1;0.45 0 0.55 1";
 
 function build(L: Layout) {
   const { hub, groups } = L;
-  /* every supplier is wired straight back to us. Routes to people left of us leave the hub upwards or
-     downwards (never along the line your request comes in on), so your request only meets Sorted by Us. */
-  const spokeTo = (s: Supplier) =>
-    sRoute(hub, s, L.vertical || s.x < hub.x || Math.abs(s.y - hub.y) > Math.abs(s.x - hub.x), 18);
-  const spokes = groups.flatMap((g) => g.suppliers.map(spokeTo));
-  const intake = sRoute(L.request, hub, L.vertical, 18);
-  /* stories: you -> us -> one supplier */
+  const branches = groups.map((g, k) => branchTo(hub, g, k));
+  const offshoots = groups.flatMap((g) => g.suppliers.map((s) => line(g, s)));
+  const intake = line(L.request, hub);
   const all = groups.flatMap((g) => g.suppliers.map((s) => ({ s, g })));
   const stories = STORIES.map((st) => {
     const hits = st.who.map((w) => all.find((a) => a.s.label === w)!);
-    return { ...st, suppliers: hits.map((h) => h.s), paths: hits.map((h) => spokeTo(h.s)) };
+    return {
+      ...st,
+      suppliers: hits.map((h) => h.s),
+      groups: hits.map((h) => h.g),
+      branches: hits.map((h) => branches[groups.indexOf(h.g)]),
+      offs: hits.map((h) => line(h.g, h.s)),
+      paths: hits.map((h) => `${branches[groups.indexOf(h.g)].mid}L${f(h.s.x)} ${f(h.s.y)}`),
+    };
   });
-  return { spokes, intake, stories };
+  return { branches, offshoots, intake, stories };
 }
 
-const pct = (v: number, of: number) => `${(v / of) * 100}%`;
-/* One story, in seconds: the request travels in to us (0 to TRAVEL); the routes out draw one after
-   another (STAGGER apart); the answers come back from every person to us together, then one comes back
-   to you; "Sorted" shows, then the next story starts. */
+const pct = (v: number, of: number) => `${((v / of) * 100).toFixed(3)}%`;
+/* One story, in seconds. Each thing lights only when the request reaches it:
+   0 → TRAVEL       the request travels in along the dotted line to us
+   then, per person (STAGGER apart): the main branch draws out to the category (BRANCH), the ball lights;
+   the offshoot draws on to the person (OFF), the person lights and their name shows in the caption
+   then the answers travel back from every person to us (LEG), then one travels back to you (LEG);
+   "Sorted" shows, it holds (HOLD), and the next story starts. */
 const TRAVEL = 1;
-const DRAW = 0.9;
+const BRANCH = 0.45;
+const OFF = 0.45;
 const STAGGER = 0.45;
 const LEG = 0.8;
 const HOLD = 2.2;
 const timing = (n: number) => {
-  const back = TRAVEL + (n - 1) * STAGGER + DRAW + 0.4;
+  const start = (i: number) => TRAVEL + i * STAGGER;
+  const back = start(n - 1) + BRANCH + OFF + 0.4;
   const done = back + LEG * 2;
-  return { back, done, total: done + HOLD };
+  return { start, ball: (i: number) => start(i) + BRANCH, person: (i: number) => start(i) + BRANCH + OFF, back, done, total: done + HOLD };
 };
+const sec = (n: number) => `${n.toFixed(2)}s`;
+
+/* reduced motion, read the React way so the server (which can't know) and the browser agree on first paint */
+const reduceQuery = "(prefers-reduced-motion: reduce)";
+const subscribeReduce = (cb: () => void) => {
+  const q = window.matchMedia(reduceQuery);
+  q.addEventListener("change", cb);
+  return () => q.removeEventListener("change", cb);
+};
+const useReducedMotion = () => useSyncExternalStore(subscribeReduce, () => window.matchMedia(reduceQuery).matches, () => false);
+
+/** A main branch path, swaying unless motion is reduced. Every copy starts at page time 0, so the lit copy
+    drawn over it sways in step. */
+function BranchPath({ b, still, ...rest }: { b: Branch; still: boolean } & React.SVGProps<SVGPathElement>) {
+  return (
+    <path d={b.d1} {...rest}>
+      {!still && <animate attributeName="d" values={`${b.d1};${b.d2};${b.d1}`} dur={b.dur} begin="0s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines={SWAY} />}
+    </path>
+  );
+}
 
 export default function NetworkMap({ bare = false, wide = false, className = "" }: { bare?: boolean; wide?: boolean; className?: string }) {
   const L = wide ? WIDE : TALL;
-  const { W, H, request, hub, groups } = L;
-  const { spokes, intake, stories } = build(L);
+  const { W, H, request, hub, groups, ring, ballR } = L;
+  const { branches, offshoots, intake, stories } = build(L);
+  const still = useReducedMotion();
   const [active, setActive] = useState(0);
   const [inView, setInView] = useState(false);
   const ref = useRef<HTMLElement>(null);
@@ -142,7 +181,6 @@ export default function NetworkMap({ bare = false, wide = false, className = "" 
   // story's index, so a new story always starts on its way out.
   const [phase, setPhase] = useState<{ story: number; at: "person" | "home" | "sorted" } | null>(null);
   const at = phase?.story === active ? phase.at : "out";
-  const answering = at !== "out";
   const home = at === "home" || at === "sorted";
   const done = at === "sorted";
   const t = timing(stories[active].paths.length);
@@ -171,54 +209,86 @@ export default function NetworkMap({ bare = false, wide = false, className = "" 
   }, [active, inView, t.back, t.done, t.total, stories.length]);
 
   const story = stories[active];
+  // when each lit thing comes on: a ball when the first route reaches it, a person when theirs does
+  const ballAt = (g: Group) => Math.min(...story.groups.map((x, i) => (x === g ? t.ball(i) : Infinity)));
+  const personAt = (p: Supplier) => t.person(story.suppliers.indexOf(p));
+  const isBall = (g: Group) => story.groups.includes(g);
+  const isPerson = (p: Supplier) => story.suppliers.includes(p);
+  const packetR = L.vertical ? 14 : 8;
   return (
     <figure
       ref={ref}
-      className={`${m.wrap} ${wide ? "" : m.tall} ${className}`}
-      aria-label="A map of how a request gets sorted: your request comes to Sorted by Us, and we take it to the people we work with, from florists and tailors to plumbers and caterers."
+      className={`${m.wrap} ${wide ? "" : m.tall} ${inView ? m.playing : ""} ${className}`}
+      aria-label="A map of how a request gets sorted: your request comes to Sorted by Us, we route it to the right kind of help, from gifts and shopping to home and events, and on to the people we work with, from florists and tailors to plumbers and caterers."
     >
-      {/* what this request is: above the map, changes with each story */}
+      {/* what this request is: above the map, changes with each story; who it went to shows once the route gets there */}
       <figcaption key={active} className={m.caption} aria-hidden="true">
         <span className={m.ask}>“{story.ask}”</span>
-        <span className={m.route}>{story.suppliers.map((x) => x.label).join(", ")}</span>
+        <span className={m.route} style={{ animationDelay: sec(t.person(0)) }}>{story.suppliers.map((x) => x.label).join(", ")}</span>
         {done && <span className={m.sorted}>Sorted</span>}
       </figcaption>
       <div className={`${m.map} ${bare ? m.bare : ""}`} style={{ aspectRatio: `${W} / ${H}` }}>
         <svg viewBox={`0 0 ${W} ${H}`} className={m.svg} aria-hidden="true">
-          <g className={m.trunks}>{spokes.map((d, i) => <path key={i} d={d} />)}</g>
-          <g className={m.people}>
-            {groups.flatMap((g) => g.suppliers).map((s) => (
-              <circle key={s.label} cx={s.x} cy={s.y} r={story.suppliers.includes(s) ? 7 : 4.5} className={story.suppliers.includes(s) ? `${m.endOn} ${answering ? m.answered : ""}` : ""} />
-            ))}
+          {/* the ring the categories sit on */}
+          <ellipse className={m.ring} cx={hub.x} cy={hub.y} rx={ring.rx} ry={ring.ry} />
+          <g className={m.offshoots}>{offshoots.map((d, i) => <path key={i} d={d} />)}</g>
+          <g className={m.branches}>{branches.map((b, i) => <BranchPath key={i} b={b} still={still} />)}</g>
+          {/* this story's route: the main branch draws out to the category, then the offshoot on to the person */}
+          <g key={`r${active}`} className={m.highlight}>
+            {story.branches.map((b, i) => <BranchPath key={`b${i}`} b={b} still={still} pathLength={1} style={{ animationDelay: sec(t.start(i)), animationDuration: sec(BRANCH) }} />)}
+            {story.offs.map((d, i) => <path key={`o${i}`} d={d} pathLength={1} style={{ animationDelay: sec(t.ball(i)), animationDuration: sec(OFF) }} />)}
           </g>
           {/* your one message in, always lit, its dots flowing towards us; once the answer is on its way
-              back to you it turns olive and the dots flow back towards you */}
+              back to you the dots flow back towards you */}
           <path className={`${m.intake} ${home ? m.intakeHome : ""}`} d={intake} />
-          {/* each story: the request travels in along the dotted line, then the route out draws once it arrives */}
-          <g key={active} ref={anims} className={m.highlight}>
+          {/* the ball this story is routed through pings: a soft ring swells out of it and fades, from when it lights */}
+          <g className={m.halos}>
+            {groups.filter(isBall).map((g) => <circle key={`${g.label}-${active}`} cx={g.x} cy={g.y} r={ballR} style={{ animationDelay: sec(ballAt(g)) }} />)}
+          </g>
+          <g className={m.balls}>
+            {groups.map((g) => isBall(g)
+              ? <circle key={`${g.label}-${active}`} cx={g.x} cy={g.y} r={ballR} className={m.on} style={{ animationDelay: sec(ballAt(g)) }} />
+              : <circle key={g.label} cx={g.x} cy={g.y} r={ballR} />)}
+          </g>
+          <g className={m.people}>
+            {groups.flatMap((g) => g.suppliers).map((p) => isPerson(p)
+              ? <circle key={`${p.label}-${active}`} cx={p.x} cy={p.y} r={L.vertical ? 13 : 7} className={m.on} style={{ animationDelay: sec(personAt(p)) }} />
+              : <circle key={p.label} cx={p.x} cy={p.y} r={L.vertical ? 8 : 4.5} />)}
+          </g>
+          <g key={`p${active}`} ref={anims}>
             {/* the request travelling in to us */}
-            <circle className={m.packet} r={L.vertical ? 12 : 8} opacity={0}>
+            <circle className={m.packet} r={packetR} opacity={0}>
               <animateMotion data-at={0} begin="indefinite" dur={`${TRAVEL}s`} fill="freeze" path={intake} calcMode="spline" keyTimes="0;1" keySplines="0.4 0 0.2 1" />
               <animate data-at={0} attributeName="opacity" begin="indefinite" values="1;1;0" keyTimes="0;0.85;1" dur={`${TRAVEL}s`} fill="freeze" />
             </circle>
-            {/* out to each person, one after another; each route turns olive as the answers start back */}
-            {story.paths.map((d, i) => <path key={i} d={d} pathLength={1} style={{ animationDelay: `${TRAVEL + i * STAGGER}s, ${t.back}s` }} />)}
-            {/* the answers coming back from everyone to us (paths run backwards), in olive */}
+            {/* the answers coming back from everyone to us (paths run backwards) */}
             {story.paths.map((d, i) => (
-              <circle key={`b${i}`} className={`${m.packet} ${m.answer}`} r={L.vertical ? 12 : 8} opacity={0}>
+              <circle key={`b${i}`} className={m.packet} r={packetR} opacity={0}>
                 <animateMotion data-at={t.back} begin="indefinite" dur={`${LEG}s`} fill="freeze" path={d} calcMode="linear" keyPoints="1;0" keyTimes="0;1" />
                 <animate data-at={t.back} attributeName="opacity" begin="indefinite" values="1;1;0" keyTimes="0;0.9;1" dur={`${LEG}s`} fill="freeze" />
               </circle>
             ))}
             {/* and one answer back along the dotted line to you */}
-            <circle className={`${m.packet} ${m.answer}`} r={L.vertical ? 12 : 8} opacity={0}>
+            <circle className={m.packet} r={packetR} opacity={0}>
               <animateMotion data-at={t.back + LEG} begin="indefinite" dur={`${LEG}s`} fill="freeze" path={intake} calcMode="linear" keyPoints="1;0" keyTimes="0;1" />
               <animate data-at={t.back + LEG} attributeName="opacity" begin="indefinite" values="1;1;0" keyTimes="0;0.9;1" dur={`${LEG}s`} fill="freeze" />
             </circle>
           </g>
         </svg>
-        {groups.flatMap((g) => g.suppliers).map((s) => (
-          <span key={s.label} className={`${m.person} ${story.suppliers.includes(s) ? `${m.personOn} ${answering ? m.answered : ""}` : ""}`} style={{ left: pct(s.x, W), top: pct(s.y, H) }} aria-hidden="true">{s.label}</span>
+        {/* each ball is a link to its service page (butter on the page means you can press it) */}
+        {groups.map((g) => (
+          <a
+            key={isBall(g) ? `${g.label}-${active}` : g.label}
+            href={`/services/${g.slug}`}
+            aria-label={g.title}
+            className={`${m.ballLabel} ${isBall(g) ? m.ballLabelOn : ""}`}
+            style={{ left: pct(g.x, W), top: pct(g.y, H), width: pct(ballR * 2, W), height: pct(ballR * 2, H), ...(isBall(g) ? { animationDelay: sec(ballAt(g)) } : {}) }}
+          >
+            {g.label}
+          </a>
+        ))}
+        {groups.flatMap((g) => g.suppliers).map((p) => (
+          <span key={isPerson(p) ? `${p.label}-${active}` : p.label} className={`${m.person} ${m[p.side]} ${isPerson(p) ? m.personOn : ""}`} style={{ left: pct(p.x, W), top: pct(p.y, H), ...(isPerson(p) ? { animationDelay: sec(personAt(p)) } : {}) }} aria-hidden="true">{p.label}</span>
         ))}
         <span className={`${m.tag} ${L.vertical ? m.tagTop : m.tagLeft} ${done ? m.tagDone : ""}`} style={{ left: pct(request.x, W), top: pct(request.y, H) }} aria-hidden="true">{done ? "Sorted" : "Your request"}</span>
         <span className={m.request} style={{ left: pct(hub.x, W), top: pct(hub.y, H) }} aria-hidden="true">Sorted by Us</span>

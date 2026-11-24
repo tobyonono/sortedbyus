@@ -22,26 +22,138 @@
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-/* everything not in the current story is dimmed, so the lit route stands out */
-.trunks path {
+/* everything not in the current story is dimmed, so the lit route stands out. Main branches (us to each
+   category) are heavier than the offshoots (category to person). */
+.ring {
+  fill: none;
   stroke: var(--apricot);
-  stroke-opacity: 0.22;
-  stroke-width: 2;
+  stroke-opacity: 0.16;
+  stroke-width: 1.5;
+  stroke-dasharray: 2 8;
+  animation: ringDrift 20s linear infinite;
+}
+@keyframes ringDrift {
+  to {
+    stroke-dashoffset: -200;
+  }
+}
+.halos circle {
+  fill: none;
+  stroke: var(--butter);
+  stroke-width: 1.5;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: halo 1.8s var(--ease-out) infinite;
+}
+.tall .halos circle {
+  stroke-width: 3;
+}
+@keyframes halo {
+  0% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  60%,
+  100% {
+    opacity: 0;
+    transform: scale(1.35);
+  }
+}
+/* a faint dot grid behind the map, fading out towards the edges so the heading and points stay clear.
+   Tiny and widely spaced, so the dotted request line stays the dotted thing you notice. */
+.bare::before {
+  content: "";
+  position: absolute;
+  inset: -4% -6%;
+  background-image: radial-gradient(circle, rgb(var(--apricot-rgb) / 0.18) 1.2px, transparent 1.6px);
+  background-size: 36px 36px;
+  background-position: center;
+  mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 35%, transparent 100%);
+  pointer-events: none;
+}
+.branches path {
+  stroke: var(--apricot);
+  stroke-opacity: 0.3;
+  stroke-width: 3;
+}
+.offshoots path {
+  stroke: var(--apricot);
+  stroke-opacity: 0.18;
+  stroke-width: 1.5;
+}
+.tall .branches path {
+  stroke-width: 6;
+}
+.tall .offshoots path {
+  stroke-width: 3;
+}
+.tall .highlight path {
+  stroke-width: 7;
+}
+/* the six categories: espresso balls outlined in apricot, filled butter while their story plays */
+.balls circle {
+  fill: var(--espresso);
+  stroke: var(--apricot);
+  stroke-opacity: 0.45;
+  stroke-width: 1.5;
+}
+.tall .balls circle {
+  stroke-width: 3;
+}
+.svg .balls .on {
+  fill: var(--butter);
+  stroke: var(--butter);
+  stroke-opacity: 1;
+  animation: lightBall 0.25s var(--ease-out) both;
+}
+@keyframes lightBall {
+  from {
+    fill: var(--espresso);
+    stroke: var(--apricot);
+    stroke-opacity: 0.45;
+  }
+}
+/* the ball's name, and the link to its service page: a circle laid exactly over the ball */
+.ballLabel {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  white-space: nowrap;
+  font-size: clamp(10px, 0.95vw, 14px);
+  font-weight: 500;
+  color: var(--apricot);
+  text-decoration: none;
+  transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ballLabel:hover {
+    background: var(--butter);
+    color: var(--espresso);
+  }
+}
+.ballLabel:focus-visible {
+  outline: 2px solid var(--butter);
+  outline-offset: 4px;
+}
+.ballLabelOn {
+  color: var(--espresso);
+  animation: lightBallLabel 0.25s var(--ease-out) both;
+}
+@keyframes lightBallLabel {
+  from {
+    color: var(--apricot);
+  }
 }
 .highlight path {
   stroke: var(--butter);
   stroke-width: 3;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  /* draw out in butter, then turn olive when the answers start back (delays set per path) */
-  animation:
-    draw 0.9s var(--ease-out) forwards,
-    answer var(--dur) var(--ease) forwards;
-}
-@keyframes answer {
-  to {
-    stroke: var(--olive);
-  }
+  /* draws out in butter; each segment's delay and duration are set inline, so it follows the request */
+  animation: draw 0.45s linear forwards;
 }
 @keyframes draw {
   to {
@@ -49,9 +161,10 @@
   }
 }
 .people circle,
-.ends circle,
-.person {
-  transition: fill 0s, color 0s, r var(--dur) var(--ease);
+.balls circle,
+.person,
+.ballLabel {
+  transition: fill 0s, stroke 0s, color 0s, r var(--dur) var(--ease);
 }
 
 /* caption above the map: what this request is */
@@ -108,16 +221,20 @@
   fill: var(--apricot);
   fill-opacity: 0.4;
 }
-.ends circle {
-  fill: var(--apricot);
-}
-.svg .endOn {
+.svg .people .on {
   fill: var(--butter);
   fill-opacity: 1;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: lightDot 0.25s var(--ease-out) both;
 }
-/* the person who's answering turns olive with the route */
-.svg .endOn.answered {
-  fill: var(--olive);
+/* starts at an unlit dot's size and colour, then grows and lights as the route arrives */
+@keyframes lightDot {
+  from {
+    fill: var(--apricot);
+    fill-opacity: 0.4;
+    transform: scale(0.63);
+  }
 }
 /* the line from your request in to us: dotted, the dots flowing towards us */
 .svg .intake {
@@ -132,9 +249,8 @@
     stroke-dashoffset: -11.1;
   }
 }
-/* the answer on its way back to you: the dotted line turns olive and its dots flow back towards you */
+/* the answer on its way back to you: the dots flow back towards you */
 .svg .intakeHome {
-  stroke: var(--olive);
   animation-name: flowHome;
 }
 @keyframes flowHome {
@@ -166,12 +282,9 @@
     stroke-dashoffset: -22.1;
   }
 }
-/* the request itself, travelling in; the answers travel back in olive */
+/* the request itself, travelling in, and the answers travelling back */
 .packet {
   fill: var(--butter);
-}
-.svg .answer {
-  fill: var(--olive);
 }
 
 /* labels: sentence case like the site's other small labels */
@@ -182,17 +295,41 @@
   white-space: nowrap;
   line-height: 1.2;
 }
+/* each person's name sits on the outside of their dot */
+.right {
+  transform: translate(14px, -50%);
+}
+.left {
+  transform: translate(calc(-100% - 14px), -50%);
+}
+.above {
+  transform: translate(-50%, calc(-100% - 12px));
+}
+.below {
+  transform: translate(-50%, 12px);
+}
 .person {
-  transform: translate(12px, -50%);
   font-size: clamp(10px, 0.95vw, 13px);
-  color: rgb(var(--apricot-rgb) / 0.45);
+  color: rgb(var(--apricot-rgb) / 0.65);
 }
 .personOn {
   color: var(--butter);
   font-weight: 500;
+  animation: lightPerson 0.25s var(--ease-out) both;
 }
-.personOn.answered {
-  color: var(--olive);
+@keyframes lightPerson {
+  from {
+    color: rgb(var(--apricot-rgb) / 0.65);
+    font-weight: 400;
+  }
+}
+/* who it went to, in the caption: shows when the route reaches them (delay set inline) */
+.route {
+  animation: captionIn 0.4s var(--ease-out) both;
+}
+/* nothing in a story runs until the map is on screen, so it starts in step with the request */
+.wrap:not(.playing) :is(.highlight path, .on, .ballLabelOn, .personOn, .route, .halos circle) {
+  animation-play-state: paused;
 }
 /* "Your request": its own outlined tag at the start of the line */
 .tag {
@@ -254,5 +391,15 @@
   .person,
   .request {
     font-size: 10px;
+  }
+}
+
+/* reduced motion: no light-ups, the first story just shows lit and drawn, and nothing drifts or breathes */
+@media (prefers-reduced-motion: reduce) {
+  .wrap :is(.on, .ballLabelOn, .personOn, .route, .ring) {
+    animation: none;
+  }
+  .halos {
+    display: none;
   }
 }

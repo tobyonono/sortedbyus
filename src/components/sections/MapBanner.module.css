@@ -3,6 +3,7 @@
   padding: 120px var(--gutter);
   background: var(--espresso);
   color: var(--apricot);
+  overflow-x: clip; /* the map's background grid runs past its sides */
 }
 .head {
   display: block;

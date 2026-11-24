@@ -1,0 +1,37 @@
+src/components/sections/NetworkMap.module.css
+  s_4961e1430d7cba::t_f042b92171ec5b 109,111-116,144-148,155-156,224,231,233-236,252,285,319-322,324,326-331,396
+  s_4961e1430d7cba::t_11a21b70623957 118,122-124,129-140
+  s_4961e1430d7cba::t_dbf9fdbcd1de2a 30,33,35-41,43-46,48-68,71-75,228-229,398-402,404-405
+  s_4961e1430d7cba::t_af55d212cc1d93 42,47,332,403
+  s_4961e1430d7cba::t_1fafcce10d25f2 25-29,31-32,34,76-80,82-108,110,117,119-121,125-128,141-143,165-167,298-310,318
+  s_4961e1430d7cba::t_9f13ba45b63cd0 69-70,164,227,232,237,313,323,397
+src/lib/sanity/schemaTypes/howItWorksPage.ts
+  s_4961e1430d7cba::t_81db502854d04e 43
+src/app/(site)/how-it-works/page.tsx
+  s_4961e1430d7cba::t_851337c5afc5f4 9,29-31,48-51
+src/components/sections/NetworkMap.tsx
+  s_4961e1430d7cba::t_1323701b8c1653 7-8,14,17-18,20,23,33,35-43,46-52,54-56,60-68,72-75,113-114,127,172-173,217,221-222,224,227,232-234,237,248,252-253,257-258,260,279,289
+  s_4961e1430d7cba::t_7350458e094ed9 118-121,123,125,131-136,138-139,144-145,147
+  s_4961e1430d7cba::t_dbf9fdbcd1de2a 245,247
+  s_4961e1430d7cba::t_63d5ee6b6b768c 4,9-10,19,25-32,53,78-79,81-83,86-88,90,93-109,112,122,124,150-168,174,235,238,278,280-288
+  s_4961e1430d7cba::t_af55d212cc1d93 244,246
+  s_4961e1430d7cba::t_47d6565e6b8481 11-12,57-59,69,76-77,130,149,212-216,236,239,242,249-251,254-256,264,266,272,290-291
+src/components/sections/MapBanner.module.css
+  s_4961e1430d7cba::t_f59b12d6ba5b42 6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1dbe5d02afc8264548921c9299ec2a44208f260a",
+  "prompts": {},
+  "sessions": {
+    "s_4961e1430d7cba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e12df23b-4e6e-4727-8b0d-c94b2851c69f",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Toby Onono <ononop@tcd.ie>"
+    }
+  }
+}

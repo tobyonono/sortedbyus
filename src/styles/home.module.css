@@ -129,6 +129,21 @@
   /* entrance: see "Hero entrance" below */
   --block-from: translateX(-100%);
 }
+/* the point rounded off, the same soft corner as the cut's teeth (about a 6px round). The point is narrow
+   (~26°), so the curve starts 25px up and down each edge to give that radius; at the 0.24 slope that's 6px in. */
+@supports (clip-path: shape(from 0 0, line to 1px 1px)) {
+  .heroBlock {
+    clip-path: shape(
+      from 0% 0%,
+      line to calc(100% - var(--tri-d)) 0%,
+      line to calc(100% - 6px) calc(50% - 25px),
+      curve to calc(100% - 6px) calc(50% + 25px) with 100% 50%,
+      line to calc(100% - var(--tri-d)) 100%,
+      line to 0% 100%,
+      close
+    );
+  }
+}
 .heroCopy {
   position: absolute;
   /* fixed at the original inset; only the photo grows */
@@ -240,6 +255,8 @@
   width: 100%;
   height: var(--tile-h);
   overflow: hidden;
+  /* the same 6px as the text box under it, so photo and box read as one tile */
+  border-radius: 6px;
 }
 /* Text panel: its own bordered, rounded box, separated from the image above */
 .tileBody {
@@ -317,11 +334,11 @@
   padding: 0 var(--gutter);
 }
 .corpInner.corpInner {
-  /* CutBanner: brown block on the right, wide enough to hold the copy (56% at the top, 46% at the
-     bottom); the photo shows on the left, so only a light shade is needed */
+  /* CutBanner, stepped: brown block on the right, wide enough to hold the copy (46% at the top, 56% at the
+     bottom, with the jog at half height); the photo shows on the left, so only a light shade is needed */
   --shade: 0.2;
-  --edge-top: 44%;
-  --edge-bottom: 54%;
+  --edge-top: 54%;
+  --edge-bottom: 44%;
   /* copy box = the block's narrowest width, so the text never crosses the diagonal at any size */
   --content-w: calc(100% - max(var(--edge-top), var(--edge-bottom)));
   /* photo fills only the visible left part (to the block's furthest edge), framed on the group */
@@ -400,9 +417,7 @@
   display: contents;
 }
 .splitImg {
-  position: sticky;
-  /* pins centred on screen; the next image slides up over it */
-  top: calc((100vh - var(--aud-h)) / 2);
+  position: relative;
   height: var(--aud-h);
   overflow: hidden;
   border-radius: 4px;
@@ -410,23 +425,33 @@
 .splitImg img {
   object-fit: cover;
 }
-/* Desktop: the next image slides up over the pinned one; a page-colour band along its top edge keeps
-   the 24px gap between them while it does */
+/* Desktop: each audience is its own row, image and copy side by side, alternating sides: image left on
+   the first ("Your time, back"), text left and image right on the second ("Your person at home"). The
+   image keeps the carousel's large-slot width (42 of 92 columns) on either side. */
 @media (min-width: 901px) {
-  .split + .split .splitImg {
-    overflow: visible;
+  .audiences {
+    row-gap: 80px;
   }
-  .split + .split .splitImg::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 100%;
-    height: 24px;
-    background: var(--cream);
+  .split {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(0, 42fr) minmax(0, 50fr);
+    column-gap: 48px;
+    align-items: center;
   }
-  .split + .split .splitImg img {
-    border-radius: 4px;
+  .split:nth-child(even) {
+    grid-template-columns: minmax(0, 50fr) minmax(0, 42fr);
+  }
+  .split:nth-child(even) .splitImg {
+    order: 2;
+  }
+  /* mirrored: the copy block sits against the photo with the same gap as on the first row, so it floats
+     mid-column rather than hard against the left gutter (its lines stay left-aligned) */
+  .split:nth-child(even) .splitSide {
+    padding: 0 clamp(24px, 5vw, 96px) 0 0;
+  }
+  .split:nth-child(even) .splitCopy {
+    margin-left: auto;
   }
 }
 .splitSide {
@@ -477,9 +502,9 @@
    left of the photo (lobby cropped so the seating sits in the visible right half), copy on the block. */
 .catchallInner.catchallInner {
   --shade: 0.1;
-  /* mirrored block runs from the left edge to 58% (top) / 46% (bottom) */
-  --edge-top: 42%;
-  --edge-bottom: 54%;
+  /* mirrored and stepped: block runs from the left edge to 46% (top) / 58% (bottom), jog at half height */
+  --edge-top: 54%;
+  --edge-bottom: 42%;
   min-height: 440px;
 }
 .catchallCopy {
@@ -622,6 +647,7 @@
   font-size: var(--fs-h2);
   line-height: var(--lh-display);
   letter-spacing: var(--tracking-display);
+  text-wrap: balance;
   color: var(--white);
   text-shadow: 0 1px 24px rgb(var(--espresso-rgb) / 0.25);
 }

@@ -66,6 +66,46 @@
   transform: translateY(var(--rise));
 }
 
+/* Stepped (step prop): the double cut on its side. From the bottom edge the diagonal runs to --m at half
+   height, jogs back by --jog to --n, then runs on to the top edge; each run has the same slant, like the two
+   teeth of the tile cut. The jog's corners are rounded 10px (the runs are steep, so 4px across per 10px down
+   is near enough). Where shape() isn't supported, the plain diagonal stays. */
+@media (min-width: 901px) {
+  @supports (clip-path: shape(from 0 0, line to 1px 1px)) {
+    .cut[data-step] {
+      --jog: 6%;
+      --m: calc(var(--edge-bottom) + (var(--edge-top) - var(--edge-bottom) + var(--jog)) / 2);
+      --n: calc(var(--m) - var(--jog));
+    }
+    .cut[data-step] .block {
+      clip-path: shape(
+        from var(--edge-top) 0%,
+        line to 100% 0%,
+        line to 100% 100%,
+        line to var(--edge-bottom) 100%,
+        line to calc(var(--m) - 4px) calc(50% + 10px),
+        curve to calc(var(--m) - 10px) 50% with var(--m) 50%,
+        line to calc(var(--n) + 10px) 50%,
+        curve to calc(var(--n) + 4px) calc(50% - 10px) with var(--n) 50%,
+        close
+      );
+    }
+    .cut[data-step][data-mirror] .block {
+      clip-path: shape(
+        from calc(100% - var(--edge-top)) 0%,
+        line to 0% 0%,
+        line to 0% 100%,
+        line to calc(100% - var(--edge-bottom)) 100%,
+        line to calc(100% - var(--m) + 4px) calc(50% + 10px),
+        curve to calc(100% - var(--m) + 10px) 50% with calc(100% - var(--m)) 50%,
+        line to calc(100% - var(--n) - 10px) 50%,
+        curve to calc(100% - var(--n) - 4px) calc(50% - 10px) with calc(100% - var(--n)) 50%,
+        close
+      );
+    }
+  }
+}
+
 @media (max-width: 900px) {
   .cut {
     --edge-top: 70%;

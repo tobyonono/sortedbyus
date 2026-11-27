@@ -17,6 +17,7 @@ export default function CutBanner({
   mirror = false,
   block = true,
   align = "center",
+  step = false,
   className = "",
   children,
   style,
@@ -32,6 +33,9 @@ export default function CutBanner({
   block?: boolean;
   /** "start"/"end" sit the content at the left/right edge (put it on the block's side) instead of centred. */
   align?: "center" | "start" | "end";
+  /** the diagonal as the double cut turned on its side: two slanted runs with a soft jog back at half height
+   *  (desktop). Set --edge-top further in than --edge-bottom, so the photo steps in on the bottom half. */
+  step?: boolean;
   className?: string;
   children: ReactNode;
 } & Omit<ComponentPropsWithoutRef<"section">, "children">) {
@@ -44,6 +48,7 @@ export default function CutBanner({
       data-mirror={mirror || undefined}
       data-block={block || undefined}
       data-align={align}
+      data-step={step || undefined}
       style={{ ["--tone" as string]: tone, ...(base?.focus ? { ["--base-pos" as string]: base.focus } : {}), ...style }}
       {...rest}
     >

@@ -1,9 +1,10 @@
 import s from "./Principles.module.css";
 
-/* Brand colours, light to dark; the last tile takes apricot type. CUTS: the hover cut on each tile
-   (espresso on the lighter tiles, taupe on the espresso one). */
+/* Brand colours, light to dark; the last tile takes apricot type. CUTS: the hover cut on each tile, tone on
+   tone: the tile's own colour a step darker (a quarter espresso mixed in), and muted brown on the espresso tile. */
 const TONES = ["var(--taupe)", "var(--olive)", "var(--terracotta)", "var(--espresso)"];
-const CUTS = ["var(--espresso)", "var(--espresso)", "var(--espresso)", "var(--taupe)"];
+const deeper = (c: string) => `color-mix(in srgb, ${c}, var(--espresso) 25%)`;
+const CUTS = [deeper("var(--taupe)"), deeper("var(--olive)"), deeper("var(--terracotta)"), "var(--muted)"];
 
 /**
  * Values as tall colour tiles (Human After All "creative principles" pattern): each shows its name;

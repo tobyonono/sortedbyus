@@ -77,7 +77,7 @@ export default async function HowItWorksPage() {
           <ul className={`${d.cards} ${d.cards4}`}>
             {(c.wrong ?? []).map((w, i) => (
               <li key={w.title} className={`${d.card} ${d.cutCard}`} style={{ "--cut": earth(i) } as React.CSSProperties}>
-                <span className={d.cut} aria-hidden="true" />
+                <span className={`${d.cut} ${d.saw}`} aria-hidden="true" />
                 <h3 className={d.cardHeading}>{w.title}</h3>
                 <p className={d.cardBody}>{w.body}</p>
               </li>

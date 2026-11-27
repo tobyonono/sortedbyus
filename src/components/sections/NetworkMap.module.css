@@ -1,12 +1,11 @@
-/* Espresso panel, apricot linework drawn like the logo (round caps, rounded turns), one butter route at a
-   time drawing in, dots flickering. */
+/* Espresso panel: a request card in the middle, butter lines out to the help it needs, each a butter circle
+   that appears as its line lands, dots flowing in and back. */
 .wrap {
   margin: 0;
 }
 .map {
   position: relative;
   margin: 0;
-  aspect-ratio: 1000 / 1100;
   background: var(--espresso);
   border-radius: 4px 0 4px 4px;
   overflow: hidden;
@@ -22,21 +21,52 @@
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-/* everything not in the current story is dimmed, so the lit route stands out. Main branches (us to each
-   category) are heavier than the offshoots (category to person). */
-.ring {
-  fill: none;
-  stroke: var(--apricot);
-  stroke-opacity: 0.16;
-  stroke-width: 1.5;
-  stroke-dasharray: 2 8;
-  animation: ringDrift 20s linear infinite;
+
+/* a faint dot grid behind the map, fading out towards the edges so the heading and points stay clear */
+.bare::before {
+  content: "";
+  position: absolute;
+  inset: -4% -6%;
+  background-image: radial-gradient(circle, rgb(var(--apricot-rgb) / 0.18) 1.2px, transparent 1.6px);
+  background-size: 36px 36px;
+  background-position: center;
+  mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 35%, transparent 100%);
+  pointer-events: none;
 }
-@keyframes ringDrift {
+
+.highlight path {
+  stroke: var(--butter);
+  stroke-width: 3;
+  /* square ends: a round cap would show as a dot at the start before the line has drawn out */
+  stroke-linecap: butt;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  /* draws out in butter; each line's delay and duration are set inline, so it follows the request */
+  animation: draw 0.5s var(--ease-out) forwards;
+}
+.tall .highlight path {
+  stroke-width: 6;
+}
+@keyframes draw {
   to {
-    stroke-dashoffset: -200;
+    stroke-dashoffset: 0;
   }
 }
+
+/* the help a request needs: butter circles that appear as their line reaches them */
+.balls circle {
+  fill: var(--butter);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ballIn 0.35s var(--ease-out) both;
+}
+@keyframes ballIn {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+/* a soft ring swells out of a circle as it lights */
 .halos circle {
   fill: none;
   stroke: var(--butter);
@@ -44,7 +74,7 @@
   opacity: 0;
   transform-box: fill-box;
   transform-origin: center;
-  animation: halo 1.8s var(--ease-out) infinite;
+  animation: halo 1.8s var(--ease-out) forwards;
 }
 .tall .halos circle {
   stroke-width: 3;
@@ -60,183 +90,38 @@
     transform: scale(1.35);
   }
 }
-/* a faint dot grid behind the map, fading out towards the edges so the heading and points stay clear.
-   Tiny and widely spaced, so the dotted request line stays the dotted thing you notice. */
-.bare::before {
-  content: "";
-  position: absolute;
-  inset: -4% -6%;
-  background-image: radial-gradient(circle, rgb(var(--apricot-rgb) / 0.18) 1.2px, transparent 1.6px);
-  background-size: 36px 36px;
-  background-position: center;
-  mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 35%, transparent 100%);
-  pointer-events: none;
-}
-.branches path {
-  stroke: var(--apricot);
-  stroke-opacity: 0.3;
-  stroke-width: 3;
-}
-.offshoots path {
-  stroke: var(--apricot);
-  stroke-opacity: 0.18;
-  stroke-width: 1.5;
-}
-.tall .branches path {
-  stroke-width: 6;
-}
-.tall .offshoots path {
-  stroke-width: 3;
-}
-.tall .highlight path {
-  stroke-width: 7;
-}
-/* the six categories: espresso balls outlined in apricot, filled butter while their story plays */
-.balls circle {
-  fill: var(--espresso);
-  stroke: var(--apricot);
-  stroke-opacity: 0.45;
-  stroke-width: 1.5;
-}
-.tall .balls circle {
-  stroke-width: 3;
-}
-.svg .balls .on {
-  fill: var(--butter);
-  stroke: var(--butter);
-  stroke-opacity: 1;
-  animation: lightBall 0.25s var(--ease-out) both;
-}
-@keyframes lightBall {
-  from {
-    fill: var(--espresso);
-    stroke: var(--apricot);
-    stroke-opacity: 0.45;
-  }
-}
-/* the ball's name, and the link to its service page: a circle laid exactly over the ball */
+
+/* the service's name, and the link to its category's page: a circle laid exactly over it */
 .ballLabel {
   position: absolute;
   transform: translate(-50%, -50%);
   display: grid;
   place-items: center;
+  /* in em, not %: a % padding would be a share of the whole map, not of the circle */
+  padding: 0 0.4em;
   border-radius: 50%;
-  white-space: nowrap;
+  text-align: center;
   font-size: clamp(10px, 0.95vw, 14px);
   font-weight: 500;
-  color: var(--apricot);
+  line-height: 1.15;
+  color: var(--espresso);
   text-decoration: none;
-  transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+  animation: labelIn 0.35s var(--ease-out) both;
 }
-@media (hover: hover) and (pointer: fine) {
-  .ballLabel:hover {
-    background: var(--butter);
-    color: var(--espresso);
+.tall .ballLabel {
+  font-size: 10px;
+}
+@keyframes labelIn {
+  from {
+    opacity: 0;
   }
 }
 .ballLabel:focus-visible {
   outline: 2px solid var(--butter);
   outline-offset: 4px;
 }
-.ballLabelOn {
-  color: var(--espresso);
-  animation: lightBallLabel 0.25s var(--ease-out) both;
-}
-@keyframes lightBallLabel {
-  from {
-    color: var(--apricot);
-  }
-}
-.highlight path {
-  stroke: var(--butter);
-  stroke-width: 3;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  /* draws out in butter; each segment's delay and duration are set inline, so it follows the request */
-  animation: draw 0.45s linear forwards;
-}
-@keyframes draw {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-.people circle,
-.balls circle,
-.person,
-.ballLabel {
-  transition: fill 0s, stroke 0s, color 0s, r var(--dur) var(--ease);
-}
 
-/* caption above the map: what this request is */
-.caption {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: center;
-  gap: 8px 20px;
-  margin-bottom: 20px;
-  min-height: 1.5em;
-  font-size: var(--fs-field);
-  color: var(--apricot);
-  animation: captionIn 0.6s var(--ease-out);
-}
-.ask {
-  font-family: var(--display);
-  font-size: 19px;
-  color: var(--butter);
-}
-.route {
-  color: rgb(var(--apricot-rgb) / 0.7);
-}
-.sorted {
-  padding: 2px 10px;
-  border-radius: 999px;
-  font-size: var(--fs-xs);
-  font-weight: 500;
-  color: var(--espresso);
-  background: var(--butter);
-  animation: captionIn 0.4s var(--ease-out);
-}
-@keyframes captionIn {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .highlight path {
-    animation: none;
-    stroke-dashoffset: 0;
-  }
-  .caption,
-  .svg .intake {
-    animation: none;
-  }
-  .packet {
-    display: none;
-  }
-}
-.people circle {
-  fill: var(--apricot);
-  fill-opacity: 0.4;
-}
-.svg .people .on {
-  fill: var(--butter);
-  fill-opacity: 1;
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: lightDot 0.25s var(--ease-out) both;
-}
-/* starts at an unlit dot's size and colour, then grows and lights as the route arrives */
-@keyframes lightDot {
-  from {
-    fill: var(--apricot);
-    fill-opacity: 0.4;
-    transform: scale(0.63);
-  }
-}
-/* the line from your request in to us: dotted, the dots flowing towards us */
+/* the line from your request in to the card: dotted, the dots flowing towards it */
 .svg .intake {
   stroke: var(--butter);
   stroke-width: 3.5;
@@ -249,29 +134,7 @@
     stroke-dashoffset: -11.1;
   }
 }
-/* the answer on its way back to you: the dots flow back towards you */
-.svg .intakeHome {
-  animation-name: flowHome;
-}
-@keyframes flowHome {
-  from {
-    stroke-dashoffset: -11.1;
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-.tall .svg .intakeHome {
-  animation-name: flowTallHome;
-}
-@keyframes flowTallHome {
-  from {
-    stroke-dashoffset: -22.1;
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
-}/* the tall map is drawn much smaller, so its dots are bigger */
+/* the tall map is drawn much smaller, so its dots are bigger */
 .tall .svg .intake {
   stroke-width: 9;
   stroke-dasharray: 0.1 22;
@@ -282,57 +145,16 @@
     stroke-dashoffset: -22.1;
   }
 }
-/* the request itself, travelling in, and the answers travelling back */
+/* the request travelling in, and the answers travelling back */
 .packet {
   fill: var(--butter);
 }
 
-/* labels: sentence case like the site's other small labels */
-.person,
-.tag,
-.request {
+/* "Your request": its own outlined tag at the start of the line */
+.tag {
   position: absolute;
   white-space: nowrap;
   line-height: 1.2;
-}
-/* each person's name sits on the outside of their dot */
-.right {
-  transform: translate(14px, -50%);
-}
-.left {
-  transform: translate(calc(-100% - 14px), -50%);
-}
-.above {
-  transform: translate(-50%, calc(-100% - 12px));
-}
-.below {
-  transform: translate(-50%, 12px);
-}
-.person {
-  font-size: clamp(10px, 0.95vw, 13px);
-  color: rgb(var(--apricot-rgb) / 0.65);
-}
-.personOn {
-  color: var(--butter);
-  font-weight: 500;
-  animation: lightPerson 0.25s var(--ease-out) both;
-}
-@keyframes lightPerson {
-  from {
-    color: rgb(var(--apricot-rgb) / 0.65);
-    font-weight: 400;
-  }
-}
-/* who it went to, in the caption: shows when the route reaches them (delay set inline) */
-.route {
-  animation: captionIn 0.4s var(--ease-out) both;
-}
-/* nothing in a story runs until the map is on screen, so it starts in step with the request */
-.wrap:not(.playing) :is(.highlight path, .on, .ballLabelOn, .personOn, .route, .halos circle) {
-  animation-play-state: paused;
-}
-/* "Your request": its own outlined tag at the start of the line */
-.tag {
   padding: 7px 14px;
   border: 1px solid rgb(var(--apricot-rgb) / 0.6);
   border-radius: 999px;
@@ -341,30 +163,107 @@
   color: var(--apricot);
   background: var(--espresso);
 }
-.tag {
-  transition: background-color 0s, color 0s, border-color var(--dur) var(--ease);
-}
-.tagDone {
-  background: var(--butter);
-  border-color: var(--butter);
-  color: var(--espresso);
-}
 .tagLeft {
   transform: translate(-100%, -50%);
 }
 .tagTop {
   transform: translate(-50%, -100%);
 }
-/* Sorted by Us: the hub */
-.request {
-  transform: translate(-50%, -50%);
-  padding: 8px 16px;
+
+/* The request card. Its type scales with the card's own width (cqi), so it reads the same on a phone and a
+   wide screen. */
+.card {
+  position: absolute;
+  container-type: inline-size;
+  display: flex;
+  border: 1px solid rgb(var(--apricot-rgb) / 0.35);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--espresso), var(--apricot) 6%);
+  transition: border-color var(--dur) var(--ease);
+}
+.cardDone {
+  border-color: var(--butter);
+}
+.cardBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4cqi;
+  padding: 6cqi;
+  animation: cardIn 0.5s var(--ease-out) both;
+}
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.cardMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 3cqi;
+  font-size: 3.6cqi;
+  color: rgb(var(--apricot-rgb) / 0.75);
+}
+.when {
+  padding: 0.8cqi 2.4cqi;
+  border: 1px solid rgb(var(--apricot-rgb) / 0.35);
   border-radius: 999px;
-  font-size: clamp(12px, 1vw, 14px);
+  white-space: nowrap;
+}
+.cardAsk {
+  font-family: var(--display);
+  font-size: 6.2cqi;
+  line-height: 1.2;
+  color: var(--apricot);
+  text-wrap: balance;
+}
+/* the foot holds "On it", then our reply; it sits at the bottom with a rule above */
+.cardFoot {
+  margin-top: auto;
+  padding-top: 4cqi;
+  border-top: 1px solid rgb(var(--apricot-rgb) / 0.2);
+  font-size: 3.8cqi;
+  line-height: 1.45;
+}
+.sorting {
+  color: rgb(var(--apricot-rgb) / 0.6);
+}
+/* three dots that fill in, one after another, while we're on it */
+.dots::after {
+  content: "";
+  animation: dots 1.2s steps(4, end) infinite;
+}
+@keyframes dots {
+  0% {
+    content: "";
+  }
+  25% {
+    content: ".";
+  }
+  50% {
+    content: "..";
+  }
+  75%,
+  100% {
+    content: "...";
+  }
+}
+.reply {
+  color: var(--apricot);
+  animation: cardIn 0.4s var(--ease-out) both;
+}
+.sorted {
+  display: inline-block;
+  margin-right: 1.5cqi;
+  padding: 0.4cqi 2.4cqi;
+  border-radius: 999px;
   font-weight: 500;
   color: var(--espresso);
   background: var(--butter);
 }
+
 /* the brand cut: a cream wedge off the top-right corner */
 .cut {
   position: absolute;
@@ -383,23 +282,27 @@
   overflow: visible;
 }
 
-@media (max-width: 900px) {
-  /* too tight on a phone: keep only the highlighted person */
-  .person:not(.personOn) {
-    display: none;
-  }
-  .person,
-  .request {
-    font-size: 10px;
-  }
+/* nothing in a story runs until the map is on screen, so it starts in step with the request */
+.wrap:not(.playing) :is(.highlight path, .balls circle, .ballLabel, .halos circle, .cardBody) {
+  animation-play-state: paused;
 }
 
-/* reduced motion: no light-ups, the first story just shows lit and drawn, and nothing drifts or breathes */
+/* reduced motion: the first story just shows sorted, lines drawn, and nothing flows or breathes */
 @media (prefers-reduced-motion: reduce) {
-  .wrap :is(.on, .ballLabelOn, .personOn, .route, .ring) {
+  .highlight path {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  .wrap :is(.balls circle, .ballLabel, .cardBody, .reply),
+  .svg .intake {
     animation: none;
   }
-  .halos {
+  .dots::after {
+    content: "...";
+    animation: none;
+  }
+  .halos,
+  .packet {
     display: none;
   }
 }

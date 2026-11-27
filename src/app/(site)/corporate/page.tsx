@@ -55,7 +55,7 @@ export default async function CorporatePage() {
           <ul className={d.cards}>
             {(c.models ?? []).map((m, i) => (
               <li key={m.title} className={`${d.card} ${d.cutCard}`} style={{ "--cut": earth(i) } as React.CSSProperties}>
-                <span className={d.cut} aria-hidden="true" />
+                <span className={`${d.cut} ${d.saw}`} aria-hidden="true" />
                 <h3 className={d.cardHeading}>{m.title}</h3>
                 <p className={d.cardBody}>{m.body}</p>
                 <span className={d.cardMeta}>{m.bestFor}</span>

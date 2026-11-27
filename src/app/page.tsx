@@ -121,7 +121,7 @@ export default async function Home() {
 
         {/* ---------- Something else (catch-all for the categories) ---------- */}
         <section className={s.catchall} aria-labelledby="else-heading">
-          <CutBanner as="div" base={must(c.catchallImage)} tone="var(--olive)" mirror align="start" className={s.catchallInner}>
+          <CutBanner as="div" base={must(c.catchallImage)} tone="var(--olive)" mirror step align="start" className={s.catchallInner}>
             <div className={s.catchallCopy}>
               <div>
                 <p className={s.label}>{c.catchallLabel}</p>
@@ -163,7 +163,7 @@ export default async function Home() {
             <p className={s.intro}>{c.whoIntro}</p>
           </Reveal>
 
-          {/* Audience splits: full-bleed image left, sticky copy right (IIT ID-style) */}
+          {/* Audience splits: image and copy side by side, alternating sides on desktop */}
           <div className={s.audiences}>
             {(c.audiences ?? []).map((au, i) => (
               <section key={au.label} className={s.split} aria-labelledby={`aud-${i}`}>
@@ -190,7 +190,7 @@ export default async function Home() {
 
           {/* Corporate */}
           <section className={s.corporate} id="corporate" aria-labelledby="corp-heading">
-            <CutBanner as="div" base={must(c.corpImage)} tone="var(--muted)" align="end" className={s.corpInner}>
+            <CutBanner as="div" base={must(c.corpImage)} tone="var(--muted)" align="end" step className={s.corpInner}>
               <div className={s.corpCopy}>
                 <p className={s.corpLabel}>{c.corpLabel}</p>
                 <h3 id="corp-heading" className={`${s.corpHeading} ${s.subHeading}`}>

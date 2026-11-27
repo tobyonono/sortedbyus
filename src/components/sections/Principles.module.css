@@ -35,6 +35,23 @@
   transform: translateY(101%);
   transition: transform 600ms var(--ease-out);
 }
+/* soft corners where the browser can draw them: a 7px round on the tooth's tip and in the notch, the same
+   family as the logo's rounded turns. The slope is shallow, so 1px of rise over the 7px run is near enough. */
+@supports (clip-path: shape(from 0 0, line to 1px 1px)) {
+  .cut {
+    clip-path: shape(
+      from 0% 40%,
+      line to calc(50% - 7px) 1px,
+      curve to 50% 7px with 50% 0%,
+      line to 50% calc(40% - 7px),
+      curve to calc(50% + 7px) calc(40% - 1px) with 50% 40%,
+      line to 100% 0%,
+      line to 100% 100%,
+      line to 0% 100%,
+      close
+    );
+  }
+}
 .title,
 .body {
   position: relative;

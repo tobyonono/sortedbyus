@@ -236,7 +236,8 @@
   padding: 0;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
+  /* the same 8px as the colour tiles (Principles), so every set of cut cards and tiles sits alike */
+  gap: 8px;
 }
 .cards4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -273,14 +274,14 @@
 /* Cuts, one shape per job:
      pointed block (home.module.css .heroBlock)   heroes
      angled photo cut (CutBanner)                 banners
-     single angle (.cut)                          cards
+     sawtooth (.cut + .saw)                       cards (If something goes wrong, Corporate's models)
      two teeth merging into one (.saw + .offerCard) the service offer cards
-     double cut (Principles.module.css)           the hover state on the About tiles
+     double cut (Principles.module.css)           the hover state on the colour tiles
    Cut colours come from the earth family in one shared order (src/lib/palette.ts). */
 .cut {
   position: absolute;
   inset: auto -1px -1px;
-  height: 42%;
+  height: 28%;
   background: var(--cut, var(--butter));
   clip-path: polygon(0 32%, 100% 0, 100% 100%, 0 100%);
 }
@@ -288,12 +289,29 @@
 .saw {
   clip-path: polygon(0 32%, 50% 0, 50% 32%, 100% 0, 100% 100%, 0 100%);
 }
+/* soft corners on the tooth's tip and in the notch (7px), like the tiles' double cut. The offer cards keep
+   the plain polygon (their hover animates it, and a polygon can't tween to a shape). */
+@supports (clip-path: shape(from 0 0, line to 1px 1px)) {
+  .saw {
+    clip-path: shape(
+      from 0% 32%,
+      line to calc(50% - 7px) 2px,
+      curve to 50% 7px with 50% 0%,
+      line to 50% calc(32% - 7px),
+      curve to calc(50% + 7px) calc(32% - 2px) with 50% 32%,
+      line to 100% 0%,
+      line to 100% 100%,
+      line to 0% 100%,
+      close
+    );
+  }
+}
 /* Service offer cards: the whole card is the link. On hover, "Make a request" rises in on the colour block
    (--cta: espresso on the light colours, apricot on espresso; always shown on touch), and the sawtooth's
    second tooth rises along the same slope until it meets the first, so the two read as one long cut.
    Both move on one curve and duration (--offer-dur, --ease-out); the text follows the tooth by 80ms on
    the way in, and both settle back together.
-   The block's box is 1.32× taller than a plain cut (42%) to leave room above for the rising tooth; the
+   The block's box is 1.32× taller than the original plain cut (42%) to leave room above for the rising tooth; the
    points are the plain sawtooth's, rescaled (24.24% = 0.32 / 1.32 from the top, 48.48% = 0.64 / 1.32). */
 .offerCard {
   --offer-dur: 600ms;

@@ -29,7 +29,6 @@ type Layout = {
 const f = (n: number) => n.toFixed(1);
 /* rounded, so the server-rendered numbers match the browser's exactly */
 const r1 = (n: number) => Math.round(n * 10) / 10;
-const deg = Math.PI / 180;
 const line = (a: P, b: P) => `M${f(a.x)} ${f(a.y)}L${f(b.x)} ${f(b.y)}`;
 
 const CATEGORIES = [

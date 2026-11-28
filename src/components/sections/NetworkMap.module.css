@@ -156,7 +156,7 @@
   padding: 7px 14px;
   border: 1px solid rgb(var(--apricot-rgb) / 0.6);
   border-radius: 999px;
-  font-size: clamp(12px, 1vw, 14px);
+  font-size: var(--fs-sm);
   font-weight: 500;
   color: var(--apricot);
   background: var(--espresso);
@@ -168,8 +168,8 @@
   transform: translate(-50%, -100%);
 }
 
-/* The request card. Its type scales with the card's own width (cqi), so it reads the same on a phone and a
-   wide screen. */
+/* The request card. Its type is on the brand scale (nearest to what it scaled to before); its spacing still
+   scales with the card's width (cqi). If a long reply needs more room, it grows down, the extra going to the cut. */
 .card {
   position: absolute;
   container-type: inline-size;
@@ -198,13 +198,16 @@
   justify-content: space-between;
   align-items: center;
   gap: 3cqi;
-  font-size: 3.6cqi;
+  font-size: var(--fs-sm);
   color: rgb(var(--apricot-rgb) / 0.75);
 }
+/* the same size as the "Your request" tag: fixed, not scaled with the card */
 .when {
-  padding: 0.8cqi 2.4cqi;
+  line-height: 1.2;
+  padding: 7px 14px;
   border: 1px solid rgb(var(--apricot-rgb) / 0.35);
   border-radius: 999px;
+  font-size: var(--fs-sm);
   white-space: nowrap;
 }
 .whenDone {
@@ -216,7 +219,7 @@
 }
 .cardAsk {
   font-family: var(--display);
-  font-size: 6.2cqi;
+  font-size: var(--fs-h6);
   line-height: 1.2;
   color: var(--apricot);
   text-wrap: balance;
@@ -229,7 +232,7 @@
   padding: calc(var(--teeth) + 3.5cqi) 6cqi 5cqi;
   background: var(--cut, var(--terracotta));
   color: var(--espresso);
-  font-size: 3.8cqi;
+  font-size: var(--fs-ui);
   line-height: 1.45;
   clip-path: polygon(0 var(--teeth), 50% 0, 50% var(--teeth), 100% 0, 100% 100%, 0 100%);
   /* always room for a two-line reply; it rests a line lower while it says "On it", and rises into place when the
@@ -254,6 +257,18 @@
       line to 0% 100%,
       close
     );
+  }
+}
+/* phones: each steps down to the brand size nearest what it used to scale to */
+@media (max-width: 600px) {
+  .tag,
+  .cardMeta,
+  .when,
+  .cardFoot {
+    font-size: var(--fs-xs);
+  }
+  .cardAsk {
+    font-size: var(--fs-compact);
   }
 }
 .sorting {

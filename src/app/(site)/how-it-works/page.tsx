@@ -73,7 +73,7 @@ export default async function HowItWorksPage() {
         </section>
 
         <section className={d.section} aria-labelledby="wrong-heading">
-          <SectionIntro id="wrong-heading" label={c.wrongLabel} title={c.wrongHeading} intro={c.wrongIntro} sub />
+          <SectionIntro id="wrong-heading" label={c.wrongLabel} title={c.wrongHeading} intro={c.wrongIntro} />
           <ul className={`${d.cards} ${d.cards4}`}>
             {(c.wrong ?? []).map((w, i) => (
               <li key={w.title} className={`${d.card} ${d.cutCard}`} style={{ "--cut": earth(i) } as React.CSSProperties}>

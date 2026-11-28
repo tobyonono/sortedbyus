@@ -208,7 +208,7 @@ export default function NetworkMap({ bare = false, wide = false, className = "" 
         {/* the request card: fills as the request lands, then shows our reply once the answers are back */}
         <div
           className={m.card}
-          style={{ left: pct(card.x, W), top: pct(card.y, H), width: pct(card.w, W), height: pct(card.h, H) }}
+          style={{ left: pct(card.x, W), top: pct(card.y, H), width: pct(card.w, W), minHeight: pct(card.h, H) }}
           aria-hidden="true"
         >
           <div key={active} className={m.cardBody} style={{ animationDelay: sec(TRAVEL * 0.85) }}>

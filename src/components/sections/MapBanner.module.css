@@ -16,6 +16,7 @@
 .heading {
   font-family: var(--display);
   font-weight: 400;
+  /* the supporting 42px tier, not the main one: in this band the map's card is what should lead */
   font-size: var(--fs-h3);
   line-height: var(--lh-display);
   letter-spacing: var(--tracking-display);

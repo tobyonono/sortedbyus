@@ -66,16 +66,17 @@ const TALL: Layout = (() => {
   };
 })();
 
-/* One request at a time: who asked, from where, for when, what, the help it needed (each with the category
-   whose page it links to), and our reply. Asked from home and from abroad. */
+/* One request at a time: who asked, from where, for when, what (with the detail that matters to them), the help
+   it needed (each with the category whose page it links to), and our reply, which uses that detail and says
+   what happens next. Asked from home and from abroad. Written to docs/brand-voice.md. */
 const STORIES: { from: string; where: string; when: string; ask: string; help: [string, string][]; reply: string }[] = [
-  { from: "Tolu", where: "London", when: "Sunday", ask: "Flowers for Mum in Lekki", help: [["Flowers", "Gifts"]], reply: "Florist booked for 10am. Photo sent once they’re with her." },
-  { from: "Adaeze", where: "Lagos", when: "In three weeks", ask: "Aso-ebi for twelve before the wedding", help: [["Fabric", "Shopping"], ["Tailoring", "Shopping"]], reply: "Fabric sourced and the tailor’s fitting everyone on Friday." },
-  { from: "Emeka", where: "Houston", when: "Today", ask: "Mum’s prescription to Surulere", help: [["Pharmacy run", "Errands"]], reply: "Collected and with her by 4pm. Receipt on WhatsApp." },
-  { from: "Kemi", where: "Abuja", when: "Saturday", ask: "My daughter’s fifth birthday party", help: [["Cake", "Gifts"], ["Decor", "Events"], ["Catering", "Events"]], reply: "Cake, decorations and a chef, all confirmed for 2pm." },
-  { from: "Dayo", where: "Toronto", when: "Thursday, 6am", ask: "A driver at the airport when I land", help: [["Airport pickup", "Travel"]], reply: "Your driver’s confirmed. His number’s on WhatsApp." },
-  { from: "Funmi", where: "London", when: "In two weeks", ask: "The new flat ready before I fly in", help: [["Painting", "Home"], ["Cleaning", "Home"], ["Furniture", "Shopping"]], reply: "Painted, cleaned and furnished by the 14th. Photos to follow." },
-  { from: "Ngozi", where: "Lagos", when: "Tomorrow", ask: "A leak fixed at the family house", help: [["Plumbing", "Home"]], reply: "Plumber booked for 9am. We’ll send photos when it’s fixed." },
+  { from: "Tolu", where: "London", when: "Sunday", ask: "Flowers for Mum in Lekki. She loves yellow", help: [["Flowers", "Gifts"]], reply: "Sunflowers and yellow roses, with her at 10am. We’ll send a photo once she has them." },
+  { from: "Adaeze", where: "Lagos", when: "In three weeks", ask: "Aso-ebi for twelve, in the bride’s green", help: [["Fabric", "Shopping"], ["Tailoring", "Shopping"]], reply: "Three fabrics in that green to choose from, and a tailor who can fit all twelve in time." },
+  { from: "Emeka", where: "Houston", when: "Today", ask: "Mum’s prescription. Her usual pharmacy’s out", help: [["Pharmacy run", "Errands"]], reply: "Found at another pharmacy in Surulere and with her by 4pm. Receipt on WhatsApp." },
+  { from: "Kemi", where: "Abuja", when: "Saturday", ask: "My daughter’s fifth. She loves butterflies", help: [["Cake", "Gifts"], ["Decor", "Events"], ["Catering", "Events"]], reply: "A butterfly cake, decorations to match and small chops for the parents. All set for 2pm." },
+  { from: "Dayo", where: "Toronto", when: "Thursday, 6am", ask: "A driver when I land. I’ve got three cases", help: [["Airport pickup", "Travel"]], reply: "A driver with room for your cases, waiting at arrivals. His number’s on WhatsApp." },
+  { from: "Funmi", where: "London", when: "In two weeks", ask: "The flat ready before I land. Nothing fussy", help: [["Painting", "Home"], ["Cleaning", "Home"], ["Furniture", "Shopping"]], reply: "Painted, cleaned and furnished by the 14th, so you can land and rest." },
+  { from: "Ngozi", where: "Lagos", when: "Tomorrow", ask: "A leak at the family house. Dad’s home", help: [["Plumbing", "Home"]], reply: "A plumber at 9am who’ll call your dad first. Photos once it’s fixed." },
 ];
 
 

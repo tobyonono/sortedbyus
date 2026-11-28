@@ -53,6 +53,9 @@
 .card[data-tone="olive"] { background: var(--olive); color: var(--ink); }
 .card[data-tone="espresso"] { background: var(--espresso); color: var(--cream); }
 .card[data-tone="muted"] { background: var(--muted); color: var(--cream); }
+.card[data-tone="caramel"] { background: var(--caramel); color: var(--ink); }
+.card[data-tone="terracotta"] { background: var(--terracotta); color: var(--ink); }
+.card[data-tone="taupe"] { background: var(--taupe); color: var(--ink); }
 
 .quote {
   font-family: var(--display);

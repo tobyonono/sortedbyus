@@ -426,8 +426,7 @@
   object-fit: cover;
 }
 /* Desktop: each audience is its own row, image and copy side by side, alternating sides: image left on
-   the first ("Your time, back"), text left and image right on the second ("Your person at home"). The
-   image keeps the carousel's large-slot width (42 of 92 columns) on either side. */
+   the first ("Your time, back"), text left and image right on the second ("Your person at home"). */
 @media (min-width: 901px) {
   .audiences {
     row-gap: 80px;
@@ -439,16 +438,15 @@
     column-gap: 48px;
     align-items: center;
   }
-  .split:nth-child(even) {
-    grid-template-columns: minmax(0, 50fr) minmax(0, 42fr);
-  }
+  /* mirrored row: same columns as the first, so the photo starts exactly where the text above starts (same
+     inset as that text), runs to the right gutter, and the copy sits in the left column, the same gap from
+     the photo as on the first row. Its lines stay left-aligned. */
   .split:nth-child(even) .splitImg {
     order: 2;
+    margin-left: clamp(24px, 5vw, 96px);
   }
-  /* mirrored: the copy block sits against the photo with the same gap as on the first row, so it floats
-     mid-column rather than hard against the left gutter (its lines stay left-aligned) */
   .split:nth-child(even) .splitSide {
-    padding: 0 clamp(24px, 5vw, 96px) 0 0;
+    padding: 0;
   }
   .split:nth-child(even) .splitCopy {
     margin-left: auto;
@@ -693,9 +691,9 @@
 /* same size as the header wordmark (Header.module.css .mark svg) */
 .footBrand svg {
   display: block;
-  height: 45px;
+  height: 34px;
   width: auto;
-  aspect-ratio: 805 / 294;
+  aspect-ratio: 191.77 / 34;
 }
 .footBottom {
   display: flex;

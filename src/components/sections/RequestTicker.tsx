@@ -13,7 +13,8 @@ export type TickerItem = {
   img?: Pic;
   /** object-position for the photo (default centre). */
   pos?: string;
-  tone?: "apricot" | "butter" | "espresso" | "olive" | "muted";
+  /** Plain-card colour: the brand and earth colours (butter stays for things you can press). */
+  tone?: "apricot" | "butter" | "espresso" | "olive" | "muted" | "caramel" | "terracotta" | "taupe";
   /** Relative width (1 = base card width). */
   w: number;
   /** Card height in px at desktop size (scaled down on small screens). */

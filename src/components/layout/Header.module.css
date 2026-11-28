@@ -16,7 +16,7 @@
   top: 0;
   left: 0;
   right: 0;
-  /* slimmer than the top-of-page header: 16 + 45 wordmark + 16 = 77px bar */
+  /* slimmer than the top-of-page header: 16px above the logo and buttons, 16px below */
   padding-top: 16px;
 }
 .header[data-mode="hidden"]::before,
@@ -40,12 +40,14 @@
   display: inline-flex;
   position: relative;
   z-index: 2;
+  /* the logo is 34px in a 53px row: 1px below makes the centring gap an even 18px, so it sits on whole pixels */
+  margin-bottom: 1px;
 }
 .mark svg {
   display: block;
-  height: 45px;
+  height: 34px;
   width: auto;
-  aspect-ratio: 805 / 294;
+  aspect-ratio: 191.77 / 34;
 }
 
 .right {
@@ -261,8 +263,11 @@
   .header[data-mode="hidden"] {
     transform: translateY(calc(-100% - 13px));
   }
+  .mark {
+    margin-bottom: 0; /* 28px logo: already an even gap */
+  }
   .mark svg {
-    height: 40px;
+    height: 28px;
   }
   .wa {
     display: none;

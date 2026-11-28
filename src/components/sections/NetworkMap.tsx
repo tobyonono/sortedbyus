@@ -44,23 +44,24 @@ const CATEGORIES = [
    with the card or stacked either side of it. */
 const WIDE: Layout = (() => {
   // the card sits dead centre; the tag on the left and the circles on the right reach out the same distance
-  const card = { x: 460, y: 160, w: 400, h: 300 };
+  // the drawing is only as tall as three stacked circles need, so it sits close under the heading
+  const card = { x: 460, y: 85, w: 400, h: 300 };
   const outPort = { x: card.x + card.w, y: card.y + card.h / 2 };
   return {
-    W: 1320, H: 620, vertical: false, request: { x: 200, y: outPort.y }, card,
+    W: 1320, H: 470, vertical: false, request: { x: 200, y: outPort.y }, card,
     inPort: { x: card.x, y: outPort.y }, outPort, ballR: 62,
-    slot: (i, n) => ({ x: 1180, y: r1(outPort.y + (i - (n - 1) / 2) * 180) }),
+    slot: (i, n) => ({ x: 1180, y: r1(outPort.y + (i - (n - 1) / 2) * 150) }),
   };
 })();
 
 /* Tall: a phone. Your request comes in from the top, the circles appear below the card, side by side. */
 const TALL: Layout = (() => {
-  const card = { x: 40, y: 190, w: 920, h: 560 };
+  const card = { x: 40, y: 160, w: 920, h: 560 };
   const outPort = { x: 500, y: card.y + card.h };
   return {
-    W: 1000, H: 1130, vertical: true, request: { x: 500, y: 90 }, card,
+    W: 1000, H: 1095, vertical: true, request: { x: 500, y: 75 }, card,
     inPort: { x: 500, y: card.y }, outPort, ballR: 112,
-    slot: (i, n) => ({ x: r1(500 + (i - (n - 1) / 2) * 290), y: 990 }),
+    slot: (i, n) => ({ x: r1(500 + (i - (n - 1) / 2) * 290), y: 960 }),
   };
 })();
 

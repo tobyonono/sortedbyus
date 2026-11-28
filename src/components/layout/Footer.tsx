@@ -11,7 +11,7 @@ export default async function Footer() {
     <footer className={h.footer}>
       <div className={h.footTop}>
         <Link href="/" className={h.footBrand}>
-          <Wordmark title={`${site.name} home`} />
+          <Wordmark id="wm-foot" title={`${site.name} home`} />
         </Link>
         <div className={h.footCol}>
           <h2 className={h.footHead}>Explore</h2>

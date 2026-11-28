@@ -147,7 +147,7 @@ export default async function Home() {
               {c.examplesHeading}
             </h2>
           </div>
-          <RequestTicker items={tickerItems(c.examples, ["apricot", "butter", "espresso", "olive", "muted"])} />
+          <RequestTicker items={tickerItems(c.examples, ["terracotta", "espresso", "caramel", "taupe", "olive", "apricot", "muted"])} />
         </section>
 
         {/* ---------- Process (Thirdway carousel) ---------- */}

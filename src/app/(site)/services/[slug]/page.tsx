@@ -89,7 +89,7 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
             <p className={h.label}>Just ask</p>
             <h2 id="asks-heading" className={`${h.splitHeading} ${h.subHeading}`}>Things people ask us for</h2>
           </div>
-          <RequestTicker items={tickerItems(s.examples, ["butter", "espresso", "olive", "muted"])} />
+          <RequestTicker items={tickerItems(s.examples, ["terracotta", "espresso", "caramel", "taupe", "olive", "muted"])} />
         </section>
 
         <section className={`${d.section} ${d.tinted}`} aria-labelledby="how-heading">

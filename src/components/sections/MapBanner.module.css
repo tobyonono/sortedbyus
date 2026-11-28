@@ -25,7 +25,7 @@
 }
 .mapWide {
   width: 100%;
-  margin: 56px 0 48px;
+  margin: 40px 0 48px;
 }
 .mapTall {
   display: none;
@@ -65,7 +65,7 @@
   .mapTall {
     display: block;
     width: 86%;
-    margin: 40px auto;
+    margin: 32px auto 40px;
   }
   .points {
     grid-template-columns: 1fr;

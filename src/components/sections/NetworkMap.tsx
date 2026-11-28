@@ -45,13 +45,14 @@ const CATEGORIES = [
    with the card or stacked either side of it. */
 const WIDE: Layout = (() => {
   // the card sits dead centre; the tag on the left and the circles on the right reach out the same distance
-  // the drawing is only as tall as three stacked circles need, so it sits close under the heading
-  const card = { x: 460, y: 85, w: 400, h: 300 };
+  // the drawing is trimmed to its content: the card, and three stacked circles (120 apart) reaching just past
+  // its top and bottom, so the card sits close under the heading with an even gap to the points below
+  const card = { x: 460, y: 28, w: 400, h: 300 };
   const outPort = { x: card.x + card.w, y: card.y + card.h / 2 };
   return {
-    W: 1320, H: 470, vertical: false, request: { x: 200, y: outPort.y }, card,
+    W: 1320, H: 356, vertical: false, request: { x: 200, y: outPort.y }, card,
     inPort: { x: card.x, y: outPort.y }, outPort, ballR: 48,
-    slot: (i, n) => ({ x: 1180, y: r1(outPort.y + (i - (n - 1) / 2) * 150) }),
+    slot: (i, n) => ({ x: 1180, y: r1(outPort.y + (i - (n - 1) / 2) * 120) }),
   };
 })();
 

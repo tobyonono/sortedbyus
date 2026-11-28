@@ -2,6 +2,7 @@
 
 import { prefersReducedMotion } from "@/lib/motion";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { earth } from "@/lib/palette";
 import m from "./NetworkMap.module.css";
 
 /* How a request gets sorted, simply. "Your request" comes in along a dotted line to a request card: who it's
@@ -49,7 +50,7 @@ const WIDE: Layout = (() => {
   const outPort = { x: card.x + card.w, y: card.y + card.h / 2 };
   return {
     W: 1320, H: 470, vertical: false, request: { x: 200, y: outPort.y }, card,
-    inPort: { x: card.x, y: outPort.y }, outPort, ballR: 62,
+    inPort: { x: card.x, y: outPort.y }, outPort, ballR: 48,
     slot: (i, n) => ({ x: 1180, y: r1(outPort.y + (i - (n - 1) / 2) * 150) }),
   };
 })();
@@ -60,7 +61,7 @@ const TALL: Layout = (() => {
   const outPort = { x: 500, y: card.y + card.h };
   return {
     W: 1000, H: 1095, vertical: true, request: { x: 500, y: 75 }, card,
-    inPort: { x: 500, y: card.y }, outPort, ballR: 112,
+    inPort: { x: 500, y: card.y }, outPort, ballR: 96,
     slot: (i, n) => ({ x: r1(500 + (i - (n - 1) / 2) * 290), y: 960 }),
   };
 })();
@@ -77,14 +78,6 @@ const STORIES: { from: string; where: string; when: string; ask: string; help: [
   { from: "Ngozi", where: "Lagos", when: "Tomorrow", ask: "A leak fixed at the family house", help: [["Plumbing", "Home"]], reply: "Plumber booked for 9am. We’ll send photos when it’s fixed." },
 ];
 
-/* A gentle S-curve from the card to a circle, like the turns in the logo. */
-function curve(a: P, b: P, bend: number) {
-  const dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy);
-  const nx = -dy / len, ny = dx / len, A = len * 0.12 * bend;
-  const c1 = { x: a.x + dx / 3 + nx * A, y: a.y + dy / 3 + ny * A };
-  const c2 = { x: a.x + (2 * dx) / 3 - nx * A, y: a.y + (2 * dy) / 3 - ny * A };
-  return `M${f(a.x)} ${f(a.y)}C${f(c1.x)} ${f(c1.y)} ${f(c2.x)} ${f(c2.y)} ${f(b.x)} ${f(b.y)}`;
-}
 
 const pct = (v: number, of: number) => `${((v / of) * 100).toFixed(3)}%`;
 const sec = (n: number) => `${n.toFixed(2)}s`;
@@ -121,6 +114,7 @@ export default function NetworkMap({ bare = false, wide = false, className = "" 
   const L = wide ? WIDE : TALL;
   const { W, H, request, card, inPort, outPort, ballR } = L;
   const intake = line(request, inPort);
+  const maskId = wide ? "route-w" : "route-t";
 
   const still = useReducedMotion();
   const [active, setActive] = useState(0);
@@ -139,7 +133,8 @@ export default function NetworkMap({ bare = false, wide = false, className = "" 
     return { label: service, title: `${service}: ${cat.title}`, slug: cat.slug, ...L.slot(i, story.help.length) };
   });
   // the outer lines bow outwards a little; a single or middle one runs straight
-  const routes = lit.map((c, i) => curve(outPort, c, (i - (lit.length - 1) / 2) * 0.6));
+  // straight lines from the card to each circle
+  const routes = lit.map((c) => line(outPort, c));
   const t = timing(lit.length);
 
   // Only animate while the map is on screen, and never with reduced motion.
@@ -173,8 +168,17 @@ export default function NetworkMap({ bare = false, wide = false, className = "" 
       <div className={`${m.map} ${bare ? m.bare : ""}`} style={{ aspectRatio: `${W} / ${H}` }}>
         <svg viewBox={`0 0 ${W} ${H}`} className={m.svg} aria-hidden="true">
           {/* this story's lines draw out from the card to each kind of help it needs */}
-          <g key={`r${active}`} className={m.highlight}>
-            {routes.map((d, i) => <path key={i} d={d} pathLength={1} style={{ animationDelay: sec(t.start(i)), animationDuration: sec(OUT) }} />)}
+          {/* dotted like your line in: the dots are revealed from the card outwards by a mask that draws along the
+              line, then keep flowing towards the circle */}
+          <g key={`r${active}`}>
+            <defs>
+              {routes.map((d, i) => (
+                <mask key={i} id={`${maskId}-${i}`} maskUnits="userSpaceOnUse" x={0} y={0} width={W} height={H}>
+                  <path className={m.reveal} d={d} pathLength={1} style={{ animationDelay: sec(t.start(i)), animationDuration: sec(OUT) }} />
+                </mask>
+              ))}
+            </defs>
+            {routes.map((d, i) => <path key={i} className={m.intake} d={d} mask={`url(#${maskId}-${i})`} />)}
           </g>
           {/* your message in, its dots flowing towards the card */}
           <path className={m.intake} d={intake} />
@@ -201,19 +205,21 @@ export default function NetworkMap({ bare = false, wide = false, className = "" 
 
         {/* the request card: fills as the request lands, then shows our reply once the answers are back */}
         <div
-          className={`${m.card} ${done ? m.cardDone : ""}`}
+          className={m.card}
           style={{ left: pct(card.x, W), top: pct(card.y, H), width: pct(card.w, W), height: pct(card.h, H) }}
           aria-hidden="true"
         >
           <div key={active} className={m.cardBody} style={{ animationDelay: sec(TRAVEL * 0.85) }}>
             <p className={m.cardMeta}>
               <span>{story.from}, {story.where}</span>
-              <span className={m.when}>{story.when}</span>
+              {/* when it's for, until the answers are back: then it turns butter and reads Sorted */}
+              {done ? <span className={`${m.when} ${m.whenDone}`}>Sorted</span> : <span className={m.when}>{story.when}</span>}
             </p>
             <p className={m.cardAsk}>{story.ask}</p>
-            <div className={m.cardFoot}>
+            {/* the status sits on a coloured cut, the next earth colour for each request */}
+            <div className={`${m.cardFoot} ${done ? m.cardFootUp : ""}`} style={{ "--cut": earth(active) } as React.CSSProperties}>
               {done ? (
-                <p className={m.reply}><span className={m.sorted}>Sorted</span> {story.reply}</p>
+                <p className={m.reply}>{story.reply}</p>
               ) : (
                 <p className={m.sorting}>On it<span className={m.dots} aria-hidden="true" /></p>
               )}

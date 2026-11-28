@@ -34,18 +34,16 @@
   pointer-events: none;
 }
 
-.highlight path {
-  stroke: var(--butter);
-  stroke-width: 3;
-  /* square ends: a round cap would show as a dot at the start before the line has drawn out */
+/* the mask that reveals a dotted route: a wide white stroke drawing from the card to the circle (each route's
+   delay and duration are set inline, so it follows the request) */
+.reveal {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 40;
   stroke-linecap: butt;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  /* draws out in butter; each line's delay and duration are set inline, so it follows the request */
   animation: draw 0.5s var(--ease-out) forwards;
-}
-.tall .highlight path {
-  stroke-width: 6;
 }
 @keyframes draw {
   to {
@@ -176,13 +174,10 @@
   position: absolute;
   container-type: inline-size;
   display: flex;
-  border: 1px solid rgb(var(--apricot-rgb) / 0.35);
+  overflow: hidden;
+  /* no outline: the lighter fill sets it off the band, and the coloured cut gives it a base */
   border-radius: 6px;
   background: color-mix(in srgb, var(--espresso), var(--apricot) 6%);
-  transition: border-color var(--dur) var(--ease);
-}
-.cardDone {
-  border-color: var(--butter);
 }
 .cardBody {
   flex: 1;
@@ -212,6 +207,13 @@
   border-radius: 999px;
   white-space: nowrap;
 }
+.whenDone {
+  border-color: var(--butter);
+  font-weight: 500;
+  color: var(--espresso);
+  background: var(--butter);
+  animation: cardIn 0.4s var(--ease-out) both;
+}
 .cardAsk {
   font-family: var(--display);
   font-size: 6.2cqi;
@@ -219,16 +221,43 @@
   color: var(--apricot);
   text-wrap: balance;
 }
-/* the foot holds "On it", then our reply; it sits at the bottom with a rule above */
+/* the foot holds "On it", then our reply, on a coloured cut across the card's foot: the soft sawtooth of the
+   cut cards, edge to edge, its two teeth rising 4cqi */
 .cardFoot {
-  margin-top: auto;
-  padding-top: 4cqi;
-  border-top: 1px solid rgb(var(--apricot-rgb) / 0.2);
+  --teeth: 4cqi;
+  margin: auto -6cqi -6cqi;
+  padding: calc(var(--teeth) + 3.5cqi) 6cqi 5cqi;
+  background: var(--cut, var(--terracotta));
+  color: var(--espresso);
   font-size: 3.8cqi;
   line-height: 1.45;
+  clip-path: polygon(0 var(--teeth), 50% 0, 50% var(--teeth), 100% 0, 100% 100%, 0 100%);
+  /* always room for a two-line reply; it rests a line lower while it says "On it", and rises into place when the
+     request is sorted: the offer cards' rising cut, same 600ms and ease-out */
+  min-height: calc(var(--teeth) + 3.5cqi + 2.9em + 5cqi);
+  transform: translateY(1.45em);
+  transition: transform 600ms var(--ease-out);
+}
+.cardFootUp {
+  transform: none;
+}
+@supports (clip-path: shape(from 0 0, line to 1px 1px)) {
+  .cardFoot {
+    clip-path: shape(
+      from 0% var(--teeth),
+      line to calc(50% - 1.6cqi) 0.2cqi,
+      curve to 50% 1.6cqi with 50% 0%,
+      line to 50% calc(var(--teeth) - 1.6cqi),
+      curve to calc(50% + 1.6cqi) calc(var(--teeth) - 0.2cqi) with 50% var(--teeth),
+      line to 100% 0%,
+      line to 100% 100%,
+      line to 0% 100%,
+      close
+    );
+  }
 }
 .sorting {
-  color: rgb(var(--apricot-rgb) / 0.6);
+  color: rgb(var(--espresso-rgb) / 0.75);
 }
 /* three dots that fill in, one after another, while we're on it */
 .dots::after {
@@ -251,17 +280,9 @@
   }
 }
 .reply {
-  color: var(--apricot);
-  animation: cardIn 0.4s var(--ease-out) both;
-}
-.sorted {
-  display: inline-block;
-  margin-right: 1.5cqi;
-  padding: 0.4cqi 2.4cqi;
-  border-radius: 999px;
-  font-weight: 500;
   color: var(--espresso);
-  background: var(--butter);
+  /* follows the cut by 80ms, on the same curve and duration (as the offer cards' prompt) */
+  animation: cardIn 600ms var(--ease-out) 80ms both;
 }
 
 /* the brand cut: a cream wedge off the top-right corner */
@@ -283,17 +304,20 @@
 }
 
 /* nothing in a story runs until the map is on screen, so it starts in step with the request */
-.wrap:not(.playing) :is(.highlight path, .balls circle, .ballLabel, .halos circle, .cardBody) {
+.wrap:not(.playing) :is(.reveal, .balls circle, .ballLabel, .halos circle, .cardBody) {
   animation-play-state: paused;
 }
 
 /* reduced motion: the first story just shows sorted, lines drawn, and nothing flows or breathes */
 @media (prefers-reduced-motion: reduce) {
-  .highlight path {
+  .reveal {
     animation: none;
     stroke-dashoffset: 0;
   }
-  .wrap :is(.balls circle, .ballLabel, .cardBody, .reply),
+  .cardFoot {
+    transition: none;
+  }
+  .wrap :is(.balls circle, .ballLabel, .cardBody, .reply, .whenDone),
   .svg .intake {
     animation: none;
   }
